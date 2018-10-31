@@ -1,0 +1,97 @@
+import java.awt.EventQueue;
+import java.awt.Image;
+
+import javax.swing.JFrame;
+import javax.swing.JTextField;
+import javax.swing.JPasswordField;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class KwikGrade_Login {
+
+	private JFrame frame;
+	private JTextField UID;
+	private JPasswordField PW;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					KwikGrade_Login window = new KwikGrade_Login();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public KwikGrade_Login() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 617, 412);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		UID = new JTextField();
+		UID.setBounds(428, 76, 159, 22);
+		frame.getContentPane().add(UID);
+		UID.setColumns(10);
+		
+		PW = new JPasswordField();
+		PW.setBounds(428, 142, 159, 22);
+		frame.getContentPane().add(PW);
+		
+		JLabel UID_label = new JLabel("Username");
+		UID_label.setBounds(465, 47, 78, 16);
+		frame.getContentPane().add(UID_label);
+		
+		JLabel PW_label = new JLabel("Password");
+		PW_label.setBounds(465, 123, 56, 16);
+		frame.getContentPane().add(PW_label);
+		
+		JButton btnNewButton = new JButton("Login");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String username, password, dummyuser, dummypw;
+				username = UID.getText();
+				password = PW.getText();
+				
+				if(username.equals("rawr") && password.equals("superman")) {
+					JOptionPane.showMessageDialog(null, "Correct Info! Everyone gets an A");
+					frame.dispose();
+					main_dashboard maindashboard = new main_dashboard();
+					maindashboard.setVisible(true);
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "WRONG USERNAME!!!! Everyone gets a F");
+				}
+				
+			}
+		});
+		btnNewButton.setBounds(428, 188, 150, 64);
+		frame.getContentPane().add(btnNewButton);
+		
+		JLabel gradepic = new JLabel("");
+		Image img = new ImageIcon(this.getClass().getResource("grading_login.jpg")).getImage();
+		gradepic.setIcon(new ImageIcon(img));
+		gradepic.setBounds(0, 0, 379, 365);
+		frame.getContentPane().add(gradepic);
+	}
+}
