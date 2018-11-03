@@ -10,11 +10,16 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
+import javax.swing.JEditorPane;
+import java.awt.Choice;
+import java.awt.List;
 
 public class main_dashboard extends JFrame {
 
 	private JPanel contentPane;
+	public ArrayList<course> list_of_courses = new ArrayList<course>();
 
 	/**
 	 * Launch the application.
@@ -43,19 +48,35 @@ public class main_dashboard extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblSecondForm = new JLabel("SECOND FORM");
+		JLabel lblSecondForm = new JLabel("Courses");
 		lblSecondForm.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblSecondForm.setBounds(12, 13, 128, 42);
+		lblSecondForm.setBounds(12, 0, 128, 42);
 		contentPane.add(lblSecondForm);
 		
-		JButton btnNewButton = new JButton("CS591");
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton btnAddCourse = new JButton("Add Course");
+		btnAddCourse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				course course = new course("RAWR");
+				list_of_courses.add(course);
+				System.out.println(course.coursename);
+				System.out.println(list_of_courses);
 				
-				JOptionPane.showMessageDialog(null, "THESE ARE THE GRADES FOR CS591");
+//				create_course_from createcourseform = new create_course_from();
+//				createcourseform.setVisible(true);
+				
+
+				
 			}
 		});
-		btnNewButton.setBounds(12, 57, 171, 89);
-		contentPane.add(btnNewButton);
+		btnAddCourse.setBounds(301, 24, 119, 42);
+		contentPane.add(btnAddCourse);
+		
+		JButton btnCloseCourse = new JButton("Close Course");
+		btnCloseCourse.setBounds(301, 80, 119, 42);
+		contentPane.add(btnCloseCourse);
+		
+		List list = new List();
+		list.setBounds(22, 48, 209, 175);
+		contentPane.add(list);
 	}
 }

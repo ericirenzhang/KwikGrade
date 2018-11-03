@@ -9,7 +9,10 @@ import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
+import javax.swing.SwingConstants;
 
 public class KwikGrade_Login {
 
@@ -50,23 +53,26 @@ public class KwikGrade_Login {
 		frame.getContentPane().setLayout(null);
 		
 		UID = new JTextField();
-		UID.setBounds(428, 76, 159, 22);
+		UID.setBounds(419, 121, 150, 22);
 		frame.getContentPane().add(UID);
 		UID.setColumns(10);
 		
 		PW = new JPasswordField();
-		PW.setBounds(428, 142, 159, 22);
+		PW.setBounds(419, 206, 150, 22);
 		frame.getContentPane().add(PW);
 		
 		JLabel UID_label = new JLabel("Username");
-		UID_label.setBounds(465, 47, 78, 16);
+		UID_label.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		UID_label.setBounds(454, 92, 78, 16);
 		frame.getContentPane().add(UID_label);
 		
 		JLabel PW_label = new JLabel("Password");
-		PW_label.setBounds(465, 123, 56, 16);
+		PW_label.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		PW_label.setBounds(454, 177, 78, 27);
 		frame.getContentPane().add(PW_label);
 		
 		JButton btnNewButton = new JButton("Login");
+		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String username, password, dummyuser, dummypw;
@@ -74,18 +80,18 @@ public class KwikGrade_Login {
 				password = PW.getText();
 				
 				if(username.equals("rawr") && password.equals("superman")) {
-					JOptionPane.showMessageDialog(null, "Correct Info! Everyone gets an A");
+					JOptionPane.showMessageDialog(null, "Successful Login!");
 					frame.dispose();
 					main_dashboard maindashboard = new main_dashboard();
 					maindashboard.setVisible(true);
 				}
 				else {
-					JOptionPane.showMessageDialog(null, "WRONG USERNAME!!!! Everyone gets a F");
+					JOptionPane.showMessageDialog(null, "Incorrect Login!");
 				}
 				
 			}
 		});
-		btnNewButton.setBounds(428, 188, 150, 64);
+		btnNewButton.setBounds(419, 254, 150, 64);
 		frame.getContentPane().add(btnNewButton);
 		
 		JLabel gradepic = new JLabel("");
@@ -93,5 +99,11 @@ public class KwikGrade_Login {
 		gradepic.setIcon(new ImageIcon(img));
 		gradepic.setBounds(0, 0, 379, 365);
 		frame.getContentPane().add(gradepic);
+		
+		JLabel lblKwikgrade = new JLabel("KwikGrade");
+		lblKwikgrade.setHorizontalAlignment(SwingConstants.CENTER);
+		lblKwikgrade.setFont(new Font("Tahoma", Font.PLAIN, 22));
+		lblKwikgrade.setBounds(419, 13, 150, 38);
+		frame.getContentPane().add(lblKwikgrade);
 	}
 }
