@@ -7,6 +7,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class create_course_from extends JFrame {
 
@@ -50,9 +52,16 @@ public class create_course_from extends JFrame {
 		contentPane.add(from_existing);
 		
 		JButton from_new = new JButton("Create From New");
+		from_new.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				create_fromnew_course create_fromnew = new create_fromnew_course();
+				create_fromnew.setVisible(true);
+			}
+		});
 		from_new.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		from_new.setBounds(243, 63, 181, 144);
 		contentPane.add(from_new);
+		
 	}
 
 }

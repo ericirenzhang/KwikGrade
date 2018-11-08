@@ -56,13 +56,13 @@ public class main_dashboard extends JFrame {
 		JButton btnAddCourse = new JButton("Add Course");
 		btnAddCourse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				course course = new course("RAWR");
-				list_of_courses.add(course);
-				System.out.println(course.coursename);
-				System.out.println(list_of_courses);
+//				course course = new course("RAWR");
+//				list_of_courses.add(course);
+//				System.out.println(course.coursename);
+//				System.out.println(list_of_courses);
 				
-//				create_course_from createcourseform = new create_course_from();
-//				createcourseform.setVisible(true);
+				create_course_from createcourseform = new create_course_from();
+				createcourseform.setVisible(true);
 				
 
 				
