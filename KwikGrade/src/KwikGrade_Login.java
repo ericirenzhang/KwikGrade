@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class KwikGrade_Login {
 
@@ -42,6 +44,19 @@ public class KwikGrade_Login {
 	public KwikGrade_Login() {
 		initialize();
 	}
+	
+	public void login(String username, String password) {
+		
+		if(username.equals("rawr") && password.equals("superman")) {
+			JOptionPane.showMessageDialog(null, "Successful Login!");
+			frame.dispose();
+			main_dashboard maindashboard = new main_dashboard();
+			maindashboard.setVisible(true);
+		}
+		else {
+			JOptionPane.showMessageDialog(null, "Incorrect Login!");
+		}
+	}
 
 	/**
 	 * Initialize the contents of the frame.
@@ -61,6 +76,14 @@ public class KwikGrade_Login {
 		PW.setBounds(419, 206, 150, 22);
 		frame.getContentPane().add(PW);
 		
+		PW.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					login(UID.getText(), PW.getText());
+				}
+			}
+		});
+		
 		JLabel UID_label = new JLabel("Username");
 		UID_label.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		UID_label.setBounds(454, 92, 78, 16);
@@ -75,22 +98,10 @@ public class KwikGrade_Login {
 		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String username, password, dummyuser, dummypw;
-				username = UID.getText();
-				password = PW.getText();
-				
-				if(username.equals("rawr") && password.equals("superman")) {
-					JOptionPane.showMessageDialog(null, "Successful Login!");
-					frame.dispose();
-					main_dashboard maindashboard = new main_dashboard();
-					maindashboard.setVisible(true);
-				}
-				else {
-					JOptionPane.showMessageDialog(null, "Incorrect Login!");
-				}
-				
+				login(UID.getText(), PW.getText());
 			}
 		});
+		
 		btnNewButton.setBounds(419, 254, 150, 64);
 		frame.getContentPane().add(btnNewButton);
 		
