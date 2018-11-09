@@ -12,32 +12,23 @@ import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class createFromNewFrame extends JDialog {
+public class CreateFromNewFrame extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	private JTextField course_num_txt;
-	private JTextField course_term_txt;
-	private JTextField course_ttl_txt;
-	private String course_number;
-	private String course_term;
-	private String course_title;
-	
-	public String get_num() {
-		return course_number;
-	}
-	public String get_term() {
-		return course_term;
-	}
-	public String get_title() {
-		return course_title;
-	}
+	private JTextField courseNumText;
+	private JTextField courseTermText;
+	private JTextField courseTitleText;
+	private String courseNum;
+	private String courseTerm;
+	private String courseTitle;
+
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		try {
-			createFromNewFrame dialog = new createFromNewFrame();
+			CreateFromNewFrame dialog = new CreateFromNewFrame();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -48,33 +39,33 @@ public class createFromNewFrame extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public createFromNewFrame() {
+	public CreateFromNewFrame() {
 		setBounds(100, 100, 491, 413);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
-		course_num_txt = new JTextField();
-		course_num_txt.setBounds(164, 29, 297, 36);
-		contentPanel.add(course_num_txt);
-		course_num_txt.setColumns(10);
+		courseNumText = new JTextField();
+		courseNumText.setBounds(164, 29, 297, 36);
+		contentPanel.add(courseNumText);
+		courseNumText.setColumns(10);
 		
-		course_term_txt = new JTextField();
-		course_term_txt.setColumns(10);
-		course_term_txt.setBounds(164, 78, 297, 36);
-		contentPanel.add(course_term_txt);
+		courseTermText = new JTextField();
+		courseTermText.setColumns(10);
+		courseTermText.setBounds(164, 78, 297, 36);
+		contentPanel.add(courseTermText);
 		
-		course_ttl_txt = new JTextField();
-		course_ttl_txt.setColumns(10);
-		course_ttl_txt.setBounds(164, 127, 297, 36);
-		contentPanel.add(course_ttl_txt);
+		courseTitleText = new JTextField();
+		courseTitleText.setColumns(10);
+		courseTitleText.setBounds(164, 127, 297, 36);
+		contentPanel.add(courseTitleText);
 		
-		JLabel coursenum_lbl = new JLabel("Course Number");
-		coursenum_lbl.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		coursenum_lbl.setHorizontalAlignment(SwingConstants.TRAILING);
-		coursenum_lbl.setBounds(12, 33, 140, 26);
-		contentPanel.add(coursenum_lbl);
+		JLabel courseNumberLabel = new JLabel("Course Number");
+		courseNumberLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		courseNumberLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+		courseNumberLabel.setBounds(12, 33, 140, 26);
+		contentPanel.add(courseNumberLabel);
 		
 		JLabel courseterm_lbl = new JLabel("Course Term");
 		courseterm_lbl.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -82,11 +73,11 @@ public class createFromNewFrame extends JDialog {
 		courseterm_lbl.setBounds(12, 82, 140, 26);
 		contentPanel.add(courseterm_lbl);
 		
-		JLabel coursetitle_lbl = new JLabel("Course Title");
-		coursetitle_lbl.setHorizontalAlignment(SwingConstants.TRAILING);
-		coursetitle_lbl.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		coursetitle_lbl.setBounds(12, 131, 140, 26);
-		contentPanel.add(coursetitle_lbl);
+		JLabel courseTitleLabel = new JLabel("Course Title");
+		courseTitleLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+		courseTitleLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		courseTitleLabel.setBounds(12, 131, 140, 26);
+		contentPanel.add(courseTitleLabel);
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -95,10 +86,9 @@ public class createFromNewFrame extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						course_number = course_num_txt.getText();
-						course_term = course_term_txt.getText();
-						course_title = course_ttl_txt.getText();
-						get_title();
+						courseNum = courseNumText.getText();
+						courseTerm = courseTermText.getText();
+						courseTitle = courseTitleText.getText();
 						dispose();
 						
 					}
@@ -113,5 +103,33 @@ public class createFromNewFrame extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+	}
+	
+	//=============================
+	// Getters
+	//=============================
+	
+	public String getCourseNum() {
+		return courseNum;
+	}
+	public String getCourseTerm() {
+		return courseTerm;
+	}
+	public String getCourseTitle() {
+		return courseTitle;
+	}
+	
+	//=============================
+	// Setters
+	//=============================
+	
+	public void setCourseNum(String courseNum) {
+		this.courseNum = courseNum;
+	}
+	public void setCourseTerm(String courseTerm) {
+		this.courseTerm = courseTerm;
+	}
+	public void setCourseTitle(String courseTitle) {
+		this.courseTitle = courseTitle;
 	}
 }

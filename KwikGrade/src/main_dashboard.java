@@ -66,10 +66,10 @@ public class main_dashboard extends JFrame {
 //				System.out.println(course.coursename);
 //				System.out.println(list_of_courses);
 				
-				createCourseFrame createcourseform = new createCourseFrame();
-//				createcourseform.setModal(true);
-				createcourseform.setVisible(true);
-				addCourse(createcourseform.getCourseNum(), createcourseform.getCourseTerm(), createcourseform.getCourseTitle());
+				CreateCourseFrame createCourse = new CreateCourseFrame();
+				createCourse.setModal(true);
+				createCourse.setVisible(true);
+				addCourse(createCourse.getCourseNum(), createCourse.getCourseTerm(), createCourse.getCourseTitle());
 				System.out.println(listOfCourses);
 				
 			}

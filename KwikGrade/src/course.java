@@ -56,14 +56,14 @@ public class Course {
 		this.courseNum = courseNum;
 	}
 	
-	public void getCourseTerm(String courseTerm) {
+	public void setCourseTerm(String courseTerm) {
 		this.courseTerm = courseTerm;
 	}
 	
-	public void getCourseTitle(String courseTitle) {
+	public void setCourseTitle(String courseTitle) {
 		this.courseTitle = courseTitle;
 	}
-	public void getIsOpen(boolean isOpen) {
+	public void setIsOpen(boolean isOpen) {
 		this.isOpen = isOpen;
 	}
 
