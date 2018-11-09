@@ -19,7 +19,12 @@ import java.awt.List;
 public class main_dashboard extends JFrame {
 
 	private JPanel contentPane;
-	public ArrayList<course> list_of_courses = new ArrayList<course>();
+	public ArrayList<Course> listOfCourses = new ArrayList<Course>();
+	
+	public void addCourse( String courseNum, String courseTerm, String courseTitle ) {
+		Course courseToAdd = new Course(courseNum, courseTerm, courseTitle);
+		this.listOfCourses.add(courseToAdd);
+	}
 
 	/**
 	 * Launch the application.
@@ -56,15 +61,16 @@ public class main_dashboard extends JFrame {
 		JButton btnAddCourse = new JButton("Add Course");
 		btnAddCourse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				course course = new course("RAWR");
-				list_of_courses.add(course);
-				System.out.println(course.coursename);
-				System.out.println(list_of_courses);
+//				course course = new course("RAWR");
+//				list_of_courses.add(course);
+//				System.out.println(course.coursename);
+//				System.out.println(list_of_courses);
 				
-//				create_course_from createcourseform = new create_course_from();
-//				createcourseform.setVisible(true);
-				
-
+				CreateCourseFrame createCourse = new CreateCourseFrame();
+				createCourse.setModal(true);
+				createCourse.setVisible(true);
+				addCourse(createCourse.getCourseNum(), createCourse.getCourseTerm(), createCourse.getCourseTitle());
+				System.out.println(listOfCourses);
 				
 			}
 		});
