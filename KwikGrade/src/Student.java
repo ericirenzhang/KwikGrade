@@ -26,11 +26,11 @@ public class Student {
 	}
 
 	public String getMiddleInitial() {
-		return middleInitial;
+		return this.middleInitial;
 	}
 
 	public String getlName() {
-		return lName;
+		return this.lName;
 	}
 
 	public String getBuId() {
@@ -38,7 +38,7 @@ public class Student {
 	}
 
 	public String getEmail() {
-		return email;
+		return this.email;
 	}
 
 	public String getFullName() {
