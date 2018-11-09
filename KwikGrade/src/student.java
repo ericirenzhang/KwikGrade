@@ -1,5 +1,5 @@
 
-public class student {
+public class Student {
 
 	private String fname;
 	private String mid_i;

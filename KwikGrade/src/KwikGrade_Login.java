@@ -105,11 +105,11 @@ public class KwikGrade_Login {
 		btnNewButton.setBounds(419, 254, 150, 64);
 		frame.getContentPane().add(btnNewButton);
 		
-		JLabel gradepic = new JLabel("");
+		JLabel gradePic = new JLabel("");
 		Image img = new ImageIcon(this.getClass().getResource("grading_login.jpg")).getImage();
-		gradepic.setIcon(new ImageIcon(img));
-		gradepic.setBounds(0, 0, 379, 365);
-		frame.getContentPane().add(gradepic);
+		gradePic.setIcon(new ImageIcon(img));
+		gradePic.setBounds(0, 0, 379, 365);
+		frame.getContentPane().add(gradePic);
 		
 		JLabel lblKwikgrade = new JLabel("KwikGrade");
 		lblKwikgrade.setHorizontalAlignment(SwingConstants.CENTER);

@@ -19,7 +19,12 @@ import java.awt.List;
 public class main_dashboard extends JFrame {
 
 	private JPanel contentPane;
-	public ArrayList<course> list_of_courses = new ArrayList<course>();
+	public ArrayList<Course> listOfCourses = new ArrayList<Course>();
+	
+	public void addCourse( String courseNum, String courseTerm, String courseTitle ) {
+		Course courseToAdd = new Course(courseNum, courseTerm, courseTitle);
+		this.listOfCourses.add(courseToAdd);
+	}
 
 	/**
 	 * Launch the application.
@@ -61,10 +66,11 @@ public class main_dashboard extends JFrame {
 //				System.out.println(course.coursename);
 //				System.out.println(list_of_courses);
 				
-				create_course_from createcourseform = new create_course_from();
+				createCourseFrame createcourseform = new createCourseFrame();
+//				createcourseform.setModal(true);
 				createcourseform.setVisible(true);
-				
-
+				addCourse(createcourseform.getCourseNum(), createcourseform.getCourseTerm(), createcourseform.getCourseTitle());
+				System.out.println(listOfCourses);
 				
 			}
 		});
