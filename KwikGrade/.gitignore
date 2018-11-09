@@ -5,6 +5,7 @@
 
 .metadata
 tomcat
+out/
 
 #
 # Default excludes
