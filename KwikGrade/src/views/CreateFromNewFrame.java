@@ -1,3 +1,5 @@
+package views;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
@@ -15,9 +17,9 @@ import java.awt.event.ActionEvent;
 public class CreateFromNewFrame extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
-	private JTextField courseNumText;
-	private JTextField courseTermText;
-	private JTextField courseTitleText;
+	private JTextField courseNumField;
+	private JTextField courseTermField;
+	private JTextField courseTitleField;
 	private String courseNum;
 	private String courseTerm;
 	private String courseTitle;
@@ -46,20 +48,20 @@ public class CreateFromNewFrame extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
-		courseNumText = new JTextField();
-		courseNumText.setBounds(164, 29, 297, 36);
-		contentPanel.add(courseNumText);
-		courseNumText.setColumns(10);
+		courseNumField = new JTextField();
+		courseNumField.setBounds(164, 29, 297, 36);
+		contentPanel.add(courseNumField);
+		courseNumField.setColumns(10);
 		
-		courseTermText = new JTextField();
-		courseTermText.setColumns(10);
-		courseTermText.setBounds(164, 78, 297, 36);
-		contentPanel.add(courseTermText);
+		courseTermField = new JTextField();
+		courseTermField.setColumns(10);
+		courseTermField.setBounds(164, 78, 297, 36);
+		contentPanel.add(courseTermField);
 		
-		courseTitleText = new JTextField();
-		courseTitleText.setColumns(10);
-		courseTitleText.setBounds(164, 127, 297, 36);
-		contentPanel.add(courseTitleText);
+		courseTitleField = new JTextField();
+		courseTitleField.setColumns(10);
+		courseTitleField.setBounds(164, 127, 297, 36);
+		contentPanel.add(courseTitleField);
 		
 		JLabel courseNumberLabel = new JLabel("Course Number");
 		courseNumberLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -67,11 +69,11 @@ public class CreateFromNewFrame extends JDialog {
 		courseNumberLabel.setBounds(12, 33, 140, 26);
 		contentPanel.add(courseNumberLabel);
 		
-		JLabel courseterm_lbl = new JLabel("Course Term");
-		courseterm_lbl.setHorizontalAlignment(SwingConstants.TRAILING);
-		courseterm_lbl.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		courseterm_lbl.setBounds(12, 82, 140, 26);
-		contentPanel.add(courseterm_lbl);
+		JLabel courseTermLabel = new JLabel("Course Term");
+		courseTermLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+		courseTermLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		courseTermLabel.setBounds(12, 82, 140, 26);
+		contentPanel.add(courseTermLabel);
 		
 		JLabel courseTitleLabel = new JLabel("Course Title");
 		courseTitleLabel.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -86,9 +88,9 @@ public class CreateFromNewFrame extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						courseNum = courseNumText.getText();
-						courseTerm = courseTermText.getText();
-						courseTitle = courseTitleText.getText();
+						courseNum = courseNumField.getText();
+						courseTerm = courseTermField.getText();
+						courseTitle = courseTitleField.getText();
 						dispose();
 						
 					}
