@@ -61,10 +61,6 @@ public class main_dashboard extends JFrame {
 		JButton btnAddCourse = new JButton("Add Course");
 		btnAddCourse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				course course = new course("RAWR");
-//				list_of_courses.add(course);
-//				System.out.println(course.coursename);
-//				System.out.println(list_of_courses);
 				
 				CreateCourseFrame createCourse = new CreateCourseFrame();
 				createCourse.setModal(true);
