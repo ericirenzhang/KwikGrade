@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class CourseCategory {
 	String name;
 	double weight;
-	int NumOfsubCat; // We need to determine the number of sub categories each Category has through the GUI
+	int numOfSubCat; // We need to determine the number of sub categories each Category has through the GUI
 	ArrayList<SubCategory> subCategoryList = new ArrayList<SubCategory>();
 	
 	public void setName(String name)
@@ -24,13 +24,13 @@ public class CourseCategory {
 		return this.weight;
 	}
 	
-	public void setNumOfsubCat(int NumOfsubCat)
+	public void setNumOfsubCat(int numOfSubCat)
 	{
-		this.NumOfsubCat = NumOfsubCat;
+		this.numOfSubCat = numOfSubCat;
 	}
 	public int getNumOfSubCat()
 	{
-		return this.NumOfsubCat;
+		return this.numOfSubCat;
 	}
 	
 	
