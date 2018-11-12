@@ -1,3 +1,5 @@
+package views;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
@@ -41,8 +43,8 @@ public class CreateCourseFrame extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		{
-			JButton btnNewButton = new JButton("Create From New");
-			btnNewButton.addActionListener(new ActionListener() {
+			JButton createNewButton = new JButton("Create From New");
+			createNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					CreateFromNewFrame createFromNew = new CreateFromNewFrame();
 					createFromNew.setModal(true);
@@ -55,19 +57,19 @@ public class CreateCourseFrame extends JDialog {
 					dispose();
 				}
 			});
-			btnNewButton.setBounds(10, 69, 183, 181);
-			contentPanel.add(btnNewButton);
+			createNewButton.setBounds(10, 69, 183, 181);
+			contentPanel.add(createNewButton);
 		}
 		{
-			JButton btnCreateFromExisting = new JButton("Create From Existing");
-			btnCreateFromExisting.setBounds(241, 69, 183, 181);
-			contentPanel.add(btnCreateFromExisting);
+			JButton createExistingButton = new JButton("Create From Existing");
+			createExistingButton.setBounds(241, 69, 183, 181);
+			contentPanel.add(createExistingButton);
 		}
 		{
-			JLabel lblNewLabel = new JLabel("How would you like to create your course?");
-			lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			lblNewLabel.setBounds(66, 25, 302, 20);
-			contentPanel.add(lblNewLabel);
+			JLabel createLabel = new JLabel("How would you like to create your course?");
+			createLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			createLabel.setBounds(66, 25, 302, 20);
+			contentPanel.add(createLabel);
 		}
 	}
 	

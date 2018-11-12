@@ -1,3 +1,4 @@
+package models;
 
 public class SubCategory {
 	String name;
@@ -5,9 +6,13 @@ public class SubCategory {
 	double value;
 	double pointsGained;
 	double totalPoints;
-	
-	public SubCategory() {
-		
+
+	public SubCategory(String name, double weight, double value, double pointsGained, double totalPoints) {
+		this.name = name;
+		this.weight = weight;
+		this.value = value;
+		this.pointsGained = pointsGained;
+		this.totalPoints = totalPoints;
 	}
 	
 	public void setName(String name)
@@ -45,13 +50,18 @@ public class SubCategory {
 	{
 		return this.totalPoints;
 	}
-	
-	public double CalcValue()
+
+	/**
+	 * Returns the raw score for a SubCategory times the weight.
+	 *
+	 * @return
+	 */
+	public double calcWeightedValue()
 	{
 		return (pointsGained/totalPoints)*weight;
 	}
 	
-	public double CalcActualGrade()
+	public double calcRawScore()
 	{
 		return (pointsGained/totalPoints);
 	}

@@ -1,3 +1,4 @@
+package models;
 
 public class Student {
 	private String fName;
@@ -7,7 +8,6 @@ public class Student {
 	private String email;
 
 	// TODO: add OverallGrade objects once implemented
-
 	// TODO: add comments string as attribute
 	
 	public Student(String fName, String middleInitial, String lName, String buId, String email) {

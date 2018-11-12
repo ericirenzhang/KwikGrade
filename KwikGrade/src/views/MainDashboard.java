@@ -1,25 +1,25 @@
-import java.awt.BorderLayout;
+package views;
+
+import models.Course;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
-import javax.swing.JEditorPane;
-import java.awt.Choice;
 import java.awt.List;
 
-public class main_dashboard extends JFrame {
+public class MainDashboard extends JFrame {
 
 	private JPanel contentPane;
-	public ArrayList<Course> listOfCourses = new ArrayList<Course>();
+	public ArrayList<Course> listOfCourses = new ArrayList<>();
 	
 	public void addCourse( String courseNum, String courseTerm, String courseTitle ) {
 		Course courseToAdd = new Course(courseNum, courseTerm, courseTitle);
@@ -33,7 +33,7 @@ public class main_dashboard extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					main_dashboard frame = new main_dashboard();
+					MainDashboard frame = new MainDashboard();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -45,7 +45,7 @@ public class main_dashboard extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public main_dashboard() {
+	public MainDashboard() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -53,13 +53,13 @@ public class main_dashboard extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblSecondForm = new JLabel("Courses");
-		lblSecondForm.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblSecondForm.setBounds(12, 0, 128, 42);
-		contentPane.add(lblSecondForm);
+		JLabel coursesLabel = new JLabel("Courses");
+		coursesLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		coursesLabel.setBounds(12, 0, 128, 42);
+		contentPane.add(coursesLabel);
 		
-		JButton btnAddCourse = new JButton("Add Course");
-		btnAddCourse.addActionListener(new ActionListener() {
+		JButton addCourseButton = new JButton("Add Course");
+		addCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
 				CreateCourseFrame createCourse = new CreateCourseFrame();
@@ -70,12 +70,12 @@ public class main_dashboard extends JFrame {
 				
 			}
 		});
-		btnAddCourse.setBounds(301, 24, 119, 42);
-		contentPane.add(btnAddCourse);
+		addCourseButton.setBounds(301, 24, 119, 42);
+		contentPane.add(addCourseButton);
 		
-		JButton btnCloseCourse = new JButton("Close Course");
-		btnCloseCourse.setBounds(301, 80, 119, 42);
-		contentPane.add(btnCloseCourse);
+		JButton closeCourseButton = new JButton("Close Course");
+		closeCourseButton.setBounds(301, 80, 119, 42);
+		contentPane.add(closeCourseButton);
 		
 		List list = new List();
 		list.setBounds(22, 48, 209, 175);

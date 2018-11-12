@@ -1,3 +1,5 @@
+package models;
+
 import java.util.ArrayList;
 
 public class Course {
@@ -8,15 +10,6 @@ public class Course {
 
 	private ArrayList<Student> activeStudent;
 	private ArrayList<Student> inactiveStudent;
-	
-	public Course() {
-		this.courseNum = "NO NAME";
-		this.courseTerm = "NO TERM";
-		this.courseTitle = "NO TITLE";
-		this.isOpen = true;
-		this.activeStudent = new ArrayList<Student>();
-		this.inactiveStudent = new ArrayList<Student>();
-	}
 	
 	public Course(String courseNum, String courseTerm, String courseTitle) {
 		this.courseNum = courseNum;
