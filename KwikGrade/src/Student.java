@@ -1,4 +1,3 @@
-
 public class Student {
 	private String fName;
 	private String middleInitial;

@@ -1,4 +1,3 @@
-
 public class SubCategory {
 	String name;
 	double weight;
@@ -10,49 +9,39 @@ public class SubCategory {
 		
 	}
 	
-	public void setName(String name)
-	{
+	public void setName(String name){
 		this.name = name;
 	}
-	public String getName()
-	{
+	public String getName(){
 		return this.name;
 	}
 	
-	public void setWeight(double weight)
-	{
+	public void setWeight(double weight){
 		this.weight = weight;
 	}
-	public double getWeight()
-	{
+	public double getWeight(){
 		return this.weight;
 	}
 	
-	public void setPointsGained(double pointsGained)
-	{
+	public void setPointsGained(double pointsGained){
 		this.pointsGained = pointsGained;
 	}
-	public double getPointsGained()
-	{
+	public double getPointsGained(){
 		return this.pointsGained;
 	}
 	
-	public void setTotalPoints(double totalPoints)
-	{
+	public void setTotalPoints(double totalPoints){
 		this.totalPoints = totalPoints;
 	}
-	public double getTotalPoints()
-	{
+	public double getTotalPoints(){
 		return this.totalPoints;
 	}
 	
-	public double CalcValue()
-	{
+	public double CalcValue(){
 		return (pointsGained/totalPoints)*weight;
 	}
 	
-	public double CalcActualGrade()
-	{
+	public double CalcActualGrade(){
 		return (pointsGained/totalPoints);
 	}
 }
