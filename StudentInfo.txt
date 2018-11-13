@@ -1,0 +1,5 @@
+Eric,I,Zhang,U20020501,zhaeric@bu.edu,Freshman
+Albert,R,Sze,U20043043,asze@bu.edu,Undergraduate
+Sean,M,Zhang,U63997411,seanm@bu.edu,Undergraduate
+Gautham,Ravichandran,U24352342,gauthamk@bu.edu,Graduate
+Nikhilish,M,Kumar,U92447590,nikm@bu.edu,Graduate
