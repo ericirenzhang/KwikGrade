@@ -92,6 +92,9 @@ public class ChangeCreds extends JDialog {
 							}
 							dispose();
 						}
+						else {
+							JOptionPane.showMessageDialog(null, "Make sure your passwords match!");
+						}
 					}
 				});
 				okButton.setActionCommand("OK");
