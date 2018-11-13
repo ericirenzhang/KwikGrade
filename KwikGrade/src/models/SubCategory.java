@@ -1,11 +1,18 @@
 package models;
 
-public class SubCategory {
+import java.io.Serializable;
+
+public class SubCategory implements Serializable {
 	String name;
 	double weight;
 	double value;
 	double pointsGained;
 	double totalPoints;
+
+	// TODO: Get rid of this empty constructor once CourseCategory can properly instantiate SubCategory with parameters
+	public SubCategory() {
+
+	}
 
 	public SubCategory(String name, double weight, double value, double pointsGained, double totalPoints) {
 		this.name = name;

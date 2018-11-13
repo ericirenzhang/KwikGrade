@@ -1,5 +1,7 @@
 package views;
 
+import models.Student;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
@@ -11,29 +13,16 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 public class CreateCourseFrame extends JDialog {
 	
 	private String courseNum;
 	private String courseTerm;
 	private String courseTitle;
-	private String filePath;
-	private boolean bulkAddStudents;
+	private ArrayList<Student> importedStudentsList = new ArrayList<>();
 
 	private final JPanel contentPanel = new JPanel();
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			CreateCourseFrame dialog = new CreateCourseFrame();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.
@@ -55,9 +44,8 @@ public class CreateCourseFrame extends JDialog {
 					courseNum = createFromNew.getCourseNum();
 					courseTerm = createFromNew.getCourseTerm();
 					courseTitle = createFromNew.getCourseTitle();
-					bulkAddStudents = createFromNew.getBulkAddStudents();
-					filePath = createFromNew.getFilePath();
-					
+					importedStudentsList = createFromNew.getImportedStudentsList();
+
 					dispose();
 				}
 			});
@@ -84,20 +72,16 @@ public class CreateCourseFrame extends JDialog {
 	public String getCourseNum() {
 		return this.courseNum;
 	}
-	
 	public String getCourseTerm() {
 		return this.courseTerm;
 	}
  	public String getCourseTitle() {
 		return this.courseTitle;
 	}
- 	public boolean getBulkAddStudents() {
- 		return this.bulkAddStudents;
+ 	public ArrayList<Student> getImportedStudentsList() {
+ 		return this.importedStudentsList;
  	}
- 	public String getFilePath() {
- 		return this.filePath;
- 	}
-	
+
 	//==========================
 	// Setters
 	//==========================
@@ -109,11 +93,5 @@ public class CreateCourseFrame extends JDialog {
 	}
  	public void setCourseTitle(String courseTitle) {
 		this.courseTitle = courseTitle;
-	}
- 	public void setBulkAddSTudents(boolean bulkAddStudents) {
- 		this.bulkAddStudents = bulkAddStudents;
- 	}
-	public void setFilePath(String filePath) {
-		this.filePath = filePath;
 	}
 }
