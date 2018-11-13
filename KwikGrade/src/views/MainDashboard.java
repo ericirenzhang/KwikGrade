@@ -21,9 +21,15 @@ public class MainDashboard extends JFrame {
 	private JPanel contentPane;
 	public ArrayList<Course> listOfCourses = new ArrayList<>();
 	
-	public void addCourse( String courseNum, String courseTerm, String courseTitle ) {
-		Course courseToAdd = new Course(courseNum, courseTerm, courseTitle);
-		this.listOfCourses.add(courseToAdd);
+	public void addCourse( String courseNum, String courseTerm, String courseTitle, boolean bulkAddStudents, String filePath) {
+		if(bulkAddStudents == true) {
+			Course courseToAdd = new Course(courseNum, courseTerm, courseTitle, filePath);
+			this.listOfCourses.add(courseToAdd);
+		}
+		else {
+			Course courseToAdd = new Course(courseNum, courseTerm, courseTitle);
+			this.listOfCourses.add(courseToAdd);
+		}
 	}
 
 	/**
@@ -65,8 +71,10 @@ public class MainDashboard extends JFrame {
 				CreateCourseFrame createCourse = new CreateCourseFrame();
 				createCourse.setModal(true);
 				createCourse.setVisible(true);
-				addCourse(createCourse.getCourseNum(), createCourse.getCourseTerm(), createCourse.getCourseTitle());
-				System.out.println(listOfCourses);
+				addCourse(createCourse.getCourseNum(), createCourse.getCourseTerm(), createCourse.getCourseTitle(), createCourse.getBulkAddStudents(), createCourse.getFilePath());
+				
+				//testing code to verify input
+				//System.out.println(listOfCourses);
 				
 			}
 		});

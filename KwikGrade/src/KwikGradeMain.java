@@ -1,6 +1,7 @@
 import views.LoginFrame;
 
 import java.awt.*;
+import java.io.File;
 
 public class KwikGradeMain {
 

@@ -17,6 +17,8 @@ public class CreateCourseFrame extends JDialog {
 	private String courseNum;
 	private String courseTerm;
 	private String courseTitle;
+	private String filePath;
+	private boolean bulkAddStudents;
 
 	private final JPanel contentPanel = new JPanel();
 
@@ -49,10 +51,12 @@ public class CreateCourseFrame extends JDialog {
 					CreateFromNewFrame createFromNew = new CreateFromNewFrame();
 					createFromNew.setModal(true);
 					createFromNew.setVisible(true);
-					
+
 					courseNum = createFromNew.getCourseNum();
 					courseTerm = createFromNew.getCourseTerm();
 					courseTitle = createFromNew.getCourseTitle();
+					bulkAddStudents = createFromNew.getBulkAddStudents();
+					filePath = createFromNew.getFilePath();
 					
 					dispose();
 				}
@@ -87,6 +91,12 @@ public class CreateCourseFrame extends JDialog {
  	public String getCourseTitle() {
 		return this.courseTitle;
 	}
+ 	public boolean getBulkAddStudents() {
+ 		return this.bulkAddStudents;
+ 	}
+ 	public String getFilePath() {
+ 		return this.filePath;
+ 	}
 	
 	//==========================
 	// Setters
@@ -94,14 +104,16 @@ public class CreateCourseFrame extends JDialog {
 	public void setCourseNum(String courseNum) {
 		this.courseNum = courseNum;
 	}
-	
 	public void setCourseTerm(String courseTerm) {
 		this.courseTerm = courseTerm;
 	}
  	public void setCourseTitle(String courseTitle) {
 		this.courseTitle = courseTitle;
 	}
-	
-	
-
+ 	public void setBulkAddSTudents(boolean bulkAddStudents) {
+ 		this.bulkAddStudents = bulkAddStudents;
+ 	}
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
 }
