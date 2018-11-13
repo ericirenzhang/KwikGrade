@@ -26,19 +26,6 @@ public class ChangeCreds extends JDialog {
 	private JTextField newUsernameText;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			ChangeCreds dialog = new ChangeCreds();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
 	 * Create the dialog.
 	 */
 	public ChangeCreds() {
@@ -80,7 +67,7 @@ public class ChangeCreds extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						if(newPasswordText.getText().equals(retypePasswordText.getText())) {
+						if(newPasswordText.getText().equals(retypePasswordText.getText())) { //checks if passwords match
 							JOptionPane.showMessageDialog(null, "Username and Password Changed Successfully!");
 							try {
 								FileWriter changedCreds = new FileWriter("logincredentials.txt", false);
