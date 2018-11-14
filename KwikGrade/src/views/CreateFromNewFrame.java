@@ -40,30 +40,30 @@ public class CreateFromNewFrame extends JDialog {
 	 * Create the dialog.
 	 */
 	public CreateFromNewFrame() {
-		setBounds(100, 100, 491, 413);
+		setBounds(100, 100, 583, 509);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
 		courseNumField = new JTextField();
-		courseNumField.setBounds(164, 29, 297, 36);
+		courseNumField.setBounds(164, 29, 351, 36);
 		contentPanel.add(courseNumField);
 		courseNumField.setColumns(10);
 		
 		courseTermField = new JTextField();
 		courseTermField.setColumns(10);
-		courseTermField.setBounds(164, 78, 297, 36);
+		courseTermField.setBounds(164, 78, 351, 36);
 		contentPanel.add(courseTermField);
 		
 		courseTitleField = new JTextField();
 		courseTitleField.setColumns(10);
-		courseTitleField.setBounds(164, 127, 297, 36);
+		courseTitleField.setBounds(164, 127, 351, 36);
 		contentPanel.add(courseTitleField);
 		
 		studentFilepathField = new JTextField();
 		studentFilepathField.setColumns(10);
-		studentFilepathField.setBounds(110, 221, 351, 36);
+		studentFilepathField.setBounds(110, 221, 405, 36);
 		contentPanel.add(studentFilepathField);
 		
 		JLabel courseNumberLabel = new JLabel("Course Number");
@@ -100,7 +100,7 @@ public class CreateFromNewFrame extends JDialog {
 			}
 		});
 		importStudentsButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		importStudentsButton.setBounds(110, 174, 267, 36);
+		importStudentsButton.setBounds(152, 265, 267, 36);
 		contentPanel.add(importStudentsButton);
 		
 		JButton addStudentManualButton = new JButton("Add Students Manually Later");
@@ -114,7 +114,7 @@ public class CreateFromNewFrame extends JDialog {
 			}
 		});
 		addStudentManualButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		addStudentManualButton.setBounds(110, 294, 267, 36);
+		addStudentManualButton.setBounds(152, 378, 267, 36);
 		contentPanel.add(addStudentManualButton);
 		
 		JLabel filePathLabel = new JLabel("Filepath");

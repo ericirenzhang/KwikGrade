@@ -97,7 +97,7 @@ public class MainDashboard extends JFrame {
 		this.listOfCourses = loadFile(SERIALIZED_FILE_NAME);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 687, 517);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -118,11 +118,11 @@ public class MainDashboard extends JFrame {
 				addCourse(createCourse.getCourseNum(), createCourse.getCourseTerm(), createCourse.getCourseTitle(), createCourse.getImportedStudentsList());
 			}
 		});
-		addCourseButton.setBounds(301, 24, 119, 42);
+		addCourseButton.setBounds(480, 13, 166, 71);
 		contentPane.add(addCourseButton);
 		
 		JButton closeCourseButton = new JButton("Close Course");
-		closeCourseButton.setBounds(301, 80, 119, 42);
+		closeCourseButton.setBounds(480, 97, 166, 71);
 		contentPane.add(closeCourseButton);
 
 		JButton saveCourseButton = new JButton("Save");
@@ -132,11 +132,11 @@ public class MainDashboard extends JFrame {
 			}
 		});
 
-		saveCourseButton.setBounds(301, 136, 119, 42);
+		saveCourseButton.setBounds(480, 181, 166, 71);
 		contentPane.add(saveCourseButton);
 
 		List list = new List();
-		list.setBounds(22, 48, 209, 175);
+		list.setBounds(22, 48, 407, 359);
 		contentPane.add(list);
 	}
 }
