@@ -1,5 +1,7 @@
 package views;
 
+import models.Student;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
@@ -13,6 +15,12 @@ import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
 
 public class CreateFromNewFrame extends JDialog {
 
@@ -25,21 +33,8 @@ public class CreateFromNewFrame extends JDialog {
 	private String courseTerm;
 	private String courseTitle;
 	private String filePath;
-	private boolean bulkAddStudents;
 
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			CreateFromNewFrame dialog = new CreateFromNewFrame();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	private ArrayList<Student> importedStudentList = new ArrayList<>();
 
 	/**
 	 * Create the dialog.
@@ -89,21 +84,24 @@ public class CreateFromNewFrame extends JDialog {
 		courseTitleLabel.setBounds(12, 131, 140, 26);
 		contentPanel.add(courseTitleLabel);
 		
-		JButton bulkAddStudentButton = new JButton("Import Students from Text File");
-		bulkAddStudentButton.addActionListener(new ActionListener() {
+		JButton importStudentsButton = new JButton("Import Students from Text File");
+		importStudentsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				courseNum = courseNumField.getText();
 				courseTerm = courseTermField.getText();
 				courseTitle = courseTitleField.getText();
 				filePath = studentFilepathField.getText();
-				bulkAddStudents = true;
+
+				addImportedStudents(filePath);
+
+//				bulkAddStudents = true;
 				dispose();
 				
 			}
 		});
-		bulkAddStudentButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		bulkAddStudentButton.setBounds(110, 174, 267, 36);
-		contentPanel.add(bulkAddStudentButton);
+		importStudentsButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		importStudentsButton.setBounds(110, 174, 267, 36);
+		contentPanel.add(importStudentsButton);
 		
 		JButton addStudentManualButton = new JButton("Add Students Manually Later");
 		addStudentManualButton.addActionListener(new ActionListener() {
@@ -111,7 +109,7 @@ public class CreateFromNewFrame extends JDialog {
 				courseNum = courseNumField.getText();
 				courseTerm = courseTermField.getText();
 				courseTitle = courseTitleField.getText();
-				bulkAddStudents = false;
+//				bulkAddStudents = false;
 				dispose();
 			}
 		});
@@ -135,7 +133,7 @@ public class CreateFromNewFrame extends JDialog {
 						courseNum = courseNumField.getText();
 						courseTerm = courseTermField.getText();
 						courseTitle = courseTitleField.getText();
-						bulkAddStudents = false;
+//						bulkAddStudents = false;
 						dispose();
 						
 					}
@@ -151,7 +149,46 @@ public class CreateFromNewFrame extends JDialog {
 			}
 		}
 	}
-	
+
+	public void addImportedStudents(String filePath) {
+		Scanner rawStudentData;
+
+		try {
+			System.out.println("Loading Students");
+			rawStudentData = new Scanner(new File(filePath));
+
+			while(rawStudentData.hasNext()) {
+				String line = rawStudentData.nextLine();
+				List<String> splitLine = Arrays.asList(line.split(","));
+				if(splitLine.size()==6) { //checks for middle initial, if there's middle initial, there will be 6 items in string
+					String fName = splitLine.get(0);
+					String middleInitial = splitLine.get(1);
+					String lName = splitLine.get(2);
+					String buId = splitLine.get(3);
+					String email = splitLine.get(4);
+					String standing = splitLine.get(5);
+					this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
+				}
+				else { //if no middle initial, then 5 items in string
+					String fName = splitLine.get(0);
+					String middleInitial = "";
+					String lName = splitLine.get(1);
+					String buId = splitLine.get(2);
+					String email = splitLine.get(3);
+					String standing = splitLine.get(4);
+					this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
+				}
+			}
+
+			rawStudentData.close();
+			System.out.println("Student Import Complete!");
+		}
+		//will change this to prompt user for another file
+		catch(Exception e) {
+			System.out.println("COULD NOT FIND FILE!!!!");
+		}
+	}
+
 	//=============================
 	// Getters
 	//=============================
@@ -165,8 +202,8 @@ public class CreateFromNewFrame extends JDialog {
 	public String getCourseTitle() {
 		return courseTitle;
 	}
-	public boolean getBulkAddStudents() {
-		return bulkAddStudents;
+	public ArrayList<Student> getImportedStudentsList() {
+		return this.importedStudentList;
 	}
 	public String getFilePath() {
 		return filePath;
@@ -184,9 +221,6 @@ public class CreateFromNewFrame extends JDialog {
 	}
 	public void setCourseTitle(String courseTitle) {
 		this.courseTitle = courseTitle;
-	}
-	public void setBulkAddStudents(boolean bulkAddStudents) {
-		this.bulkAddStudents = bulkAddStudents;
 	}
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;

@@ -35,26 +35,30 @@ public class LoginFrame {
 	public LoginFrame() {
 		initializeFrameContents();
 	}
-	
+
 	public boolean verifyCreds(String username, String password) {
 		System.getProperty("user.dir");
 		try {
-			rawCreds = new Scanner(new File("logincredentials.txt")); 
+			rawCreds = new Scanner(new File("logincredentials.txt"));
+			String line = rawCreds.nextLine();
+			List<String> splitLine = Arrays.asList(line.split(","));
+			if( username.equals(splitLine.get(0)) && password.equals(splitLine.get(1)) ) {
+				rawCreds.close();
+				return true;
+			}
+			else {
+				rawCreds.close();
+				return false;
+			}
 		}
 		catch(Exception e) {
 			System.out.println("COULD NOT FIND FILE!!!!");
-		}
-		String line = rawCreds.nextLine();
-		List<String> splitLine = Arrays.asList(line.split(","));
-		if( username.equals(splitLine.get(0)) && password.equals(splitLine.get(1)) ) {
-			rawCreds.close();
-			return true;
-		}
-		else {
-			rawCreds.close();
+
+			// TODO: set up a workflow to have a user create a txt file manually or some workflow that automatically generates this txt file
+			JOptionPane.showMessageDialog(null, "Credentials have not been set yet.");
+
 			return false;
 		}
-			
 	}
 	
 	public void login(String username, String password) {

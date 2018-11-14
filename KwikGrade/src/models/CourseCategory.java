@@ -1,8 +1,9 @@
 package models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CourseCategory {
+public class CourseCategory implements Serializable {
 	String name;
 	double weight;
 	int numOfSubCat; // We need to determine the number of sub categories each Category has through the GUI
