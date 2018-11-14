@@ -1,10 +1,12 @@
+import java.util.ArrayList;
+
 public class Student {
 	private String fName;
 	private String middleInitial;
 	private String lName;
 	private String buId;
 	private String email;
-
+	OverallGrade grade;
 	// TODO: add OverallGrade objects once implemented
 
 	// TODO: add comments string as attribute
@@ -15,11 +17,13 @@ public class Student {
 		this.lName = lName;
 		this.buId = buId;
 		this.email = email;
+		grade = new OverallGrade();
 	}
 
 	// ========================================
 	// Getters
 	// ========================================
+	
 	public String getfName() {
 		return this.fName;
 	}
