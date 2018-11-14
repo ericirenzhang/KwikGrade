@@ -170,7 +170,7 @@ public class MainDashboard extends JFrame {
 
 		saveCourseButton.setBounds(480, 181, 166, 71);
 		contentPane.add(saveCourseButton);
-		
+    
 		//loads courses upon login with button, for display in dynamic list
 		JButton refreshCourseButton = new JButton("Refresh");
 		refreshCourseButton.addActionListener(new ActionListener() {
@@ -180,5 +180,6 @@ public class MainDashboard extends JFrame {
 		});
 		refreshCourseButton.setBounds(480, 268, 166, 71);
 		contentPane.add(refreshCourseButton);
+
 	}
 }
