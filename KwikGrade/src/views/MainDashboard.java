@@ -7,17 +7,27 @@ import java.io.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
+
+import com.sun.prism.paint.Color;
+
 import javax.swing.JLabel;
 
 import java.awt.Font;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.List;
+import javax.swing.JList;
+import javax.swing.JScrollBar;
 
 public class MainDashboard extends JFrame {
+	DefaultListModel DLM;
 
 	private JPanel contentPane;
 	public ArrayList<Course> listOfCourses = new ArrayList<>();
@@ -33,6 +43,19 @@ public class MainDashboard extends JFrame {
 			this.listOfCourses.add(courseToAdd);
 		}
 		System.out.println(listOfCourses);
+	}
+	
+	
+	/**
+	 * Pulls course names for display in dynamic Jlist
+	 * @param courseList
+	 */
+	public DefaultListModel loadCourseList() {
+		DLM = new DefaultListModel();
+		for(int i = 0; i < listOfCourses.size(); i++) {
+			DLM.addElement(listOfCourses.get(i).getCourseNum()+" "+listOfCourses.get(i).getCourseTerm()+" "+listOfCourses.get(i).getCourseTitle());
+		}
+		return DLM;
 	}
 
 	/**
@@ -97,7 +120,7 @@ public class MainDashboard extends JFrame {
 		this.listOfCourses = loadFile(SERIALIZED_FILE_NAME);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 618, 311);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -108,6 +131,15 @@ public class MainDashboard extends JFrame {
 		coursesLabel.setBounds(12, 0, 128, 42);
 		contentPane.add(coursesLabel);
 		
+		//jlist for dynamic display of courses
+		JList list = new JList();
+		list.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		list.setBounds(12, 41, 435, 209);
+		contentPane.add(list);
+
+		//loads courses upon login for display in dynamic list
+		list.setModel(loadCourseList());
+		
 		JButton addCourseButton = new JButton("Add Course");
 		addCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -116,13 +148,17 @@ public class MainDashboard extends JFrame {
 				createCourse.setModal(true);
 				createCourse.setVisible(true);
 				addCourse(createCourse.getCourseNum(), createCourse.getCourseTerm(), createCourse.getCourseTitle(), createCourse.getImportedStudentsList());
+				
+				//saves file upon course creation
+				saveFile(listOfCourses, SERIALIZED_FILE_NAME);
+				list.setModel(loadCourseList());
 			}
 		});
-		addCourseButton.setBounds(301, 24, 119, 42);
+		addCourseButton.setBounds(473, 11, 119, 42);
 		contentPane.add(addCourseButton);
 		
 		JButton closeCourseButton = new JButton("Close Course");
-		closeCourseButton.setBounds(301, 80, 119, 42);
+		closeCourseButton.setBounds(473, 67, 119, 42);
 		contentPane.add(closeCourseButton);
 
 		JButton saveCourseButton = new JButton("Save");
@@ -132,11 +168,17 @@ public class MainDashboard extends JFrame {
 			}
 		});
 
-		saveCourseButton.setBounds(301, 136, 119, 42);
+		saveCourseButton.setBounds(473, 123, 119, 42);
 		contentPane.add(saveCourseButton);
-
-		List list = new List();
-		list.setBounds(22, 48, 209, 175);
-		contentPane.add(list);
+		
+		//loads courses upon login with button, for display in dynamic list
+		JButton loadCourseButton = new JButton("Load");
+		loadCourseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				list.setModel(loadCourseList());
+			}
+		});
+		loadCourseButton.setBounds(473, 176, 119, 42);
+		contentPane.add(loadCourseButton);
 	}
 }
