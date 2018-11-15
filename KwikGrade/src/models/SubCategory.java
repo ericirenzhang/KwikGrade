@@ -1,12 +1,29 @@
+<<<<<<< HEAD:KwikGrade/src/SubCategory.java
 public class SubCategory {
+=======
+package models;
+
+import java.io.Serializable;
+
+public class SubCategory implements Serializable {
+>>>>>>> master:KwikGrade/src/models/SubCategory.java
 	String name;
 	double weight;
 	double value;
 	double pointsGained;
 	double totalPoints;
-	
+
+	// TODO: Get rid of this empty constructor once CourseCategory can properly instantiate SubCategory with parameters
 	public SubCategory() {
-		
+
+	}
+
+	public SubCategory(String name, double weight, double value, double pointsGained, double totalPoints) {
+		this.name = name;
+		this.weight = weight;
+		this.value = value;
+		this.pointsGained = pointsGained;
+		this.totalPoints = totalPoints;
 	}
 	
 	public void setName(String name){
@@ -36,12 +53,19 @@ public class SubCategory {
 	public double getTotalPoints(){
 		return this.totalPoints;
 	}
-	
-	public double CalcValue(){
+
+	/**
+	 * Returns the raw score for a SubCategory times the weight.
+	 *
+	 * @return
+	 */
+	public double calcWeightedValue()
+	{
 		return (pointsGained/totalPoints)*weight;
 	}
 	
-	public double CalcActualGrade(){
+	public double calcRawScore()
+	{
 		return (pointsGained/totalPoints);
 	}
 }

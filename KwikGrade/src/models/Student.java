@@ -1,6 +1,8 @@
-import java.util.ArrayList;
+package models;
 
-public class Student {
+import java.io.Serializable;
+
+public class Student implements Serializable {
 	private String fName;
 	private String middleInitial;
 	private String lName;
@@ -8,7 +10,6 @@ public class Student {
 	private String email;
 	OverallGrade grade;
 	// TODO: add OverallGrade objects once implemented
-
 	// TODO: add comments string as attribute
 	
 	public Student(String fName, String middleInitial, String lName, String buId, String email) {

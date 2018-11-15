@@ -1,40 +1,54 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+package models;
 
-public class Course{
+import java.io.*;
+import java.util.*;
+
+public class Course implements Serializable {
 	public String courseNum;
 	private String courseTerm;
 	private String courseTitle;
 	private boolean isOpen;
 
-	private List<Student> activeStudent;
-	private List<Student> inactiveStudent;
+	private ArrayList<Student> activeStudents;
+	private ArrayList<Student> inactiveStudents;
 	
-	public Course() {
-		this.courseNum = "NO NAME";
-		this.courseTerm = "NO TERM";
-		this.courseTitle = "NO TITLE";
-		this.isOpen = true;
-		this.activeStudent = new ArrayList<Student>();
-		this.inactiveStudent = new ArrayList<Student>();
-	}
-	
+// course constructor for not adding bulk students
 	public Course(String courseNum, String courseTerm, String courseTitle) {
 		this.courseNum = courseNum;
 		this.courseTerm = courseTerm;
 		this.courseTitle = courseTitle;
 		this.isOpen = true;
-		this.activeStudent = new ArrayList<Student>();
-		this.inactiveStudent = new ArrayList<Student>();
+		this.activeStudents = new ArrayList<>();
+		this.inactiveStudents = new ArrayList<>();
+	}
+	
+	//	course constructor for adding bulk students from a file
+	public Course(String courseNum, String courseTerm, String courseTitle, ArrayList<Student> importedStudentsList) {
+		this.courseNum = courseNum;
+		this.courseTerm = courseTerm;
+		this.courseTitle = courseTitle;
+		this.isOpen = true;
+		this.activeStudents = importedStudentsList;
+		this.inactiveStudents = new ArrayList<Student>();
 	}
 	
 	public void closeCourse() {
 		this.isOpen = false;
 	}
+
+	// TODO: may need to accomodate for undergrad vs grad student later on
+	public void addStudent(Student studentToAdd) {
+		activeStudents.add(studentToAdd);
+	}
+
+	public void removeStudent(Student studentToRemove) {
+		if(this.activeStudents.contains(studentToRemove)){
+			this.activeStudents.remove(studentToRemove);
+		}
+		this.inactiveStudents.add(studentToRemove);
+	}
 	
-	public double calcMean() {
+		public double calcMean() {
 		int num = activeStudent.size();
 		double x = 0.0;
 		for(int i = 0;i<num;i++) {
@@ -42,6 +56,10 @@ public class Course{
 		}
 		return x/num;
 	}
+	
+	//==========================
+	// Calculates Advanced Stats
+	//==========================
 	
 	public double calcMedian() {
 		List<Double> gradeList = new ArrayList<Double>();
@@ -85,6 +103,14 @@ public class Course{
 	}
 	public boolean getIsOpen() {
 		return this.isOpen;
+	}
+
+	public ArrayList<Student> getActiveStudents() {
+		return this.activeStudents;
+	}
+
+	public ArrayList<Student> getInactiveStudents() {
+		return this.inactiveStudents;
 	}
 	
 	//==========================

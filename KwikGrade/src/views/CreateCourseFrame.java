@@ -1,3 +1,7 @@
+package views;
+
+import models.Student;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
@@ -9,27 +13,16 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 
 public class CreateCourseFrame extends JDialog {
 	
 	private String courseNum;
 	private String courseTerm;
 	private String courseTitle;
+	private ArrayList<Student> importedStudentsList = new ArrayList<>();
 
 	private final JPanel contentPanel = new JPanel();
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			CreateCourseFrame dialog = new CreateCourseFrame();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.
@@ -41,33 +34,34 @@ public class CreateCourseFrame extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		{
-			JButton btnNewButton = new JButton("Create From New");
-			btnNewButton.addActionListener(new ActionListener() {
+			JButton createNewButton = new JButton("Create From New");
+			createNewButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					CreateFromNewFrame createFromNew = new CreateFromNewFrame();
 					createFromNew.setModal(true);
 					createFromNew.setVisible(true);
-					
+
 					courseNum = createFromNew.getCourseNum();
 					courseTerm = createFromNew.getCourseTerm();
 					courseTitle = createFromNew.getCourseTitle();
-					
+					importedStudentsList = createFromNew.getImportedStudentsList();
+
 					dispose();
 				}
 			});
-			btnNewButton.setBounds(10, 69, 183, 181);
-			contentPanel.add(btnNewButton);
+			createNewButton.setBounds(10, 69, 183, 181);
+			contentPanel.add(createNewButton);
 		}
 		{
-			JButton btnCreateFromExisting = new JButton("Create From Existing");
-			btnCreateFromExisting.setBounds(241, 69, 183, 181);
-			contentPanel.add(btnCreateFromExisting);
+			JButton createExistingButton = new JButton("Create From Existing");
+			createExistingButton.setBounds(241, 69, 183, 181);
+			contentPanel.add(createExistingButton);
 		}
 		{
-			JLabel lblNewLabel = new JLabel("How would you like to create your course?");
-			lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			lblNewLabel.setBounds(66, 25, 302, 20);
-			contentPanel.add(lblNewLabel);
+			JLabel createLabel = new JLabel("How would you like to create your course?");
+			createLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			createLabel.setBounds(66, 25, 302, 20);
+			contentPanel.add(createLabel);
 		}
 	}
 	
@@ -78,28 +72,26 @@ public class CreateCourseFrame extends JDialog {
 	public String getCourseNum() {
 		return this.courseNum;
 	}
-	
 	public String getCourseTerm() {
 		return this.courseTerm;
 	}
  	public String getCourseTitle() {
 		return this.courseTitle;
 	}
-	
+ 	public ArrayList<Student> getImportedStudentsList() {
+ 		return this.importedStudentsList;
+ 	}
+
 	//==========================
 	// Setters
 	//==========================
 	public void setCourseNum(String courseNum) {
 		this.courseNum = courseNum;
 	}
-	
 	public void setCourseTerm(String courseTerm) {
 		this.courseTerm = courseTerm;
 	}
  	public void setCourseTitle(String courseTitle) {
 		this.courseTitle = courseTitle;
 	}
-	
-	
-
 }

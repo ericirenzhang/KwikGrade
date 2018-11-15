@@ -1,10 +1,19 @@
+package models;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class CourseCategory {
+public class CourseCategory implements Serializable {
 	String name;
 	double weight;
 	int numOfSubCat; // We need to determine the number of sub categories each Category has through the GUI
-	ArrayList<SubCategory> subCategoryList = new ArrayList<SubCategory>();
+	ArrayList<SubCategory> subCategoryList;
+
+	public CourseCategory(String name, double weight, ArrayList<SubCategory> subCategoryList) {
+		this.name = name;
+		this.weight = weight;
+		this.subCategoryList = subCategoryList;
+	}
 	
 	public void setName(String name){
 		this.name = name;
@@ -35,8 +44,10 @@ public class CourseCategory {
 			subCategoryList.add(sub);
 		}
 		double result = 0.0;
-		for(int i=0;i<subCategoryList.size();i++){
-			result+=subCategoryList.get(i).CalcValue();
+		
+		for(int i=0;i<subCategoryList.size();i++)
+		{
+			result+=subCategoryList.get(i).calcWeightedValue();
 		}
 		return result*getWeight();
 	}
