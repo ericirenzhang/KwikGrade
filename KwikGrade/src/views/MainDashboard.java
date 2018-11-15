@@ -11,8 +11,6 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
-import com.sun.prism.paint.Color;
-
 import javax.swing.JLabel;
 
 import java.awt.Font;
@@ -27,7 +25,8 @@ import javax.swing.JList;
 import javax.swing.JScrollBar;
 
 public class MainDashboard extends JFrame {
-	DefaultListModel DLM;
+	DefaultListModel DLMActiveCourse;
+	DefaultListModel DLMClosedCourse;
 
 	private JPanel contentPane;
 	public ArrayList<Course> listOfCourses = new ArrayList<>();
@@ -47,15 +46,33 @@ public class MainDashboard extends JFrame {
 	
 	
 	/**
-	 * Pulls course names for display in dynamic Jlist
+	 * Pulls active course names for display in dynamic Jlist
 	 * @param courseList
 	 */
-	public DefaultListModel loadCourseList() {
-		DLM = new DefaultListModel();
+	public DefaultListModel loadActiveCourseList() {
+		DLMActiveCourse = new DefaultListModel();
 		for(int i = 0; i < listOfCourses.size(); i++) {
-			DLM.addElement(listOfCourses.get(i).getCourseNum()+" "+listOfCourses.get(i).getCourseTerm()+" "+listOfCourses.get(i).getCourseTitle());
+			//if statement used to check if course is open
+			if(listOfCourses.get(i).getIsOpen() == true) {
+				DLMActiveCourse.addElement(listOfCourses.get(i).getCourseNum()+" "+listOfCourses.get(i).getCourseTerm()+" "+listOfCourses.get(i).getCourseTitle());
+			}
 		}
-		return DLM;
+		return DLMActiveCourse;
+	}
+	
+	/**
+	 * Pulls closed course names for display in dynamic Jlist
+	 * @param courseList
+	 */
+	public DefaultListModel loadClosedCourseList() {
+		DLMClosedCourse = new DefaultListModel();
+		for(int i = 0; i < listOfCourses.size(); i++) {
+			//if statement used to check if course is open
+			if(listOfCourses.get(i).getIsOpen() == false) {
+				DLMClosedCourse.addElement(listOfCourses.get(i).getCourseNum()+" "+listOfCourses.get(i).getCourseTerm()+" "+listOfCourses.get(i).getCourseTitle());
+			}
+		}
+		return DLMClosedCourse;
 	}
 
 	/**
@@ -126,19 +143,30 @@ public class MainDashboard extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel coursesLabel = new JLabel("Courses");
+		JLabel coursesLabel = new JLabel("Active Courses");
 		coursesLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		coursesLabel.setBounds(12, 0, 128, 42);
 		contentPane.add(coursesLabel);
 		
 		//jlist for dynamic display of courses
-		JList list = new JList();
-		list.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		list.setBounds(12, 41, 456, 389);
-		contentPane.add(list);
+		JList activeCourseDisplayList = new JList();
+		activeCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		activeCourseDisplayList.setBounds(12, 41, 456, 229);
+		contentPane.add(activeCourseDisplayList);
+		
+		JLabel closedCourseLabel = new JLabel("Closed Courses");
+		closedCourseLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		closedCourseLabel.setBounds(12, 281, 128, 42);
+		contentPane.add(closedCourseLabel);
+		
+		JList closedCourseDisplayList = new JList();
+		closedCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		closedCourseDisplayList.setBounds(12, 334, 456, 133);
+		contentPane.add(closedCourseDisplayList);
 
 		//loads courses upon login for display in dynamic list
-		list.setModel(loadCourseList());
+		activeCourseDisplayList.setModel(loadActiveCourseList());
+		closedCourseDisplayList.setModel(loadClosedCourseList());
 		
 		JButton addCourseButton = new JButton("Add Course");
 		addCourseButton.addActionListener(new ActionListener() {
@@ -151,13 +179,22 @@ public class MainDashboard extends JFrame {
 				
 				//saves file upon course creation
 				saveFile(listOfCourses, SERIALIZED_FILE_NAME);
-				list.setModel(loadCourseList());
+				activeCourseDisplayList.setModel(loadActiveCourseList());
 			}
 		});
 		addCourseButton.setBounds(480, 13, 166, 71);
 		contentPane.add(addCourseButton);
 		
 		JButton closeCourseButton = new JButton("Close Course");
+		closeCourseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int closeIndex = activeCourseDisplayList.getSelectedIndex();
+				listOfCourses.get(closeIndex).setIsOpen(false);
+				closedCourseDisplayList.setModel(loadClosedCourseList());
+				activeCourseDisplayList.setModel(loadActiveCourseList());
+				
+			}
+		});
 		closeCourseButton.setBounds(480, 97, 166, 71);
 		contentPane.add(closeCourseButton);
 
@@ -175,11 +212,12 @@ public class MainDashboard extends JFrame {
 		JButton refreshCourseButton = new JButton("Refresh");
 		refreshCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				list.setModel(loadCourseList());
+				activeCourseDisplayList.setModel(loadActiveCourseList());
 			}
 		});
 		refreshCourseButton.setBounds(480, 268, 166, 71);
 		contentPane.add(refreshCourseButton);
+		
 
 	}
 }
