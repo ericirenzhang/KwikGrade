@@ -1,12 +1,8 @@
-<<<<<<< HEAD:KwikGrade/src/SubCategory.java
-public class SubCategory {
-=======
 package models;
 
 import java.io.Serializable;
 
 public class SubCategory implements Serializable {
->>>>>>> master:KwikGrade/src/models/SubCategory.java
 	String name;
 	double weight;
 	double value;
