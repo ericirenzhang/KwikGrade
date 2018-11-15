@@ -1,3 +1,8 @@
+package models;
+
+import models.CourseCategory;
+import models.Student;
+
 import java.util.ArrayList;
 
 public class OverallGrade {
@@ -22,6 +27,8 @@ public class OverallGrade {
 	public double calcOverallGrade() {
 		int n = getNumOfCategories();
 		for(int i=0;i<n;i++){
+			
+			//TODO: Define CourseCategory and use correct constructor
 			CourseCategory course = new CourseCategory(); //Here we need to instantiate CourseCategory objects from GUI
 			categoryList.add(course);
 		}
