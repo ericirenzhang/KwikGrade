@@ -15,43 +15,36 @@ public class CourseCategory implements Serializable {
 		this.subCategoryList = subCategoryList;
 	}
 	
-	public void setName(String name)
-	{
+	public void setName(String name){
 		this.name = name;
 	}
-	public String getName()
-	{
+	public String getName(){
 		return this.name;
 	}
 	
-	public void setWeight(double weight)
-	{
+	public void setWeight(double weight){
 		this.weight = weight;
 	}
-	public double getWeight()
-	{
+	public double getWeight(){
 		return this.weight;
 	}
 	
-	public void setNumOfsubCat(int numOfSubCat)
-	{
+	public void setNumOfsubCat(int numOfSubCat){
 		this.numOfSubCat = numOfSubCat;
 	}
-	public int getNumOfSubCat()
-	{
+	public int getNumOfSubCat(){
 		return this.numOfSubCat;
 	}
 	
 	
-	public double calcGradeCategory()
-	{
+	public double calcGradeCategory(){
 		int n = getNumOfSubCat();
-		for(int i=0;i<n;i++)
-		{
+		for(int i=0;i<n;i++){
 			SubCategory sub = new SubCategory(); //Here we need to instantiate SubCategory objects from GUI
 			subCategoryList.add(sub);
 		}
 		double result = 0.0;
+		
 		for(int i=0;i<subCategoryList.size();i++)
 		{
 			result+=subCategoryList.get(i).calcWeightedValue();

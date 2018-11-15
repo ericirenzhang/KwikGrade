@@ -48,6 +48,45 @@ public class Course implements Serializable {
 		this.inactiveStudents.add(studentToRemove);
 	}
 	
+		public double calcMean() {
+		int num = activeStudent.size();
+		double x = 0.0;
+		for(int i = 0;i<num;i++) {
+			x += activeStudent.get(i).grade.getOverallGrade();
+		}
+		return x/num;
+	}
+	
+	//==========================
+	// Calculates Advanced Stats
+	//==========================
+	
+	public double calcMedian() {
+		List<Double> gradeList = new ArrayList<Double>();
+		for(int i=0;i<activeStudent.size();i++)
+			gradeList.add(activeStudent.get(i).grade.getOverallGrade());
+		
+		Collections.sort(gradeList);
+		
+		int length = gradeList.size();
+		if(length%2 == 0)
+			return (gradeList.get(length/2) + gradeList.get((length/2)+1))/2;
+		return gradeList.get(length/2);
+	}
+	
+	public double calcStandardDeviation() {
+		double standardDeviation = 0.0;
+        int length = activeStudent.size();
+
+        double mean = calcMean();
+
+        for(int i=0;i<length;i++) {
+            standardDeviation += Math.pow(activeStudent.get(i).grade.getOverallGrade() - mean, 2);
+        }
+
+        return Math.sqrt(standardDeviation/length);
+	}
+	
 	//==========================
 	// Getters
 	//==========================
