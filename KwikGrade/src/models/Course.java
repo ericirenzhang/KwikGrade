@@ -49,10 +49,10 @@ public class Course implements Serializable {
 	}
 	
 		public double calcMean() {
-		int num = activeStudent.size();
+		int num = activeStudents.size();
 		double x = 0.0;
 		for(int i = 0;i<num;i++) {
-			x += activeStudent.get(i).grade.getOverallGrade();
+			x += activeStudents.get(i).grade.getOverallGrade();
 		}
 		return x/num;
 	}
@@ -63,8 +63,8 @@ public class Course implements Serializable {
 	
 	public double calcMedian() {
 		List<Double> gradeList = new ArrayList<Double>();
-		for(int i=0;i<activeStudent.size();i++)
-			gradeList.add(activeStudent.get(i).grade.getOverallGrade());
+		for(int i=0;i<activeStudents.size();i++)
+			gradeList.add(activeStudents.get(i).grade.getOverallGrade());
 		
 		Collections.sort(gradeList);
 		
@@ -76,12 +76,12 @@ public class Course implements Serializable {
 	
 	public double calcStandardDeviation() {
 		double standardDeviation = 0.0;
-        int length = activeStudent.size();
+        int length = activeStudents.size();
 
         double mean = calcMean();
 
         for(int i=0;i<length;i++) {
-            standardDeviation += Math.pow(activeStudent.get(i).grade.getOverallGrade() - mean, 2);
+            standardDeviation += Math.pow(activeStudents.get(i).grade.getOverallGrade() - mean, 2);
         }
 
         return Math.sqrt(standardDeviation/length);
