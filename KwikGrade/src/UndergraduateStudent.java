@@ -1,8 +1,9 @@
 
-public class UndergraduateStudent {
+public class UndergraduateStudent extends Student{
 	String status;
 
-	public UndergraduateStudent(String status) {
+	public UndergraduateStudent(String fName, String middleInitial, String lName, String buId, String email,String status) {
+		super(fName, middleInitial, lName, buId, email);
 		this.status  = status;
 	}
 	
