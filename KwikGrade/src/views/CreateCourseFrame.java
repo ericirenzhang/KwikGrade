@@ -54,6 +54,21 @@ public class CreateCourseFrame extends JDialog {
 		}
 		{
 			JButton createExistingButton = new JButton("Create From Existing");
+			createExistingButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					CreateFromExistingFrame createFromExisting = new CreateFromExistingFrame();
+					createFromExisting.setModal(true);
+					createFromExisting.setVisible(true);
+
+					courseNum = createFromExisting.getCourseNum();
+					courseTerm = createFromExisting.getCourseTerm();
+					courseTitle = createFromExisting.getCourseTitle();
+					importedStudentsList = createFromExisting.getImportedStudentsList();
+
+					dispose();
+					
+				}
+			});
 			createExistingButton.setBounds(241, 69, 183, 181);
 			contentPanel.add(createExistingButton);
 		}
