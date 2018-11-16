@@ -20,6 +20,8 @@ public class CreateCourseFrame extends JDialog {
 	private String courseNum;
 	private String courseTerm;
 	private String courseTitle;
+	private boolean hasCreatedNewCourse;
+
 	private ArrayList<Student> importedStudentsList = new ArrayList<>();
 
 	private final JPanel contentPanel = new JPanel();
@@ -33,51 +35,46 @@ public class CreateCourseFrame extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		{
-			JButton createNewButton = new JButton("Create From New");
-			createNewButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					CreateFromNewFrame createFromNew = new CreateFromNewFrame();
-					createFromNew.setModal(true);
-					createFromNew.setVisible(true);
+		JButton createNewButton = new JButton("Create From New");
+		createNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CreateFromNewFrame createFromNew = new CreateFromNewFrame();
+				createFromNew.setModal(true);
+				createFromNew.setVisible(true);
 
-					courseNum = createFromNew.getCourseNum();
-					courseTerm = createFromNew.getCourseTerm();
-					courseTitle = createFromNew.getCourseTitle();
-					importedStudentsList = createFromNew.getImportedStudentsList();
+				courseNum = createFromNew.getCourseNum();
+				courseTerm = createFromNew.getCourseTerm();
+				courseTitle = createFromNew.getCourseTitle();
+				importedStudentsList = createFromNew.getImportedStudentsList();
+				hasCreatedNewCourse = createFromNew.getHasCreatedNewCourse();
 
-					dispose();
-				}
-			});
-			createNewButton.setBounds(10, 69, 183, 181);
-			contentPanel.add(createNewButton);
-		}
-		{
-			JButton createExistingButton = new JButton("Create From Existing");
-			createExistingButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					CreateFromExistingFrame createFromExisting = new CreateFromExistingFrame();
-					createFromExisting.setModal(true);
-					createFromExisting.setVisible(true);
+				dispose();
+			}
+		});
+		createNewButton.setBounds(10, 69, 183, 181);
+		contentPanel.add(createNewButton);
+		JButton createExistingButton = new JButton("Create From Existing");
+		createExistingButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				CreateFromExistingFrame createFromExisting = new CreateFromExistingFrame();
+				createFromExisting.setModal(true);
+				createFromExisting.setVisible(true);
 
-					courseNum = createFromExisting.getCourseNum();
-					courseTerm = createFromExisting.getCourseTerm();
-					courseTitle = createFromExisting.getCourseTitle();
-					importedStudentsList = createFromExisting.getImportedStudentsList();
+				courseNum = createFromExisting.getCourseNum();
+				courseTerm = createFromExisting.getCourseTerm();
+				courseTitle = createFromExisting.getCourseTitle();
+				importedStudentsList = createFromExisting.getImportedStudentsList();
 
-					dispose();
-					
-				}
-			});
-			createExistingButton.setBounds(241, 69, 183, 181);
-			contentPanel.add(createExistingButton);
-		}
-		{
-			JLabel createLabel = new JLabel("How would you like to create your course?");
-			createLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-			createLabel.setBounds(66, 25, 302, 20);
-			contentPanel.add(createLabel);
-		}
+				dispose();
+
+			}
+		});
+		createExistingButton.setBounds(241, 69, 183, 181);
+		contentPanel.add(createExistingButton);
+		JLabel createLabel = new JLabel("How would you like to create your course?");
+		createLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		createLabel.setBounds(66, 25, 302, 20);
+		contentPanel.add(createLabel);
 	}
 	
 	//==========================
@@ -96,6 +93,9 @@ public class CreateCourseFrame extends JDialog {
  	public ArrayList<Student> getImportedStudentsList() {
  		return this.importedStudentsList;
  	}
+ 	public boolean getHasCreatedNewCourse() {
+		return this.hasCreatedNewCourse;
+	}
 
 	//==========================
 	// Setters
