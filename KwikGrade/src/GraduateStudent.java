@@ -1,5 +1,6 @@
+import models.Student;
 
-public class GraduateStudent extends Student{
+public class GraduateStudent extends Student {
 	String status;
 
 	public GraduateStudent(String fName, String middleInitial, String lName, String buId, String email,String status) {

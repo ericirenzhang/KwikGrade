@@ -111,53 +111,32 @@ public class MainDashboard extends JFrame {
 		kwikGrade.setActiveCourses(loadFile(SERIALIZED_FILE_NAME_ACTIVE));
 		kwikGrade.setClosedCourses(loadFile(SERIALIZED_FILE_NAME_CLOSED));
 
-		
+		// Set up JFrame.
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 687, 517);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		/**
-		 * Elements to create the active course list display panel.
-		 */		
+
+		// Adding courses
 		JLabel activeCoursesLabel = new JLabel("Active Courses");
 		activeCoursesLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		activeCoursesLabel.setBounds(12, 0, 128, 42);
 		contentPane.add(activeCoursesLabel);
-		
+
 		JScrollPane activeCourseScrollPane = new JScrollPane();
 		activeCourseScrollPane.setBounds(12, 41, 456, 229);
 		contentPane.add(activeCourseScrollPane);
-		
-		//jlist for dynamic display of courses
+
+		// Jlist for dynamic display of courses
 		activeCourseDisplayList = new JList();
 		activeCourseScrollPane.setViewportView(activeCourseDisplayList);
 		activeCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		
-		//loads courses upon login for display in dynamic list
+
+		// Loads courses upon login for display in dynamic list
 		activeCourseDisplayList.setModel(loadCourseList(kwikGrade.getActiveCourses()));
-		
-		/**
-		 * Elements to create the closed course list display panel.
-		 */	
-		JLabel closedCourseLabel = new JLabel("Closed Courses");
-		closedCourseLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		closedCourseLabel.setBounds(12, 281, 128, 42);
-		contentPane.add(closedCourseLabel);
-		
-		JScrollPane closedCourseScrollPane = new JScrollPane();
-		closedCourseScrollPane.setBounds(12, 334, 456, 133);
-		contentPane.add(closedCourseScrollPane);
-		
-		closedCourseDisplayList = new JList();
-		closedCourseScrollPane.setViewportView(closedCourseDisplayList);
-		closedCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		closedCourseDisplayList.setModel(loadCourseList(kwikGrade.getClosedCourses()));
-		
-		
-		//button to add courses
+
 		JButton addCourseButton = new JButton("Add Course");
 		addCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		addCourseButton.addActionListener(new ActionListener() {
@@ -180,7 +159,21 @@ public class MainDashboard extends JFrame {
 		addCourseButton.setBounds(480, 13, 166, 71);
 		contentPane.add(addCourseButton);
 		
-		//button that closes the course
+		// Closing courses
+		JLabel closedCourseLabel = new JLabel("Closed Courses");
+		closedCourseLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		closedCourseLabel.setBounds(12, 281, 128, 42);
+		contentPane.add(closedCourseLabel);
+
+		JScrollPane closedCourseScrollPane = new JScrollPane();
+		closedCourseScrollPane.setBounds(12, 334, 456, 133);
+		contentPane.add(closedCourseScrollPane);
+
+		closedCourseDisplayList = new JList();
+		closedCourseScrollPane.setViewportView(closedCourseDisplayList);
+		closedCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		closedCourseDisplayList.setModel(loadCourseList(kwikGrade.getClosedCourses()));
+
 		JButton closeCourseButton = new JButton("Close Course");
 		closeCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		closeCourseButton.addActionListener(new ActionListener() {
@@ -199,7 +192,7 @@ public class MainDashboard extends JFrame {
 		closeCourseButton.setBounds(480, 97, 166, 71);
 		contentPane.add(closeCourseButton);
 
-		//saves course list to serialized panes
+		// Course saving
 		JButton saveCourseButton = new JButton("Save");
 		saveCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -212,7 +205,7 @@ public class MainDashboard extends JFrame {
 		saveCourseButton.setBounds(480, 380, 166, 32);
 		contentPane.add(saveCourseButton);
     
-		//loads courses upon login with button, for display in dynamic list
+		// Loads courses upon login with button, for display in dynamic list
 		JButton refreshCourseButton = new JButton("Refresh");
 		refreshCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -222,7 +215,7 @@ public class MainDashboard extends JFrame {
 		refreshCourseButton.setBounds(480, 425, 166, 32);
 		contentPane.add(refreshCourseButton);
 		
-		//deleting a course, can only be done to active courses
+		// Course deletion, can only be done to active courses
 		JButton deleteCourseButton = new JButton("Delete Course");
 		deleteCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {

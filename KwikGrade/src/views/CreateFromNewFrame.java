@@ -44,6 +44,7 @@ public class CreateFromNewFrame extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 
+		// Top half of JFrame for Course information section.
 		courseNumField = new JTextField();
 		courseNumField.setBounds(250, 29, 300, 36);
 		contentPanel.add(courseNumField);
@@ -84,6 +85,7 @@ public class CreateFromNewFrame extends JDialog {
 		importNowLabel.setBounds(0, 200, 500, 36);
 		contentPanel.add(importNowLabel);
 
+		// Bottom half of JFrame for File browsing/importing Students.
 		contentPanel.add(new JSeparator());
 		JButton browseButton = new JButton("Browse File Path of Student Text File...");
 		browseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -95,7 +97,6 @@ public class CreateFromNewFrame extends JDialog {
 
 				// For File
 				fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
 				fileChooser.setAcceptAllFileFilterUsed(false);
 
 				int userChoice = fileChooser.showOpenDialog(null);
@@ -158,6 +159,10 @@ public class CreateFromNewFrame extends JDialog {
 		buttonPane.add(cancelButton);
 	}
 
+	/**
+	 * Imports students by parsing a text file into this.importedStudentList.
+	 * @param filePath
+	 */
 	public void addImportedStudents(String filePath) {
 		Scanner rawStudentData;
 
