@@ -34,10 +34,12 @@ public class MainDashboard extends JFrame {
 	private static final String SERIALIZED_FILE_NAME_ACTIVE = "serializedActiveCourseSaveData.ser";
 	private static final String SERIALIZED_FILE_NAME_CLOSED = "serializedClosedCourseSaveData.ser";
 
-	
 	/**
 	 * Adds courses to the active list. Only active course list can have courses added to it
-	 * @param courseList
+	 * @param courseNum
+	 * @param courseTerm
+	 * @param courseTitle
+	 * @param importedStudentsList
 	 */
 	public void addCourse(String courseNum, String courseTerm, String courseTitle, ArrayList<Student> importedStudentsList) {
 		if(importedStudentsList.size() == 0) {
@@ -182,8 +184,12 @@ public class MainDashboard extends JFrame {
 				CreateCourseFrame createCourse = new CreateCourseFrame();
 				createCourse.setModal(true);
 				createCourse.setVisible(true);
-				addCourse(createCourse.getCourseNum(), createCourse.getCourseTerm(), createCourse.getCourseTitle(), createCourse.getImportedStudentsList());
-				
+
+				// If user clicked "OK", then add new course. Otherwise, the user must have clicked "Cancel".
+				if(createCourse.getHasCreatedNewCourse()){
+					addCourse(createCourse.getCourseNum(), createCourse.getCourseTerm(), createCourse.getCourseTitle(), createCourse.getImportedStudentsList());
+				}
+
 				//saves file upon course creation
 				saveFile(activeCourses, SERIALIZED_FILE_NAME_ACTIVE);
 				activeCourseDisplayList.setModel(loadCourseList(activeCourses));

@@ -9,6 +9,11 @@ public class CourseCategory implements Serializable {
 	int numOfSubCat; // We need to determine the number of sub categories each Category has through the GUI
 	ArrayList<SubCategory> subCategoryList;
 
+	// TODO: delete this empty constructor when we can properly instantiate CourseCategory
+	public CourseCategory() {
+
+	}
+
 	public CourseCategory(String name, double weight, ArrayList<SubCategory> subCategoryList) {
 		this.name = name;
 		this.weight = weight;
