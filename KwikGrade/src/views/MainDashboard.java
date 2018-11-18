@@ -1,14 +1,13 @@
 package views;
 
 import models.Course;
-import models.Student;
+import models.KwikGrade;
 
 import java.io.*;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 
 import javax.swing.JLabel;
@@ -20,39 +19,19 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
-import java.awt.List;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollBar;
 
 public class MainDashboard extends JFrame {
 	DefaultListModel DLM;
 
 	private JPanel contentPane;
-	public ArrayList<Course> activeCourses = new ArrayList<>();
-	public ArrayList<Course> closedCourses = new ArrayList<>();
+	private KwikGrade kwikGrade;
+	private JList activeCourseDisplayList;
+	private JList closedCourseDisplayList;
+
 	private static final String SERIALIZED_FILE_NAME_ACTIVE = "serializedActiveCourseSaveData.ser";
 	private static final String SERIALIZED_FILE_NAME_CLOSED = "serializedClosedCourseSaveData.ser";
-
-	/**
-	 * Adds courses to the active list. Only active course list can have courses added to it
-	 * @param courseNum
-	 * @param courseTerm
-	 * @param courseTitle
-	 * @param importedStudentsList
-	 */
-	public void addCourse(String courseNum, String courseTerm, String courseTitle, ArrayList<Student> importedStudentsList) {
-		if(importedStudentsList.size() == 0) {
-			Course courseToAdd = new Course(courseNum, courseTerm, courseTitle);
-			this.activeCourses.add(courseToAdd);
-		}
-		else {
-			Course courseToAdd = new Course(courseNum, courseTerm, courseTitle, importedStudentsList);
-			this.activeCourses.add(courseToAdd);
-		}
-		System.out.println(activeCourses);
-	}
-	
 	
 	/**
 	 * Pulls active course names for display in dynamic Jlist
@@ -78,6 +57,7 @@ public class MainDashboard extends JFrame {
 		try {
 			fileOutputStream = new FileOutputStream(saveFileName);
 			objectOutputStream = new ObjectOutputStream(fileOutputStream);
+
 			// Write Course list to file.
 			objectOutputStream.writeObject(courseList);
 			objectOutputStream.close();
@@ -92,7 +72,7 @@ public class MainDashboard extends JFrame {
 	/**
 	 * Load courses from saved local file.
 	 * @param saveFileName
-	 * @return
+	 * @return ArrayList of Courses from saved file
 	 */
 	public ArrayList<Course> loadFile(String saveFileName) {
 		ArrayList<Course> savedCoursesList = new ArrayList<>();
@@ -122,60 +102,41 @@ public class MainDashboard extends JFrame {
 	}
 
 	/**
-	 * Create the frame.
+	 * Create the MainDashboard Frame.
 	 */
 	public MainDashboard() {
-		// Load from saved file.
-		this.activeCourses = loadFile(SERIALIZED_FILE_NAME_ACTIVE);
-		this.closedCourses = loadFile(SERIALIZED_FILE_NAME_CLOSED);
+		kwikGrade = new KwikGrade();
 
-		
+		// Load from saved file.
+		kwikGrade.setActiveCourses(loadFile(SERIALIZED_FILE_NAME_ACTIVE));
+		kwikGrade.setClosedCourses(loadFile(SERIALIZED_FILE_NAME_CLOSED));
+
+		// Set up JFrame.
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 687, 517);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		/**
-		 * elements to create the active course list display panel
-		 */		
+
+		// Adding courses
 		JLabel activeCoursesLabel = new JLabel("Active Courses");
 		activeCoursesLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		activeCoursesLabel.setBounds(12, 0, 128, 42);
 		contentPane.add(activeCoursesLabel);
-		
+
 		JScrollPane activeCourseScrollPane = new JScrollPane();
 		activeCourseScrollPane.setBounds(12, 41, 456, 229);
 		contentPane.add(activeCourseScrollPane);
-		
-		//jlist for dynamic display of courses
-		JList activeCourseDisplayList = new JList();
+
+		// Jlist for dynamic display of courses
+		activeCourseDisplayList = new JList();
 		activeCourseScrollPane.setViewportView(activeCourseDisplayList);
 		activeCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		
-				//loads courses upon login for display in dynamic list
-				activeCourseDisplayList.setModel(loadCourseList(activeCourses));
-		
-		/**
-		 * elements to create the closed course list display panel
-		 */	
-		JLabel closedCourseLabel = new JLabel("Closed Courses");
-		closedCourseLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		closedCourseLabel.setBounds(12, 281, 128, 42);
-		contentPane.add(closedCourseLabel);
-		
-		JScrollPane closedCourseScrollPane = new JScrollPane();
-		closedCourseScrollPane.setBounds(12, 334, 456, 133);
-		contentPane.add(closedCourseScrollPane);
-		
-		JList closedCourseDisplayList = new JList();
-		closedCourseScrollPane.setViewportView(closedCourseDisplayList);
-		closedCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		closedCourseDisplayList.setModel(loadCourseList(closedCourses));
-		
-		
-		//button to add courses
+
+		// Loads courses upon login for display in dynamic list
+		activeCourseDisplayList.setModel(loadCourseList(kwikGrade.getActiveCourses()));
+
 		JButton addCourseButton = new JButton("Add Course");
 		addCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		addCourseButton.addActionListener(new ActionListener() {
@@ -187,50 +148,56 @@ public class MainDashboard extends JFrame {
 
 				// If user clicked "OK", then add new course. Otherwise, the user must have clicked "Cancel".
 				if(createCourse.getHasCreatedNewCourse()){
-					addCourse(createCourse.getCourseNum(), createCourse.getCourseTerm(), createCourse.getCourseTitle(), createCourse.getImportedStudentsList());
-				}
+					kwikGrade.addCourse(createCourse.getCourseNum(), createCourse.getCourseTerm(), createCourse.getCourseTitle(), createCourse.getImportedStudentsList());
 
-				//saves file upon course creation
-				saveFile(activeCourses, SERIALIZED_FILE_NAME_ACTIVE);
-				activeCourseDisplayList.setModel(loadCourseList(activeCourses));
-				closedCourseDisplayList.setModel(loadCourseList(closedCourses));
+					//saves file upon course creation
+					saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
+					updateCourseDisplayModel();
+				}
 			}
 		});
 		addCourseButton.setBounds(480, 13, 166, 71);
 		contentPane.add(addCourseButton);
 		
-		//button that closes the course
+		// Closing courses
+		JLabel closedCourseLabel = new JLabel("Closed Courses");
+		closedCourseLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		closedCourseLabel.setBounds(12, 281, 128, 42);
+		contentPane.add(closedCourseLabel);
+
+		JScrollPane closedCourseScrollPane = new JScrollPane();
+		closedCourseScrollPane.setBounds(12, 334, 456, 133);
+		contentPane.add(closedCourseScrollPane);
+
+		closedCourseDisplayList = new JList();
+		closedCourseScrollPane.setViewportView(closedCourseDisplayList);
+		closedCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		closedCourseDisplayList.setModel(loadCourseList(kwikGrade.getClosedCourses()));
+
 		JButton closeCourseButton = new JButton("Close Course");
 		closeCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		closeCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int closeIndex = activeCourseDisplayList.getSelectedIndex();
 				try {
-					//to close a course, it first copies the course to the closedCourses arraylist
-					//then deletes the course from the activeCOurses arraylist
-				System.out.println(closeIndex);
-				activeCourses.get(closeIndex).setIsOpen(false);
-				closedCourses.add(activeCourses.get(closeIndex));
-				activeCourses.remove(closeIndex);
+					kwikGrade.closeCourse(closeIndex);
 				}
 				catch (Exception eClose) {
 					//exception for if an invalid course is selected
 					JOptionPane.showMessageDialog(null, "You have not selected a course!");
 				}
-				activeCourseDisplayList.setModel(loadCourseList(activeCourses));
-				closedCourseDisplayList.setModel(loadCourseList(closedCourses));
-				
+				updateCourseDisplayModel();
 			}
 		});
 		closeCourseButton.setBounds(480, 97, 166, 71);
 		contentPane.add(closeCourseButton);
 
-		//saves course list to serialized panes
+		// Course saving
 		JButton saveCourseButton = new JButton("Save");
 		saveCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				saveFile(activeCourses, SERIALIZED_FILE_NAME_ACTIVE);
-				saveFile(closedCourses, SERIALIZED_FILE_NAME_CLOSED);
+				saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
+				saveFile(kwikGrade.getClosedCourses(), SERIALIZED_FILE_NAME_CLOSED);
 				JOptionPane.showMessageDialog(null, "Successfully Saved!");
 			}
 		});
@@ -238,37 +205,38 @@ public class MainDashboard extends JFrame {
 		saveCourseButton.setBounds(480, 380, 166, 32);
 		contentPane.add(saveCourseButton);
     
-		//loads courses upon login with button, for display in dynamic list
+		// Loads courses upon login with button, for display in dynamic list
 		JButton refreshCourseButton = new JButton("Refresh");
 		refreshCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				activeCourseDisplayList.setModel(loadCourseList(activeCourses));
-				activeCourseDisplayList.setModel(loadCourseList(closedCourses));
+				updateCourseDisplayModel();
 			}
 		});
 		refreshCourseButton.setBounds(480, 425, 166, 32);
 		contentPane.add(refreshCourseButton);
 		
-		//deleting a course, can only be done to active courses
+		// Course deletion, can only be done to active courses
 		JButton deleteCourseButton = new JButton("Delete Course");
 		deleteCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int deleteIndex = activeCourseDisplayList.getSelectedIndex();
 				try {
-					activeCourses.remove(deleteIndex);
+					kwikGrade.deleteCourse(deleteIndex);
 				}
 				catch (Exception eDelete) {
 					JOptionPane.showMessageDialog(null, "No course is selected!");
 				}
-				saveFile(activeCourses, SERIALIZED_FILE_NAME_ACTIVE);
-				activeCourseDisplayList.setModel(loadCourseList(activeCourses));
-				closedCourseDisplayList.setModel(loadCourseList(closedCourses));
+				saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
+				updateCourseDisplayModel();
 			}
 		});
 		deleteCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		deleteCourseButton.setBounds(480, 186, 166, 71);
 		contentPane.add(deleteCourseButton);
-		
+	}
 
+	public void updateCourseDisplayModel() {
+		activeCourseDisplayList.setModel(loadCourseList(kwikGrade.getActiveCourses()));
+		closedCourseDisplayList.setModel(loadCourseList(kwikGrade.getClosedCourses()));
 	}
 }

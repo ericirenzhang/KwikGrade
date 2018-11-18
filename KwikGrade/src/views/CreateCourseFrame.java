@@ -51,6 +51,7 @@ public class CreateCourseFrame extends JDialog {
 				dispose();
 			}
 		});
+
 		createNewButton.setBounds(10, 69, 183, 181);
 		contentPanel.add(createNewButton);
 		JButton createExistingButton = new JButton("Create From Existing");
