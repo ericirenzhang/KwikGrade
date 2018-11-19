@@ -42,6 +42,20 @@ public class CourseOverviewFrame extends JDialog {
 		}
 		return studentTableModel;
 	}
+	
+	public DefaultTableModel displayKwikStats(Course course) {
+//		statsTableModel.addRow(new Object[] {"Mean", course.calcMean()});
+//		statsTableModel.addRow(new Object[] {"Median", course.calcMedian()});
+//		statsTableModel.addRow(new Object[] {"Standard Deviation", course.calcStandardDeviation()});
+		statsTableModel.addRow(new Object[] {"Mean"});
+		statsTableModel.addRow(new Object[] {"Mean"});
+		statsTableModel.addRow(new Object[] {"Median"});
+		statsTableModel.addRow(new Object[] {"Median"});
+		statsTableModel.addRow(new Object[] {"StDev"});
+		statsTableModel.addRow(new Object[] {"StDev"});
+
+		return statsTableModel;
+	}
 
 	/**
 	 * Launch the application.
@@ -79,8 +93,9 @@ public class CourseOverviewFrame extends JDialog {
 			
 			//Creates the table itself
 			studentDisplayTable = new JTable();
+			studentDisplayTable.setRowHeight(25);
 			scrollPane.setViewportView(studentDisplayTable);
-			studentDisplayTable.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			studentDisplayTable.setFont(new Font("Tahoma", Font.PLAIN, 18));
 			studentDisplayTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			ListSelectionModel listModel = studentDisplayTable.getSelectionModel();
 			listModel.addListSelectionListener(new ListSelectionListener() {
@@ -100,14 +115,16 @@ public class CourseOverviewFrame extends JDialog {
 		
 		{
 			//does not work, no clue why....
+			statsTableModel = new DefaultTableModel();
+			Object[] statsTableTitle = {"Kwikstats"};
+			statsTableModel.setColumnIdentifiers(statsTableTitle);
+
 			kwikStatsTable = new JTable();
+			kwikStatsTable.setRowHeight(30);
+			kwikStatsTable.setFont(new Font("Tahoma", Font.PLAIN, 24));
 			kwikStatsTable.setBounds(565, 315, 155, 221);
 			contentPanel.add(kwikStatsTable);
-			statsTableModel = new DefaultTableModel();
-			statsTableModel.addRow(new Object[] {"Mean"});
-			statsTableModel.addRow(new Object[] {"Median"});
-			statsTableModel.addRow(new Object[] {"Standard Deviation"});
-			kwikStatsTable.setModel(statsTableModel);
+			kwikStatsTable.setModel(displayKwikStats(managedCourse));
 		}
 		
 		{
@@ -166,7 +183,6 @@ public class CourseOverviewFrame extends JDialog {
 					MainDashboard.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
 					JOptionPane.showMessageDialog(null, "Successfully Saved!");
 					dispose();
-					
 				}
 			});
 			saveCloseButton.setBounds(565, 212, 155, 40);
