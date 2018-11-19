@@ -57,18 +57,6 @@ public class CourseOverviewFrame extends JDialog {
 		return statsTableModel;
 	}
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			CourseOverviewFrame dialog = new CourseOverviewFrame(managedCourse);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.
@@ -81,115 +69,98 @@ public class CourseOverviewFrame extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
-		{
-			JScrollPane scrollPane = new JScrollPane();
-			scrollPane.setBounds(10, 38, 545, 498);
-			contentPanel.add(scrollPane);
-			
-			//Creates the titles for the table model
-			studentTableModel = new DefaultTableModel();
-			Object[] title = {"First Name", "Middle Initial", "Last Name", "Grade"};
-			studentTableModel.setColumnIdentifiers(title);
-			
-			//Creates the table itself
-			studentDisplayTable = new JTable();
-			studentDisplayTable.setRowHeight(25);
-			scrollPane.setViewportView(studentDisplayTable);
-			studentDisplayTable.setFont(new Font("Tahoma", Font.PLAIN, 18));
-			studentDisplayTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			ListSelectionModel listModel = studentDisplayTable.getSelectionModel();
-			listModel.addListSelectionListener(new ListSelectionListener() {
-			      @Override
-			      public void valueChanged(ListSelectionEvent e) {
-			        ListSelectionModel lsm=(ListSelectionModel) e.getSource();
-			        if(lsm.isSelectionEmpty()) {
-			        	JOptionPane.showMessageDialog(null, "No selection");
-			        }
-			        else {
-			        	selectedRow=lsm.getMinSelectionIndex();
-			        }
-			      }
-			});
-			studentDisplayTable.setModel(displayStudents(managedCourse));
-		}
-		
-		{
-			//does not work, no clue why....
-			statsTableModel = new DefaultTableModel();
-			Object[] statsTableTitle = {"Kwikstats"};
-			statsTableModel.setColumnIdentifiers(statsTableTitle);
 
-			kwikStatsTable = new JTable();
-			kwikStatsTable.setRowHeight(30);
-			kwikStatsTable.setFont(new Font("Tahoma", Font.PLAIN, 24));
-			kwikStatsTable.setBounds(565, 315, 155, 221);
-			contentPanel.add(kwikStatsTable);
-			kwikStatsTable.setModel(displayKwikStats(managedCourse));
-		}
-		
-		{
-			JButton addStudentButton = new JButton("Add Student");
-			addStudentButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-//					AddStudentFrame addStudent = new AddStudentFrame();
-//					addStudent.setModal(true);
-//					addStudent.setVisible(true);
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 38, 545, 498);
+		contentPanel.add(scrollPane);
+
+		//Creates the titles for the table model
+		studentTableModel = new DefaultTableModel();
+		Object[] title = {"First Name", "Middle Initial", "Last Name", "Grade"};
+		studentTableModel.setColumnIdentifiers(title);
+
+		//Creates the table itself
+		studentDisplayTable = new JTable();
+		studentDisplayTable.setRowHeight(25);
+		scrollPane.setViewportView(studentDisplayTable);
+		studentDisplayTable.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		studentDisplayTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		ListSelectionModel listModel = studentDisplayTable.getSelectionModel();
+		listModel.addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				ListSelectionModel lsm=(ListSelectionModel) e.getSource();
+				if(lsm.isSelectionEmpty()) {
+					JOptionPane.showMessageDialog(null, "No selection");
 				}
-			});
-			addStudentButton.setBounds(565, 11, 155, 40);
-			contentPanel.add(addStudentButton);
-		}
+				else {
+					selectedRow=lsm.getMinSelectionIndex();
+				}
+			}
+		});
+		studentDisplayTable.setModel(displayStudents(managedCourse));
+
+		statsTableModel = new DefaultTableModel();
+		Object[] statsTableTitle = {"Kwikstats"};
+		statsTableModel.setColumnIdentifiers(statsTableTitle);
+
+		kwikStatsTable = new JTable();
+		kwikStatsTable.setRowHeight(30);
+		kwikStatsTable.setFont(new Font("Tahoma", Font.PLAIN, 24));
+		kwikStatsTable.setBounds(565, 315, 155, 221);
+		contentPanel.add(kwikStatsTable);
+		kwikStatsTable.setModel(displayKwikStats(managedCourse));
+
+		JButton addStudentButton = new JButton("Add Student");
+		addStudentButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+//				AddStudentFrame addStudent = new AddStudentFrame();
+//				addStudent.setModal(true);
+//				addStudent.setVisible(true);
+			}
+		});
+		addStudentButton.setBounds(565, 11, 155, 40);
+		contentPanel.add(addStudentButton);
 		
-		{
-			JButton manageStudentButton = new JButton("Manage Student");
-			manageStudentButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					Student student = managedCourse.getActiveStudents().get(selectedRow);
-					JOptionPane.showMessageDialog(null, student);
+		JButton manageStudentButton = new JButton("Manage Student");
+		manageStudentButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Student student = managedCourse.getActiveStudents().get(selectedRow);
+				JOptionPane.showMessageDialog(null, student);
 //					ManageStudentFrame manageStudentFrame= new ManageStudentFrame();
 //					manageStudentFrame.setModal(true);
 //					manageStudentFrame.setVisible(true);
-				}
-			});
-			manageStudentButton.setBounds(565, 62, 155, 40);
-			contentPanel.add(manageStudentButton);
-		}
+			}
+		});
+		manageStudentButton.setBounds(565, 62, 155, 40);
+		contentPanel.add(manageStudentButton);
 		
-		{
-			JButton addGradeButton = new JButton("Enter New Grades");
-			addGradeButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-				}
-			});
-			addGradeButton.setBounds(565, 110, 155, 40);
-			contentPanel.add(addGradeButton);
-		}
+		JButton addGradeButton = new JButton("Enter New Grades");
+		addGradeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		addGradeButton.setBounds(565, 110, 155, 40);
+		contentPanel.add(addGradeButton);
 		
-		{
-			JButton manageCategoryButton = new JButton("Manage Categories");
-			manageCategoryButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-				}
-			});
-			manageCategoryButton.setBounds(565, 161, 155, 40);
-			contentPanel.add(manageCategoryButton);
-		}
+		JButton manageCategoryButton = new JButton("Manage Categories");
+		manageCategoryButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		manageCategoryButton.setBounds(565, 161, 155, 40);
+		contentPanel.add(manageCategoryButton);
 		
-		{
-			JButton saveCloseButton = new JButton("Save and Close");
-			saveCloseButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					MainDashboard.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
-					MainDashboard.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
-					JOptionPane.showMessageDialog(null, "Successfully Saved!");
-					dispose();
-				}
-			});
-			saveCloseButton.setBounds(565, 212, 155, 40);
-			contentPanel.add(saveCloseButton);
-		}
-		
-
-
+		JButton saveCloseButton = new JButton("Save and Close");
+		saveCloseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				MainDashboard.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
+				MainDashboard.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
+				JOptionPane.showMessageDialog(null, "Successfully Saved!");
+				dispose();
+			}
+		});
+		saveCloseButton.setBounds(565, 212, 155, 40);
+		contentPanel.add(saveCloseButton);
 	}
 }
