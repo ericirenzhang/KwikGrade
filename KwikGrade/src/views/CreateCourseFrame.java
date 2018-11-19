@@ -65,6 +65,7 @@ public class CreateCourseFrame extends JDialog {
 				courseTerm = createFromExisting.getCourseTerm();
 				courseTitle = createFromExisting.getCourseTitle();
 				importedStudentsList = createFromExisting.getImportedStudentsList();
+				hasCreatedNewCourse = createFromExisting.getHasCreatedNewCourse();
 
 				dispose();
 

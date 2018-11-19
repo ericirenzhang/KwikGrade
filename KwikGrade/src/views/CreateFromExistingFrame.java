@@ -13,17 +13,24 @@ import java.util.Scanner;
 
 import views.MainDashboard;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import models.Course;
+import models.KwikGrade;
+import models.OverallGrade;
 import models.Student;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 
 public class CreateFromExistingFrame extends JDialog {
 
@@ -36,8 +43,32 @@ public class CreateFromExistingFrame extends JDialog {
 	private String courseTerm;
 	private String courseTitle;
 	private String filePath;
+	private OverallGrade clonedGradingScheme;
+	private DefaultListModel DLM;
+	private JList cloneCourseList;
+	
+	private boolean hasCreatedNewCourse = false;
 
 	private ArrayList<Student> importedStudentList = new ArrayList<>();
+	
+	/**
+	 * Pulls active course names for display in dynamic Jlist
+	 * @param courseList
+	 * @return Default List Model
+	 */
+	public DefaultListModel loadCourseList(ArrayList<Course> courseList) {
+		DLM = new DefaultListModel();
+		for(int i = 0; i < courseList.size(); i++) {
+			DLM.addElement(courseList.get(i).getCourseNum()+" "+courseList.get(i).getCourseTerm()+" "+courseList.get(i).getCourseTitle());
+		}
+		return DLM;
+	}
+	
+	public OverallGrade getGradeScheme(ArrayList<Course> courseList, int selectedCourse) {
+		OverallGrade gradeScheme = courseList.get(selectedCourse).getCourseDefaultGradeScheme();
+		return gradeScheme;
+	}
+	
 	/**
 	 * Launch the application.
 	 */
@@ -55,126 +86,143 @@ public class CreateFromExistingFrame extends JDialog {
 	 * Create the dialog.
 	 */
 	public CreateFromExistingFrame() {
-		setBounds(100, 100, 492, 748);
+		setBounds(100, 100, 595, 748);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
 		courseNumField = new JTextField();
-		courseNumField.setBounds(164, 29, 297, 36);
+		courseNumField.setBounds(222, 29, 343, 36);
 		contentPanel.add(courseNumField);
 		courseNumField.setColumns(10);
 		
 		courseTermField = new JTextField();
 		courseTermField.setColumns(10);
-		courseTermField.setBounds(164, 78, 297, 36);
+		courseTermField.setBounds(222, 78, 343, 36);
 		contentPanel.add(courseTermField);
 		
 		courseTitleField = new JTextField();
 		courseTitleField.setColumns(10);
-		courseTitleField.setBounds(164, 127, 297, 36);
+		courseTitleField.setBounds(222, 127, 343, 36);
 		contentPanel.add(courseTitleField);
+		
+		JLabel courseNumberLabel = new JLabel("Course Number (required)");
+		courseNumberLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		courseNumberLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+		courseNumberLabel.setBounds(12, 33, 187, 26);
+		contentPanel.add(courseNumberLabel);
+		
+		JLabel courseTermLabel = new JLabel("Course Term (required)");
+		courseTermLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+		courseTermLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		courseTermLabel.setBounds(12, 82, 187, 26);
+		contentPanel.add(courseTermLabel);
+		
+		JLabel courseTitleLabel = new JLabel("Course Title (required)");
+		courseTitleLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+		courseTitleLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		courseTitleLabel.setBounds(12, 131, 187, 26);
+		contentPanel.add(courseTitleLabel);
+		
+		// Hacky fix to get JLabel to go across multiple lines using HTML.
+		JLabel importNowLabel = new JLabel("<html>Add students by importing now.<br/>(Or add them manually later)</html>");
+		importNowLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+		importNowLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		importNowLabel.setBounds(167, 533, 243, 36);
+		contentPanel.add(importNowLabel);
+		
+		// Bottom half of JFrame for File browsing/importing Students.
+		contentPanel.add(new JSeparator());
+		JButton browseButton = new JButton("Browse File Path of Student Text File...");
+		browseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		browseButton.setBounds(79, 573, 405, 36);
+		browseButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+
+				// For File
+				fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				fileChooser.setAcceptAllFileFilterUsed(false);
+
+				int userChoice = fileChooser.showOpenDialog(null);
+				if (userChoice == JFileChooser.APPROVE_OPTION) {
+					String studentTextFilePath = fileChooser.getSelectedFile().toString();
+					studentFilepathField.setText(studentTextFilePath);
+				}
+			}
+		});
+		contentPanel.add(browseButton);
 		
 		studentFilepathField = new JTextField();
 		studentFilepathField.setColumns(10);
-		studentFilepathField.setBounds(123, 568, 351, 36);
+		studentFilepathField.setBounds(79, 617, 405, 36);
+		studentFilepathField.setEditable(false);
 		contentPanel.add(studentFilepathField);
-		
-		JLabel courseNumberLabel = new JLabel("Course Number");
-		courseNumberLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		courseNumberLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-		courseNumberLabel.setBounds(12, 33, 140, 26);
-		contentPanel.add(courseNumberLabel);
-		
-		JLabel courseTermLabel = new JLabel("Course Term");
-		courseTermLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-		courseTermLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		courseTermLabel.setBounds(12, 82, 140, 26);
-		contentPanel.add(courseTermLabel);
-		
-		JLabel courseTitleLabel = new JLabel("Course Title");
-		courseTitleLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-		courseTitleLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		courseTitleLabel.setBounds(12, 131, 140, 26);
-		contentPanel.add(courseTitleLabel);
-		
-		JButton importStudentsButton = new JButton("Import Students from Text File");
-		importStudentsButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				courseNum = courseNumField.getText();
-				courseTerm = courseTermField.getText();
-				courseTitle = courseTitleField.getText();
-				filePath = studentFilepathField.getText();
-
-				addImportedStudents(filePath);
-
-//				bulkAddStudents = true;
-				dispose();
-				
-			}
-		});
-		importStudentsButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		importStudentsButton.setBounds(110, 519, 267, 36);
-		contentPanel.add(importStudentsButton);
-		
-		JButton addStudentManualButton = new JButton("Add Students Manually Later");
-		addStudentManualButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				courseNum = courseNumField.getText();
-				courseTerm = courseTermField.getText();
-				courseTitle = courseTitleField.getText();
-//				bulkAddStudents = false;
-				dispose();
-			}
-		});
-		addStudentManualButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		addStudentManualButton.setBounds(110, 617, 267, 36);
-		contentPanel.add(addStudentManualButton);
-		
-		JLabel filePathLabel = new JLabel("Filepath");
-		filePathLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-		filePathLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		filePathLabel.setBounds(22, 567, 89, 36);
-		contentPanel.add(filePathLabel);
-		
-		JScrollPane courseCloneScrollPane = new JScrollPane();
-		courseCloneScrollPane.setBounds(22, 231, 439, 275);
-		contentPanel.add(courseCloneScrollPane);
-		
-		//TODO: need to implement dynamic generation of course to select
-		//to be done after design decisions on how we store active courses complete
-		JList courseCloneList = new JList();
-		courseCloneScrollPane.setViewportView(courseCloneList);
 		
 		
 		JLabel courseCloneSelectLabel = new JLabel("Select a Course to Clone");
 		courseCloneSelectLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		courseCloneSelectLabel.setBounds(141, 193, 217, 25);
+		courseCloneSelectLabel.setBounds(193, 192, 217, 25);
 		contentPanel.add(courseCloneSelectLabel);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(34, 216, 499, 304);
+		contentPanel.add(scrollPane);
+		
+		JList cloneCourseList = new JList();
+		scrollPane.setViewportView(cloneCourseList);
+		cloneCourseList.setModel(loadCourseList(MainDashboard.getKwikGrade().getActiveCourses()));
+		System.out.println("HELLO");
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK"); //think this can be deleted later
+				//TODO: Need to implement feature to actually clone the courses
+				//Need to implement methods to get the grading scheme
+				JButton okButton = new JButton("OK"); 
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						courseNum = courseNumField.getText();
 						courseTerm = courseTermField.getText();
 						courseTitle = courseTitleField.getText();
-//						bulkAddStudents = false;
-						dispose();
+						filePath = studentFilepathField.getText();
 						
+						int cloneIndex = cloneCourseList.getSelectedIndex();
+						if(cloneIndex == -1) {
+							JOptionPane.showMessageDialog(null, "You have not selected a course!");
+							return;
+						}
+						
+						clonedGradingScheme = getGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex);
+
+						if(courseNum.equals("") || courseTerm.equals("") || courseTitle.equals("")) {
+							JOptionPane.showMessageDialog(null, "Must enter in required information!");
+							return;
+						}
+
+						if(!filePath.equals("")) {
+							addImportedStudents(filePath);
+						}
+
+						hasCreatedNewCourse = true;
+
+						dispose();
 					}
 				});
-				okButton.setActionCommand("OK"); //think this can be deleted later
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel"); //think this can be deleted later
-				cancelButton.setActionCommand("Cancel");
+				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
 				buttonPane.add(cancelButton);
 			}
 		}
@@ -219,6 +267,7 @@ public class CreateFromExistingFrame extends JDialog {
 		}
 	}
 
+
 	//=============================
 	// Getters
 	//=============================
@@ -237,6 +286,9 @@ public class CreateFromExistingFrame extends JDialog {
 	}
 	public String getFilePath() {
 		return filePath;
+	}
+	public boolean getHasCreatedNewCourse() {
+		return this.hasCreatedNewCourse;
 	}
 	
 	//=============================
