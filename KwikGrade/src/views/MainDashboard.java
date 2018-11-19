@@ -26,7 +26,7 @@ public class MainDashboard extends JFrame {
 	DefaultListModel DLM;
 
 	private JPanel contentPane;
-	private KwikGrade kwikGrade;
+	private static KwikGrade kwikGrade;
 	private JList activeCourseDisplayList;
 	private JList closedCourseDisplayList;
 
@@ -50,7 +50,7 @@ public class MainDashboard extends JFrame {
 	 * Saves all courses and their state to a local file.
 	 * @param courseList
 	 */
-	public void saveFile(ArrayList<Course> courseList, String saveFileName) {
+	public static void saveFile(ArrayList<Course> courseList, String saveFileName) {
 		FileOutputStream fileOutputStream;
 		ObjectOutputStream objectOutputStream;
 
@@ -74,7 +74,7 @@ public class MainDashboard extends JFrame {
 	 * @param saveFileName
 	 * @return ArrayList of Courses from saved file
 	 */
-	public ArrayList<Course> loadFile(String saveFileName) {
+	public static ArrayList<Course> loadFile(String saveFileName) {
 		ArrayList<Course> savedCoursesList = new ArrayList<>();
 		FileInputStream fileInputStream;
 		ObjectInputStream objectInputStream;
@@ -156,7 +156,7 @@ public class MainDashboard extends JFrame {
 				}
 			}
 		});
-		addCourseButton.setBounds(480, 13, 166, 71);
+		addCourseButton.setBounds(478, 102, 166, 71);
 		contentPane.add(addCourseButton);
 		
 		// Closing courses
@@ -189,7 +189,7 @@ public class MainDashboard extends JFrame {
 				updateCourseDisplayModel();
 			}
 		});
-		closeCourseButton.setBounds(480, 97, 166, 71);
+		closeCourseButton.setBounds(478, 186, 166, 71);
 		contentPane.add(closeCourseButton);
 
 		// Course saving
@@ -231,12 +231,46 @@ public class MainDashboard extends JFrame {
 			}
 		});
 		deleteCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		deleteCourseButton.setBounds(480, 186, 166, 71);
+		deleteCourseButton.setBounds(478, 268, 166, 71);
 		contentPane.add(deleteCourseButton);
+		
+		JButton manageCourseButton = new JButton("Manage Course");
+		manageCourseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int manageIndex = activeCourseDisplayList.getSelectedIndex();
+				try {
+					CourseOverviewFrame courseOverview = new CourseOverviewFrame(kwikGrade.getActiveCourses().get(manageIndex));
+					courseOverview.setModal(true);
+					courseOverview.setVisible(true);
+					
+					
+				}
+				catch (Exception eManage) {
+					JOptionPane.showMessageDialog(null, "No course is selected!");
+				}
+				
+			}
+		});
+		manageCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		manageCourseButton.setBounds(478, 20, 166, 71);
+		contentPane.add(manageCourseButton);
 	}
 
 	public void updateCourseDisplayModel() {
 		activeCourseDisplayList.setModel(loadCourseList(kwikGrade.getActiveCourses()));
 		closedCourseDisplayList.setModel(loadCourseList(kwikGrade.getClosedCourses()));
 	}
+	
+	public static String getActiveSaveFileName() {
+		return SERIALIZED_FILE_NAME_ACTIVE;
+	}
+	
+	public static String getClosedSaveFileName() {
+		return SERIALIZED_FILE_NAME_CLOSED;
+	}
+	
+	public static KwikGrade getKwikGrade() {
+		return kwikGrade;
+	}
+	
 }
