@@ -10,7 +10,7 @@ public class OverallGrade implements Serializable {
 	private double overallGrade;
 	private int numOfCategories; //The user does not enter this value. Need to calculate from GUI
 	private ArrayList<CourseCategory> categoryList = new ArrayList<CourseCategory>();
-	
+
 	//generic constructor
 	public OverallGrade() {
 		overallGrade = 0.0;
