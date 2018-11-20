@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -49,6 +51,7 @@ public class AddStudentFrame extends JDialog {
 
 	// TODO: replace this with actual course information
 	Course dummyCourse = new Course("CS591",  "F18", "Java Intro", new OverallGrade(), new OverallGrade());
+
 	SubCategory subCat1, subCat2;
 	ArrayList<SubCategory> subCatList1 = new ArrayList<SubCategory>();
 	ArrayList<SubCategory> subCatList2 = new ArrayList<SubCategory>();
@@ -80,7 +83,6 @@ public class AddStudentFrame extends JDialog {
 	public AddStudentFrame() {
 
 		//TODO: remove this later. Dummy data with 2 categories. One with 2 sub categories and the other with no sub category (handled as having one sub category) ***
-		
 		n = 1; //To keep track of number of rows to add in the grading scheme panel
 		
 		subCat1 = new SubCategory("hw1", 0.4, 0.0, 40.0, 50.0);
@@ -108,6 +110,7 @@ public class AddStudentFrame extends JDialog {
 		
 		GridBagConstraints frameConstraints = new GridBagConstraints();
 		
+<<<<<<< HEAD
 		fNameField = new JTextField();
 		fNameField.setBounds(53, 60, 130, 26);
 		contentPanel.add(fNameField);
