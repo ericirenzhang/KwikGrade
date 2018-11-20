@@ -8,7 +8,12 @@ public class CourseCategory implements Serializable {
 	double weight;
 	int numOfSubCat; // We need to determine the number of sub categories each Category has through the GUI
 	ArrayList<SubCategory> subCategoryList;
-
+	
+	public CourseCategory() {
+		this.name = "";
+		this.weight = 0.0;
+		this.subCategoryList = new ArrayList<SubCategory>();
+	}
 	public CourseCategory(String name, double weight, ArrayList<SubCategory> subCategoryList) {
 		this.name = name;
 		this.weight = weight;
