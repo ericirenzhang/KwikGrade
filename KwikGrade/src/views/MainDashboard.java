@@ -21,9 +21,10 @@ import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 
 public class MainDashboard extends JFrame {
-	DefaultListModel DLM;
+	private DefaultListModel DLM;
 
 	private JPanel contentPane;
 	private static KwikGrade kwikGrade;
@@ -234,8 +235,8 @@ public class MainDashboard extends JFrame {
 		deleteCourseButton.setBounds(478, 268, 166, 71);
 		contentPane.add(deleteCourseButton);
 		
-		JButton manageCourseButton = new JButton("Manage Course");
-		manageCourseButton.addActionListener(new ActionListener() {
+		JButton openCourseButton = new JButton("Open Course");
+		openCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int manageIndex = activeCourseDisplayList.getSelectedIndex();
 				try {
@@ -251,9 +252,9 @@ public class MainDashboard extends JFrame {
 				
 			}
 		});
-		manageCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		manageCourseButton.setBounds(478, 20, 166, 71);
-		contentPane.add(manageCourseButton);
+		openCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		openCourseButton.setBounds(478, 20, 166, 71);
+		contentPane.add(openCourseButton);
 	}
 
 	public void updateCourseDisplayModel() {
