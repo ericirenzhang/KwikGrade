@@ -43,7 +43,8 @@ public class CreateFromExistingFrame extends JDialog {
 	private String courseTerm;
 	private String courseTitle;
 	private String filePath;
-	private OverallGrade clonedGradingScheme;
+	private OverallGrade clonedUGGradingScheme;
+	private OverallGrade clonedGradGradingScheme;
 	private DefaultListModel DLM;
 	private JList cloneCourseList;
 	
@@ -64,22 +65,14 @@ public class CreateFromExistingFrame extends JDialog {
 		return DLM;
 	}
 	
-	public OverallGrade getGradeScheme(ArrayList<Course> courseList, int selectedCourse) {
-		OverallGrade gradeScheme = courseList.get(selectedCourse).getCourseDefaultGradeScheme();
+	public OverallGrade getUGGradeScheme(ArrayList<Course> courseList, int selectedCourse) {
+		OverallGrade gradeScheme = courseList.get(selectedCourse).getCourseUnderGradDefaultGradeScheme();
 		return gradeScheme;
 	}
 	
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			CreateFromExistingFrame dialog = new CreateFromExistingFrame();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public OverallGrade getGradGradeScheme(ArrayList<Course> courseList, int selectedCourse) {
+		OverallGrade gradeScheme = courseList.get(selectedCourse).getCourseGradDefaultGradeScheme();
+		return gradeScheme;
 	}
 
 	/**
@@ -196,7 +189,8 @@ public class CreateFromExistingFrame extends JDialog {
 							return;
 						}
 						
-						clonedGradingScheme = getGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex);
+						clonedUGGradingScheme = getUGGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex);
+						clonedGradGradingScheme = getGradGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex);
 
 						if(courseNum.equals("") || courseTerm.equals("") || courseTitle.equals("")) {
 							JOptionPane.showMessageDialog(null, "Must enter in required information!");

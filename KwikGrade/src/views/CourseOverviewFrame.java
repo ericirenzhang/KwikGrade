@@ -146,6 +146,9 @@ public class CourseOverviewFrame extends JDialog {
 		JButton manageCategoryButton = new JButton("Manage Categories");
 		manageCategoryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//Temp code just to have it shown that it works
+				System.out.println(managedCourse.getCourseGradDefaultGradeScheme().getCourseCategoryList().get(0).getName());
+				System.out.println(managedCourse.getCourseGradDefaultGradeScheme().getCourseCategoryList().get(1).getName());
 			}
 		});
 		manageCategoryButton.setBounds(565, 161, 155, 40);
