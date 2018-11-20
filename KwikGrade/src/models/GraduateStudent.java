@@ -1,4 +1,4 @@
-import models.Student;
+package models;
 
 public class GraduateStudent extends Student {
 	String status;

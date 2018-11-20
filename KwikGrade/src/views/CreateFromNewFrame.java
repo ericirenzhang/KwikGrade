@@ -1,6 +1,8 @@
 package views;
 
+import models.GraduateStudent;
 import models.Student;
+import models.UndergraduateStudent;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -180,7 +182,13 @@ public class CreateFromNewFrame extends JDialog {
 					String buId = splitLine.get(3);
 					String email = splitLine.get(4);
 					String standing = splitLine.get(5);
-					this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
+					if(standing.equals("Undergraduate")) {
+						this.importedStudentList.add(new UndergraduateStudent(fName, middleInitial, lName, buId, email, "Undergraduate"));
+					} else if (standing.equals("Graduate")) {
+						this.importedStudentList.add(new GraduateStudent(fName, middleInitial, lName, buId, email, "Graduate"));
+ 					} else {
+						this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
+					}
 				}
 				else { //if no middle initial, then 5 items in string
 					String fName = splitLine.get(0);
@@ -189,7 +197,13 @@ public class CreateFromNewFrame extends JDialog {
 					String buId = splitLine.get(2);
 					String email = splitLine.get(3);
 					String standing = splitLine.get(4);
-					this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
+					if(standing.equals("Undergraduate")) {
+						this.importedStudentList.add(new UndergraduateStudent(fName, middleInitial, lName, buId, email, "Undergraduate"));
+					} else if (standing.equals("Graduate")) {
+						this.importedStudentList.add(new GraduateStudent(fName, middleInitial, lName, buId, email, "Graduate"));
+					} else {
+						this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
+					}
 				}
 			}
 
