@@ -46,8 +46,9 @@ public class AddStudentFrame extends JDialog {
 	private JButton btnSave;
 	private JButton btnBack;
 	private JButton btnLoadGradingScheme;
+	private Student newStudent = new Student("","","","","");
 	
-	Course c = new Course("CS591",  "F18", "Java Intro");
+	Course c = new Course("CS591",  "F18", "Java Intro", new OverallGrade(), new OverallGrade());
 	SubCategory subCat1, subCat2;
 	ArrayList<SubCategory> subCatList1 = new ArrayList<SubCategory>();
 	ArrayList<SubCategory> subCatList2 = new ArrayList<SubCategory>();
@@ -179,12 +180,14 @@ public class AddStudentFrame extends JDialog {
 			btnSave = new JButton("Save");
 			btnSave.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					Student newStudent;
+					//Student newStudent;
 					if(textFieldMiddle.getText() != null)
 						newStudent = new Student(textFieldFname.getText(),textFieldMiddle.getText(),textFieldLname.getText(),textFieldID.getText(),textFieldEmail.getText());
 					else
 						newStudent = new Student(textFieldFname.getText(),"",textFieldLname.getText(),textFieldID.getText(),textFieldEmail.getText());
+					
 					c.setActiveStudents(newStudent);
+					
 				}
 			});
 			btnSave.setBounds(597, 85, 117, 29);
@@ -194,8 +197,8 @@ public class AddStudentFrame extends JDialog {
 			btnBack = new JButton("Back");
 			btnBack.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					 new MainDashboard().setVisible(true); //This actually has to go back to Course Management page 
-				        dispose();
+					 //new MainDashboard().setVisible(true); //This actually has to go back to Course Management page 
+					dispose();
 				}
 			});
 			btnBack.setBounds(597, 124, 117, 29);
@@ -295,5 +298,11 @@ public class AddStudentFrame extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+	}
+	//==========================
+	// Getters
+	//==========================
+	public Student getNewSudent() {
+		return this.newStudent;
 	}
 }

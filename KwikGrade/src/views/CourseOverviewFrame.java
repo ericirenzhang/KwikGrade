@@ -19,6 +19,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -30,18 +31,34 @@ public class CourseOverviewFrame extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTable studentDisplayTable;
-	private DefaultTableModel studentTableModel;
+	private DefaultTableModel studentTableModel = new DefaultTableModel();
 	private DefaultTableModel statsTableModel;
 	private static Course managedCourse;
 	private int selectedRow;
 	private JTable kwikStatsTable;
 	
-	public DefaultTableModel displayStudents(Course course) {
-		for(int i = 0; i < course.getActiveStudents().size(); i++) {
-			studentTableModel.addRow(new Object[] {course.getActiveStudents().get(i).getfName(),course.getActiveStudents().get(i).getMiddleInitial(), course.getActiveStudents().get(i).getlName()} );
+	public DefaultTableModel displayStudents(ArrayList<Student> Students) {
+		studentTableModel = new DefaultTableModel();
+		Object[] title = {"First Name", "Middle Initial", "Last Name", "Grade"};
+		studentTableModel.setColumnIdentifiers(title);
+		for(int i = 0; i < Students.size(); i++) {
+			studentTableModel.addRow(new Object[] {Students.get(i).getfName(),Students.get(i).getMiddleInitial(), Students.get(i).getlName()} );
 		}
 		return studentTableModel;
 	}
+	
+//	public DefaultTableModel displayStudents(Course course) {
+//		for(int i = 0; i < course.getActiveStudents().size(); i++) {
+//			studentTableModel.addRow(new Object[] {course.getActiveStudents().get(i).getfName(),course.getActiveStudents().get(i).getMiddleInitial(), course.getActiveStudents().get(i).getlName()} );
+//		}
+//		return studentTableModel;
+//	}
+	
+	public void updateStudentTable() {
+		studentDisplayTable.setModel(displayStudents(managedCourse.getActiveStudents()));
+	}
+	
+	
 	
 	public DefaultTableModel displayKwikStats(Course course) {
 //		statsTableModel.addRow(new Object[] {"Mean", course.calcMean()});
@@ -75,9 +92,8 @@ public class CourseOverviewFrame extends JDialog {
 		contentPanel.add(scrollPane);
 
 		//Creates the titles for the table model
-		studentTableModel = new DefaultTableModel();
-		Object[] title = {"First Name", "Middle Initial", "Last Name", "Grade"};
-		studentTableModel.setColumnIdentifiers(title);
+		//studentTableModel = new DefaultTableModel();
+
 
 		//Creates the table itself
 		studentDisplayTable = new JTable();
@@ -86,6 +102,7 @@ public class CourseOverviewFrame extends JDialog {
 		studentDisplayTable.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		studentDisplayTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		ListSelectionModel listModel = studentDisplayTable.getSelectionModel();
+		//this is check to make sure I actually selected something
 		listModel.addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
@@ -98,7 +115,8 @@ public class CourseOverviewFrame extends JDialog {
 				}
 			}
 		});
-		studentDisplayTable.setModel(displayStudents(managedCourse));
+		
+		updateStudentTable();
 
 		statsTableModel = new DefaultTableModel();
 		Object[] statsTableTitle = {"Kwikstats"};
@@ -111,12 +129,16 @@ public class CourseOverviewFrame extends JDialog {
 		contentPanel.add(kwikStatsTable);
 		kwikStatsTable.setModel(displayKwikStats(managedCourse));
 
+		//button to add student
 		JButton addStudentButton = new JButton("Add Student");
 		addStudentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				AddStudentFrame addStudent = new AddStudentFrame();
-//				addStudent.setModal(true);
-//				addStudent.setVisible(true);
+				AddStudentFrame addStudent = new AddStudentFrame();
+				addStudent.setModal(true);
+				addStudent.setVisible(true);
+				Student studentToAdd = addStudent.getNewSudent();
+				managedCourse.addStudent(studentToAdd);
+				updateStudentTable();
 			}
 		});
 		addStudentButton.setBounds(565, 11, 155, 40);
