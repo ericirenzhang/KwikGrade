@@ -11,12 +11,6 @@ public class OverallGrade implements Serializable {
 	private int numOfCategories; //The user does not enter this value. Need to calculate from GUI
 	private ArrayList<CourseCategory> categoryList = new ArrayList<CourseCategory>();
 	
-	public OverallGrade(double overallGrade, int numOfCategories, ArrayList<CourseCategory> categoryList) {
-		this.overallGrade = overallGrade;
-		this.numOfCategories = numOfCategories;
-		this.categoryList = categoryList;
-	}
-	
 	//generic constructor
 	public OverallGrade() {
 		overallGrade = 0.0;
