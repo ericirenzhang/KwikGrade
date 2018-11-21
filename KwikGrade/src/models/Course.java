@@ -152,5 +152,9 @@ public class Course implements Serializable {
 	public void setCourseGradDefaultGradeScheme(OverallGrade gradingScheme) {
 		this.courseGradDefaultGradeScheme = gradingScheme;
 	}
+	
+	public void setActiveStudents(Student activeStudents) {
+		this.activeStudents.add(activeStudents);
+	}
 
 }

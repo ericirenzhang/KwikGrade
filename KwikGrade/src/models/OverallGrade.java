@@ -11,6 +11,12 @@ public class OverallGrade implements Serializable {
 	private int numOfCategories; //The user does not enter this value. Need to calculate from GUI
 	private ArrayList<CourseCategory> categoryList = new ArrayList<CourseCategory>();
 	
+	public OverallGrade(double overallGrade, int numOfCategories, ArrayList<CourseCategory> categoryList) {
+		this.overallGrade = overallGrade;
+		this.numOfCategories = numOfCategories;
+		this.categoryList = categoryList;
+	}
+	
 	//generic constructor
 	public OverallGrade() {
 		overallGrade = 0.0;
@@ -24,7 +30,6 @@ public class OverallGrade implements Serializable {
 		this.numOfCategories = numOfCategories;
 		this.categoryList = categoryList;
 	}
-	
 	//constructor if someone wants to define the categorylist
 	public OverallGrade(ArrayList<CourseCategory> categoryList) {
 		this.overallGrade = 0.0;
@@ -37,9 +42,7 @@ public class OverallGrade implements Serializable {
 		CourseCategory categoryToAdd = new CourseCategory(name, weight);
 		this.categoryList.add(categoryToAdd);
 	}
-	
-	
-	  
+
 	//checks if the weights of all the CourseCategories equal to 1.0
 	public boolean checkSumOfWeight(ArrayList<CourseCategory> categoryList) {
 		double totalWeight = 0.0;
@@ -96,3 +99,4 @@ public class OverallGrade implements Serializable {
 	}
 
 }
+
