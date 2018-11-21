@@ -110,7 +110,6 @@ public class AddStudentFrame extends JDialog {
 		
 		GridBagConstraints frameConstraints = new GridBagConstraints();
 		
-<<<<<<< HEAD
 		fNameField = new JTextField();
 		fNameField.setBounds(53, 60, 130, 26);
 		contentPanel.add(fNameField);

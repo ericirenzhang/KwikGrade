@@ -161,5 +161,4 @@ public class Course implements Serializable {
 		this.activeStudents.add(activeStudents);
 	}
 
-
 }
