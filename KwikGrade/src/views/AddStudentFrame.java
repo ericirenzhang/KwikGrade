@@ -47,7 +47,7 @@ public class AddStudentFrame extends JDialog {
 	private JButton btnBack;
 	private JButton btnLoadGradingScheme;
 	
-	Course c = new Course();
+	Course c = new Course("CS591",  "F18", "Java Intro");
 	SubCategory subCat1, subCat2;
 	ArrayList<SubCategory> subCatList1 = new ArrayList<SubCategory>();
 	ArrayList<SubCategory> subCatList2 = new ArrayList<SubCategory>();
@@ -90,7 +90,7 @@ public class AddStudentFrame extends JDialog {
 		subCatList1.add(subCat2);
 		courseCat1 = new CourseCategory("HW", 0.3, subCatList1);
 		
-		subCat1 = new SubCategory("Final1", 0.7, 0.0, 80.0, 100.0); //In future, have to handle Categories with no sub categories
+		subCat1 = new SubCategory("final1", 0.7, 0.0, 80.0, 100.0); //In future, have to handle Categories with no sub categories
 		subCatList2.add(subCat1);
 		courseCat2 = new CourseCategory("Final", 0.7, subCatList2);
 		courseCatList.add(courseCat1);
