@@ -7,55 +7,57 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class OverallGrade implements Serializable {
-	double overallGrade;
-	int numOfCategories; //The user does not enter this value. Need to calculate from GUI
-	ArrayList<CourseCategory> categoryList;
-	
-	public OverallGrade() {
-		overallGrade = 0.0;
-		numOfCategories = 0;
-		categoryList = new ArrayList<CourseCategory>();
-	}
+	private double overallGrade;
+	private int numOfCategories; //The user does not enter this value. Need to calculate from GUI
+	private ArrayList<CourseCategory> categoryList = new ArrayList<CourseCategory>();
 	
 	public OverallGrade(double overallGrade, int numOfCategories, ArrayList<CourseCategory> categoryList) {
 		this.overallGrade = overallGrade;
 		this.numOfCategories = numOfCategories;
 		this.categoryList = categoryList;
 	}
-	//==========================
-	// Getters
-	//==========================
 	
-	public double getOverallGrade() {
-		return this.overallGrade;
+	//generic constructor
+	public OverallGrade() {
+		overallGrade = 0.0;
+		numOfCategories = 0;
+		categoryList = new ArrayList<CourseCategory>();
 	}
 	
-	public int getNumOfCategories() {
-		return this.numOfCategories;
-	}
-	
-	public ArrayList<CourseCategory> getCategoryList() {
-		return this.categoryList;
-	}
-	
-	//==========================
-	// Setters
-	//==========================
-	
-	public void setOverallGrade(double overallGrade) {
+	//constructor if someone wants to define all variables
+	public OverallGrade(double overallGrade, int numOfCategories, ArrayList<CourseCategory> categoryList) {
 		this.overallGrade = overallGrade;
-	}
-	
-	public void setNumOfCategories(int numOfCategories) {
 		this.numOfCategories = numOfCategories;
+		this.categoryList = categoryList;
+	}
+	//constructor if someone wants to define the categorylist
+	public OverallGrade(ArrayList<CourseCategory> categoryList) {
+		this.overallGrade = 0.0;
+		this.numOfCategories = categoryList.size();
+		this.categoryList = categoryList;
 	}
 	
-	public void setCategoryList(CourseCategory categoryList) {
-		this.categoryList.add(categoryList);
+	//adds a CourseCategory object to the OverallGrade object
+	public void addCourseCategory(String name, double weight) {
+		CourseCategory categoryToAdd = new CourseCategory(name, weight);
+		this.categoryList.add(categoryToAdd);
+	}
+
+	//checks if the weights of all the CourseCategories equal to 1.0
+	public boolean checkSumOfWeight(ArrayList<CourseCategory> categoryList) {
+		double totalWeight = 0.0;
+		for(int i = 0; i < categoryList.size(); i++) {
+			totalWeight = totalWeight + (categoryList.get(i).getWeight());
+		}
+		if(totalWeight == 1.0) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
-	//Overall Grade calculator
-	
+	//computes the overall grade for the course
 	public double calcOverallGrade() {
 		int n = getNumOfCategories();
 		for(int i=0;i<n;i++){
@@ -69,5 +71,32 @@ public class OverallGrade implements Serializable {
 		}
 		return overallGrade;
 	}
+	
+	//==========================
+	// Getters
+	//==========================
+	public double getOverallGrade() {
+		return this.overallGrade;
+	}
+	
+	public int getNumOfCategories(){
+		return this.numOfCategories;
+	}
+	
+	public ArrayList<CourseCategory> getCourseCategoryList(){
+		return this.categoryList;
+	}
+	
+	//==========================
+	// Setters
+	//==========================
+	public void setOverallGrade(double overallGrade) {
+		this.overallGrade = overallGrade;
+	}
+	
+	public void setNumOfCategories(int numOfCategories){
+		this.numOfCategories = numOfCategories;
+	}
+
 }
 

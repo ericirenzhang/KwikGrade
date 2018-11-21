@@ -1,6 +1,7 @@
 package views;
 
 import models.GraduateStudent;
+import models.OverallGrade;
 import models.Student;
 import models.UndergraduateStudent;
 
@@ -9,6 +10,8 @@ import java.awt.FlowLayout;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -18,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class CreateFromNewFrame extends JDialog {
 
@@ -35,12 +40,25 @@ public class CreateFromNewFrame extends JDialog {
 
 	private ArrayList<Student> importedStudentList = new ArrayList<>();
 	private JPanel panel1;
+	
+	//attributes to store the Course Category lists
+	private JTable ugCourseCategoryTable;
+	private int ugTableModelRows = 2;
+	private DefaultTableModel ugTableModel = new DefaultTableModel();
+	private JTable gradCourseCategoryTable;
+	private int gradTableModelRows = 2;
+	private DefaultTableModel gradTableModel = new DefaultTableModel();
+	
+	//initializes the overallgrade objects for undergrads and graduates
+	private OverallGrade ugOverallGrade = new OverallGrade();
+	private OverallGrade gradOverallGrade = new OverallGrade();
 
 	/**
 	 * Create the dialog.
 	 */
 	public CreateFromNewFrame() {
-		setBounds(100, 100, 583, 509);
+
+		setBounds(100, 100, 585, 687);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -121,6 +139,95 @@ public class CreateFromNewFrame extends JDialog {
 		filePathLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		filePathLabel.setBounds(12, 280, 89, 36);
 		contentPanel.add(filePathLabel);
+		
+		JScrollPane underGraduateScrollPane = new JScrollPane();
+		underGraduateScrollPane.setBounds(12, 362, 249, 180);
+		contentPanel.add(underGraduateScrollPane);
+		
+		ugCourseCategoryTable = new JTable();
+		ugCourseCategoryTable.setRowHeight(25);
+		underGraduateScrollPane.setViewportView(ugCourseCategoryTable);
+		dispCourseCategoryTable( ugTableModel, ugCourseCategoryTable, ugTableModelRows);
+		
+		JScrollPane graduateScrollPane = new JScrollPane();
+		graduateScrollPane.setBounds(304, 361, 246, 181);
+		contentPanel.add(graduateScrollPane);
+		
+		gradCourseCategoryTable = new JTable();
+		gradCourseCategoryTable.setRowHeight(25);
+		graduateScrollPane.setViewportView(gradCourseCategoryTable);
+		gradCourseCategoryTable.setModel(gradTableModel);
+		dispCourseCategoryTable( gradTableModel, gradCourseCategoryTable, gradTableModelRows);
+
+		
+		JLabel ugCourseCategoryLabel = new JLabel("Undergraduate Grading Scheme");
+		ugCourseCategoryLabel.setBounds(60, 344, 200, 14);
+		contentPanel.add(ugCourseCategoryLabel);
+		
+		JLabel gradCourseCategoryLabel = new JLabel("Graduate Grading Scheme");
+		gradCourseCategoryLabel.setBounds(361, 344, 158, 14);
+		contentPanel.add(gradCourseCategoryLabel);
+		
+		//Adds a row to the dynamic undergraduate table
+		//TODO: Think of a way so that the values are saved if the table changes
+		JButton ugAddRowButton = new JButton("Add Row");
+		ugAddRowButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ugTableModelRows = ugTableModelRows + 1;
+				dispCourseCategoryTable( ugTableModel, ugCourseCategoryTable, ugTableModelRows);
+				
+			}
+		});
+		ugAddRowButton.setBounds(12, 568, 115, 23);
+		contentPanel.add(ugAddRowButton);
+		
+		
+		//Removes a row from the Dynamic UnderGraduate Table
+		//TODO: Think of a way so that the values are saved if the table changes
+		JButton ugSubRowButton = new JButton("Subtract Row");
+		ugSubRowButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(ugTableModelRows > 1) {
+					ugTableModelRows = ugTableModelRows - 1;
+				}
+				else {
+					ugTableModelRows = ugTableModelRows;
+				}
+				dispCourseCategoryTable( ugTableModel, ugCourseCategoryTable, ugTableModelRows);
+				
+			}
+		});
+		ugSubRowButton.setBounds(140, 568, 121, 23);
+		contentPanel.add(ugSubRowButton);
+		
+		//Adds a row to the dynamic graduate table
+		//TODO: Think of a way so that the values are saved if the table changes
+		JButton gradAddRowButton = new JButton("Add Row");
+		gradAddRowButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				gradTableModelRows = gradTableModelRows + 1;
+				dispCourseCategoryTable( gradTableModel, gradCourseCategoryTable, gradTableModelRows);
+			}
+		});
+		gradAddRowButton.setBounds(304, 568, 115, 23);
+		contentPanel.add(gradAddRowButton);
+		
+		//Removes a row from the Dynamic Graduate Table
+		//TODO: Think of a way so that the values are saved if the table changes
+		JButton gradSubRowButton = new JButton("Subtract Row");
+		gradSubRowButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(gradTableModelRows > 1) {
+					gradTableModelRows = gradTableModelRows - 1;
+				}
+				else {
+					gradTableModelRows = gradTableModelRows;
+				}
+				dispCourseCategoryTable( gradTableModel, gradCourseCategoryTable, gradTableModelRows);
+			}
+		});
+		gradSubRowButton.setBounds(429, 568, 121, 23);
+		contentPanel.add(gradSubRowButton);
 
 		// Add OK and Cancel buttons
 		JPanel buttonPane = new JPanel();
@@ -133,7 +240,16 @@ public class CreateFromNewFrame extends JDialog {
 				courseTerm = courseTermField.getText();
 				courseTitle = courseTitleField.getText();
 				filePath = studentFilepathField.getText();
+				
+				//stops the cell edit listener
+				if(null != ugCourseCategoryTable.getCellEditor()) {
+					ugCourseCategoryTable.getCellEditor().stopCellEditing();
+				}
+				if(null != gradCourseCategoryTable.getCellEditor()) {
+					gradCourseCategoryTable.getCellEditor().stopCellEditing();
+				}
 
+				//checks for if required fields are blank
 				if(courseNum.equals("") || courseTerm.equals("") || courseTitle.equals("")) {
 					JOptionPane.showMessageDialog(null, "Must enter in required information!");
 					return;
@@ -141,6 +257,36 @@ public class CreateFromNewFrame extends JDialog {
 
 				if(!filePath.equals("")) {
 					addImportedStudents(filePath);
+				}
+				
+				//Parses through and grabs the name and weight 
+				for(int ugIndex = 0; ugIndex < ugTableModelRows; ugIndex++) {
+					try {
+					String ugCategoryName = ugCourseCategoryTable.getValueAt(ugIndex, 0).toString();
+					double ugCategoryWeight = Double.parseDouble(String.valueOf(ugCourseCategoryTable.getValueAt(ugIndex, 1)));
+					ugOverallGrade.addCourseCategory(ugCategoryName, ugCategoryWeight);
+					}
+					//tried to implement logic for a blank table...does not work...need to rethink
+					//TODO: Rethink logic for catching blank cells in a table
+					catch (Exception ugOverallGradeCreate) {
+						JOptionPane.showMessageDialog(null, "Make sure all Undergraduate Grading Scheme tables are filled!");
+						return;
+					}
+				}
+				
+				//Parses through and grabs the name and weight 
+				for(int gradIndex = 0; gradIndex < gradTableModelRows; gradIndex++) {
+					try {
+					String gradCategoryName = gradCourseCategoryTable.getValueAt(gradIndex, 0).toString();
+					double gradCategoryWeight = Double.parseDouble(String.valueOf(ugCourseCategoryTable.getValueAt(gradIndex, 1)));
+					gradOverallGrade.addCourseCategory(gradCategoryName, gradCategoryWeight);
+					}
+					//tried to implement logic for a blank table...does not work...need to rethink
+					//TODO: Rethink logic for catching blank cells in a table
+					catch (Exception gradOverallGradeCreate) {
+						JOptionPane.showMessageDialog(null, "Make sure all Graduate Grading Scheme tables are filled!");
+						return;
+					}
 				}
 
 				hasCreatedNewCourse = true;
@@ -159,6 +305,19 @@ public class CreateFromNewFrame extends JDialog {
 			}
 		});
 		buttonPane.add(cancelButton);
+	}
+
+	
+	/**
+	 * Dynamiclly displays the Course Category Table
+	 * Kept generic to allow for both UG and Grad to use
+	 * @param tableModel, table, tableRows
+	 */
+	public void dispCourseCategoryTable(DefaultTableModel tableModel, JTable table, int tableRows) {
+		tableModel = new DefaultTableModel(tableRows, 2);
+		Object[] gradeSchemeTableTitle = {"Category", "Weight"};
+		tableModel.setColumnIdentifiers(gradeSchemeTableTitle);
+		table.setModel(tableModel);
 	}
 
 	/**
@@ -235,6 +394,12 @@ public class CreateFromNewFrame extends JDialog {
 	public String getFilePath() {
 		return filePath;
 	}
+	public OverallGrade getUGOverallGrade() {
+		return ugOverallGrade;
+	}
+	public OverallGrade getGradOverallGrade() {
+		return gradOverallGrade;
+	}
 	public boolean getHasCreatedNewCourse() {
 		return this.hasCreatedNewCourse;
 	}
@@ -254,5 +419,11 @@ public class CreateFromNewFrame extends JDialog {
 	}
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
+	}
+	public void setUGOverallGrade(OverallGrade ugOverallGrade) {
+		this.ugOverallGrade = ugOverallGrade;
+	}
+	public void setGradOverallGrade(OverallGrade gradOverallGrade) {
+		this.gradOverallGrade = gradOverallGrade;
 	}
 }

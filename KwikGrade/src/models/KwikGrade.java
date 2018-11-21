@@ -18,13 +18,13 @@ public class KwikGrade {
      * @param courseTitle
      * @param importedStudentsList
      */
-    public void addCourse(String courseNum, String courseTerm, String courseTitle, ArrayList<Student> importedStudentsList) {
+    public void addCourse(String courseNum, String courseTerm, String courseTitle, ArrayList<Student> importedStudentsList , OverallGrade ugCourseCategory, OverallGrade gradCourseCategory) {
         if(importedStudentsList.size() == 0) {
-            Course courseToAdd = new Course(courseNum, courseTerm, courseTitle);
+            Course courseToAdd = new Course(courseNum, courseTerm, courseTitle, ugCourseCategory, gradCourseCategory);
             activeCourses.add(courseToAdd);
         }
         else {
-            Course courseToAdd = new Course(courseNum, courseTerm, courseTitle, importedStudentsList);
+            Course courseToAdd = new Course(courseNum, courseTerm, courseTitle, importedStudentsList, ugCourseCategory, gradCourseCategory);
             activeCourses.add(courseToAdd);
         }
     }

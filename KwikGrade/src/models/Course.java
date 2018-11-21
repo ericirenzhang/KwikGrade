@@ -8,29 +8,36 @@ public class Course implements Serializable {
 	private String courseTerm;
 	private String courseTitle;
 	private boolean isOpen;
-	private OverallGrade courseDefaultGradeScheme = new OverallGrade();
+	
+	//added overall grade objects for default grad and undergrad schemes
+	private OverallGrade courseUnderGradDefaultGradeScheme = new OverallGrade();
+	private OverallGrade courseGradDefaultGradeScheme = new OverallGrade();
 
 	private ArrayList<Student> activeStudents;
 	private ArrayList<Student> inactiveStudents;
 	
 // course constructor for not adding bulk students
-	public Course(String courseNum, String courseTerm, String courseTitle) {
+	public Course(String courseNum, String courseTerm, String courseTitle, OverallGrade ugCourseCategory, OverallGrade gradCourseCategory) {
 		this.courseNum = courseNum;
 		this.courseTerm = courseTerm;
 		this.courseTitle = courseTitle;
 		this.isOpen = true;
 		this.activeStudents = new ArrayList<>();
 		this.inactiveStudents = new ArrayList<>();
+		this.courseUnderGradDefaultGradeScheme = ugCourseCategory;
+		this.courseGradDefaultGradeScheme = gradCourseCategory;
 	}
 	
 	//	course constructor for adding bulk students from a file
-	public Course(String courseNum, String courseTerm, String courseTitle, ArrayList<Student> importedStudentsList) {
+	public Course(String courseNum, String courseTerm, String courseTitle, ArrayList<Student> importedStudentsList, OverallGrade ugCourseCategory, OverallGrade gradCourseCategory) {
 		this.courseNum = courseNum;
 		this.courseTerm = courseTerm;
 		this.courseTitle = courseTitle;
 		this.isOpen = true;
 		this.activeStudents = importedStudentsList;
 		this.inactiveStudents = new ArrayList<Student>();
+		this.courseUnderGradDefaultGradeScheme = ugCourseCategory;
+		this.courseGradDefaultGradeScheme = gradCourseCategory;
 	}
 	
 	public void closeCourse() {
@@ -114,8 +121,12 @@ public class Course implements Serializable {
 		return this.inactiveStudents;
 	}
 	
-	public OverallGrade getCourseDefaultGradeScheme() {
-		return this.courseDefaultGradeScheme;
+	public OverallGrade getCourseUnderGradDefaultGradeScheme() {
+		return this.courseUnderGradDefaultGradeScheme;
+	}
+	
+	public OverallGrade getCourseGradDefaultGradeScheme() {
+		return this.courseGradDefaultGradeScheme;
 	}
 	
 	//==========================
@@ -135,8 +146,11 @@ public class Course implements Serializable {
 	public void setIsOpen(boolean isOpen) {
 		this.isOpen = isOpen;
 	}
-	public void setCourseDefaultGradeScheme(OverallGrade gradingScheme) {
-		this.courseDefaultGradeScheme = gradingScheme;
+	public void setCourseUnderGradDefaultGradeScheme(OverallGrade gradingScheme) {
+		this.courseUnderGradDefaultGradeScheme = gradingScheme;
+	}
+	public void setCourseGradDefaultGradeScheme(OverallGrade gradingScheme) {
+		this.courseGradDefaultGradeScheme = gradingScheme;
 	}
 	
 	public void setActiveStudents(Student activeStudents) {
