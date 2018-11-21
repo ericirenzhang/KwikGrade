@@ -8,12 +8,10 @@ public class Course implements Serializable {
 	private String courseTerm;
 	private String courseTitle;
 	private boolean isOpen;
+	private OverallGrade courseDefaultGradeScheme = new OverallGrade();
 
-	public ArrayList<Student> activeStudents;
+	private ArrayList<Student> activeStudents;
 	private ArrayList<Student> inactiveStudents;
-	
-	public Course() {
-	}
 	
 // course constructor for not adding bulk students
 	public Course(String courseNum, String courseTerm, String courseTitle) {
@@ -116,6 +114,10 @@ public class Course implements Serializable {
 		return this.inactiveStudents;
 	}
 	
+	public OverallGrade getCourseDefaultGradeScheme() {
+		return this.courseDefaultGradeScheme;
+	}
+	
 	//==========================
 	// Setters
 	//==========================
@@ -133,9 +135,8 @@ public class Course implements Serializable {
 	public void setIsOpen(boolean isOpen) {
 		this.isOpen = isOpen;
 	}
-	
-	public void setActiveStudents(Student activeStudent) {
-		  this.activeStudents.add(activeStudent);
-		}
+	public void setCourseDefaultGradeScheme(OverallGrade gradingScheme) {
+		this.courseDefaultGradeScheme = gradingScheme;
+	}
 
 }

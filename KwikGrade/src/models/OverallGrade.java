@@ -3,9 +3,10 @@ package models;
 import models.CourseCategory;
 import models.Student;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class OverallGrade {
+public class OverallGrade implements Serializable {
 	double overallGrade;
 	int numOfCategories; //The user does not enter this value. Need to calculate from GUI
 	ArrayList<CourseCategory> categoryList;

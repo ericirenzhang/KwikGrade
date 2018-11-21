@@ -1,17 +1,14 @@
 package views;
 
+import models.GraduateStudent;
 import models.Student;
+import models.UndergraduateStudent;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -34,7 +31,10 @@ public class CreateFromNewFrame extends JDialog {
 	private String courseTitle;
 	private String filePath;
 
+	private boolean hasCreatedNewCourse = false;
+
 	private ArrayList<Student> importedStudentList = new ArrayList<>();
+	private JPanel panel1;
 
 	/**
 	 * Create the dialog.
@@ -45,111 +45,126 @@ public class CreateFromNewFrame extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		
+
+		// Top half of JFrame for Course information section.
 		courseNumField = new JTextField();
-		courseNumField.setBounds(164, 29, 351, 36);
+		courseNumField.setBounds(250, 29, 300, 36);
 		contentPanel.add(courseNumField);
 		courseNumField.setColumns(10);
-		
+
 		courseTermField = new JTextField();
 		courseTermField.setColumns(10);
-		courseTermField.setBounds(164, 78, 351, 36);
+		courseTermField.setBounds(250, 78, 300, 36);
 		contentPanel.add(courseTermField);
-		
+
 		courseTitleField = new JTextField();
 		courseTitleField.setColumns(10);
-		courseTitleField.setBounds(164, 127, 351, 36);
+		courseTitleField.setBounds(250, 127, 300, 36);
 		contentPanel.add(courseTitleField);
-		
-		studentFilepathField = new JTextField();
-		studentFilepathField.setColumns(10);
-		studentFilepathField.setBounds(110, 221, 405, 36);
-		contentPanel.add(studentFilepathField);
-		
-		JLabel courseNumberLabel = new JLabel("Course Number");
+
+		JLabel courseNumberLabel = new JLabel("Course Number (required)");
 		courseNumberLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		courseNumberLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-		courseNumberLabel.setBounds(12, 33, 140, 26);
+		courseNumberLabel.setBounds(12, 33, 200, 26);
 		contentPanel.add(courseNumberLabel);
-		
-		JLabel courseTermLabel = new JLabel("Course Term");
+
+		JLabel courseTermLabel = new JLabel("Course Term (required)");
 		courseTermLabel.setHorizontalAlignment(SwingConstants.TRAILING);
 		courseTermLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		courseTermLabel.setBounds(12, 82, 140, 26);
+		courseTermLabel.setBounds(12, 82, 200, 26);
 		contentPanel.add(courseTermLabel);
-		
-		JLabel courseTitleLabel = new JLabel("Course Title");
+
+		JLabel courseTitleLabel = new JLabel("Course Title (required)");
 		courseTitleLabel.setHorizontalAlignment(SwingConstants.TRAILING);
 		courseTitleLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		courseTitleLabel.setBounds(12, 131, 140, 26);
+		courseTitleLabel.setBounds(12, 131, 200, 26);
 		contentPanel.add(courseTitleLabel);
-		
-		JButton importStudentsButton = new JButton("Import Students from Text File");
-		importStudentsButton.addActionListener(new ActionListener() {
+
+		// Hacky fix to get JLabel to go across multiple lines using HTML.
+		JLabel importNowLabel = new JLabel("<html>Add students by importing now.<br/>(Or add them manually later)</html>");
+		importNowLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+		importNowLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		importNowLabel.setBounds(0, 200, 500, 36);
+		contentPanel.add(importNowLabel);
+
+		// Bottom half of JFrame for File browsing/importing Students.
+		contentPanel.add(new JSeparator());
+		JButton browseButton = new JButton("Browse File Path of Student Text File...");
+		browseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		browseButton.setBounds(152, 250, 405, 36);
+		browseButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser fileChooser = new JFileChooser();
+
+				// For File
+				fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				fileChooser.setAcceptAllFileFilterUsed(false);
+
+				int userChoice = fileChooser.showOpenDialog(null);
+				if (userChoice == JFileChooser.APPROVE_OPTION) {
+					String studentTextFilePath = fileChooser.getSelectedFile().toString();
+					studentFilepathField.setText(studentTextFilePath);
+				}
+			}
+		});
+		contentPanel.add(browseButton);
+
+		studentFilepathField = new JTextField();
+		studentFilepathField.setColumns(10);
+		studentFilepathField.setBounds(152, 280, 405, 36);
+		studentFilepathField.setEditable(false);
+		contentPanel.add(studentFilepathField);
+
+		JLabel filePathLabel = new JLabel("Filepath");
+		filePathLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+		filePathLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		filePathLabel.setBounds(12, 280, 89, 36);
+		contentPanel.add(filePathLabel);
+
+		// Add OK and Cancel buttons
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(buttonPane, BorderLayout.SOUTH);
+		JButton okButton = new JButton("OK");
+		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				courseNum = courseNumField.getText();
 				courseTerm = courseTermField.getText();
 				courseTitle = courseTitleField.getText();
 				filePath = studentFilepathField.getText();
 
-				addImportedStudents(filePath);
+				if(courseNum.equals("") || courseTerm.equals("") || courseTitle.equals("")) {
+					JOptionPane.showMessageDialog(null, "Must enter in required information!");
+					return;
+				}
 
-//				bulkAddStudents = true;
+				if(!filePath.equals("")) {
+					addImportedStudents(filePath);
+				}
+
+				hasCreatedNewCourse = true;
+
 				dispose();
-				
 			}
 		});
-		importStudentsButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		importStudentsButton.setBounds(152, 265, 267, 36);
-		contentPanel.add(importStudentsButton);
-		
-		JButton addStudentManualButton = new JButton("Add Students Manually Later");
-		addStudentManualButton.addActionListener(new ActionListener() {
+		buttonPane.add(okButton);
+
+		getRootPane().setDefaultButton(okButton);
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				courseNum = courseNumField.getText();
-				courseTerm = courseTermField.getText();
-				courseTitle = courseTitleField.getText();
-//				bulkAddStudents = false;
 				dispose();
 			}
 		});
-		addStudentManualButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		addStudentManualButton.setBounds(152, 378, 267, 36);
-		contentPanel.add(addStudentManualButton);
-		
-		JLabel filePathLabel = new JLabel("Filepath");
-		filePathLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-		filePathLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		filePathLabel.setBounds(12, 221, 89, 36);
-		contentPanel.add(filePathLabel);
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton okButton = new JButton("OK"); //think this can be deleted later
-				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						courseNum = courseNumField.getText();
-						courseTerm = courseTermField.getText();
-						courseTitle = courseTitleField.getText();
-//						bulkAddStudents = false;
-						dispose();
-						
-					}
-				});
-				okButton.setActionCommand("OK"); //think this can be deleted later
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				JButton cancelButton = new JButton("Cancel"); //think this can be deleted later
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
-			}
-		}
+		buttonPane.add(cancelButton);
 	}
 
+	/**
+	 * Imports students by parsing a text file into this.importedStudentList.
+	 * @param filePath
+	 */
 	public void addImportedStudents(String filePath) {
 		Scanner rawStudentData;
 
@@ -167,7 +182,13 @@ public class CreateFromNewFrame extends JDialog {
 					String buId = splitLine.get(3);
 					String email = splitLine.get(4);
 					String standing = splitLine.get(5);
-					this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
+					if(standing.equals("Undergraduate")) {
+						this.importedStudentList.add(new UndergraduateStudent(fName, middleInitial, lName, buId, email, "Undergraduate"));
+					} else if (standing.equals("Graduate")) {
+						this.importedStudentList.add(new GraduateStudent(fName, middleInitial, lName, buId, email, "Graduate"));
+ 					} else {
+						this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
+					}
 				}
 				else { //if no middle initial, then 5 items in string
 					String fName = splitLine.get(0);
@@ -176,7 +197,13 @@ public class CreateFromNewFrame extends JDialog {
 					String buId = splitLine.get(2);
 					String email = splitLine.get(3);
 					String standing = splitLine.get(4);
-					this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
+					if(standing.equals("Undergraduate")) {
+						this.importedStudentList.add(new UndergraduateStudent(fName, middleInitial, lName, buId, email, "Undergraduate"));
+					} else if (standing.equals("Graduate")) {
+						this.importedStudentList.add(new GraduateStudent(fName, middleInitial, lName, buId, email, "Graduate"));
+					} else {
+						this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
+					}
 				}
 			}
 
@@ -192,7 +219,7 @@ public class CreateFromNewFrame extends JDialog {
 	//=============================
 	// Getters
 	//=============================
-	
+
 	public String getCourseNum() {
 		return courseNum;
 	}
@@ -208,11 +235,14 @@ public class CreateFromNewFrame extends JDialog {
 	public String getFilePath() {
 		return filePath;
 	}
-	
+	public boolean getHasCreatedNewCourse() {
+		return this.hasCreatedNewCourse;
+	}
+
 	//=============================
 	// Setters
 	//=============================
-	
+
 	public void setCourseNum(String courseNum) {
 		this.courseNum = courseNum;
 	}
