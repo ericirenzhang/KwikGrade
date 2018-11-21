@@ -9,21 +9,52 @@ import java.util.ArrayList;
 public class OverallGrade implements Serializable {
 	double overallGrade;
 	int numOfCategories; //The user does not enter this value. Need to calculate from GUI
-	ArrayList<CourseCategory> categoryList = new ArrayList<CourseCategory>();
+	ArrayList<CourseCategory> categoryList;
+	
+	public OverallGrade() {
+		overallGrade = 0.0;
+		numOfCategories = 0;
+		categoryList = new ArrayList<CourseCategory>();
+	}
+	
+	public OverallGrade(double overallGrade, int numOfCategories, ArrayList<CourseCategory> categoryList) {
+		this.overallGrade = overallGrade;
+		this.numOfCategories = numOfCategories;
+		this.categoryList = categoryList;
+	}
+	//==========================
+	// Getters
+	//==========================
 	
 	public double getOverallGrade() {
 		return this.overallGrade;
 	}
+	
+	public int getNumOfCategories() {
+		return this.numOfCategories;
+	}
+	
+	public ArrayList<CourseCategory> getCategoryList() {
+		return this.categoryList;
+	}
+	
+	//==========================
+	// Setters
+	//==========================
+	
 	public void setOverallGrade(double overallGrade) {
 		this.overallGrade = overallGrade;
 	}
 	
-	public void setNumOfCategories(int numOfCategories){
+	public void setNumOfCategories(int numOfCategories) {
 		this.numOfCategories = numOfCategories;
 	}
-	public int getNumOfCategories(){
-		return this.numOfCategories;
+	
+	public void setCategoryList(CourseCategory categoryList) {
+		this.categoryList.add(categoryList);
 	}
+	
+	//Overall Grade calculator
 	
 	public double calcOverallGrade() {
 		int n = getNumOfCategories();
@@ -39,3 +70,4 @@ public class OverallGrade implements Serializable {
 		return overallGrade;
 	}
 }
+
