@@ -27,7 +27,6 @@ public class LoginFrame {
 	private JTextField UID;
 	private JPasswordField PW;
 	private Scanner rawCreds;
-	//private Scanner rawCreds;
 
 	/**
 	 * Create the application.
@@ -35,7 +34,23 @@ public class LoginFrame {
 	public LoginFrame() {
 		initializeFrameContents();
 	}
+	
+	//checks if a file to store credentials exists
+	public void checkForCreds() {
+		File credFile = new File("logincredentials.txt");
+		if (credFile.exists()) {
+		}
+		else {
+			JOptionPane.showMessageDialog(null, "Credentials have not been set yet.");
+			File file = new File("logincredentials.txt");
+			//re-using code, uses ChangeCreds frame to get new credentials
+			ChangeCreds newCredsFrame = new ChangeCreds();
+			newCredsFrame.setModal(true);
+			newCredsFrame.setVisible(true);
+		}
+	}
 
+	//generic function to verify if the credentials match what is on the file
 	public boolean verifyCreds(String username, String password) {
 		System.getProperty("user.dir");
 		try {
@@ -52,15 +67,13 @@ public class LoginFrame {
 			}
 		}
 		catch(Exception e) {
-			System.out.println("COULD NOT FIND FILE!!!!");
-
-			// TODO: set up a workflow to have a user create a txt file manually or some workflow that automatically generates this txt file
-			JOptionPane.showMessageDialog(null, "Credentials have not been set yet.");
-
+			//if file is not found, it calls checkForCreds again to create the credential file
+			checkForCreds();
 			return false;
 		}
 	}
 	
+	//method to create a main dashboard object if username and password match
 	public void login(String username, String password) {
 		if(verifyCreds(username, password)) {
 			frame.dispose();
@@ -72,6 +85,7 @@ public class LoginFrame {
 		}
 	}
 	
+	//method to change user credentials
 	public void credChange(String username, String password) {
 		if(verifyCreds(username, password)) {
 			ChangeCreds changeCredsFrame = new ChangeCreds();
@@ -154,5 +168,8 @@ public class LoginFrame {
 		frame.getContentPane().add(changeCredsButton);
 
 		frame.setVisible(true);
+		
+		//checks for user credentials upon startup
+		checkForCreds();
 	}
 }

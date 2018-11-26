@@ -68,7 +68,7 @@ public class ChangeCreds extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if(newPasswordText.getText().equals(retypePasswordText.getText())) { //checks if passwords match
-							JOptionPane.showMessageDialog(null, "Username and Password Changed Successfully!");
+							JOptionPane.showMessageDialog(null, "Username and Password Set Successfully!");
 							try {
 								FileWriter changedCreds = new FileWriter("logincredentials.txt", false);
 								changedCreds.write(newUsernameText.getText()+","+newPasswordText.getText());
