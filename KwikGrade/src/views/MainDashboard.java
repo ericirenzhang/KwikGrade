@@ -149,7 +149,7 @@ public class MainDashboard extends JFrame {
 
 				// If user clicked "OK", then add new course. Otherwise, the user must have clicked "Cancel".
 				if(createCourse.getHasCreatedNewCourse()){
-					kwikGrade.addCourse(createCourse.getCourseNum(), createCourse.getCourseTerm(), createCourse.getCourseTitle(), createCourse.getImportedStudentsList());
+					kwikGrade.addCourse(createCourse.getCourseNum(), createCourse.getCourseTerm(), createCourse.getCourseTitle(), createCourse.getImportedStudentsList(), createCourse.getUGOverallGrade(), createCourse.getGradOverallGrade());
 
 					//saves file upon course creation
 					saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);

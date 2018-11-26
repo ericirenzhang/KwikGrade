@@ -1,5 +1,6 @@
 package views;
 
+import models.OverallGrade;
 import models.Student;
 
 import java.awt.BorderLayout;
@@ -23,6 +24,9 @@ public class CreateCourseFrame extends JDialog {
 	private boolean hasCreatedNewCourse;
 
 	private ArrayList<Student> importedStudentsList = new ArrayList<>();
+	
+	private OverallGrade ugOverallGrade;
+	private OverallGrade gradOverallGrade;
 
 	private final JPanel contentPanel = new JPanel();
 
@@ -47,6 +51,8 @@ public class CreateCourseFrame extends JDialog {
 				courseTitle = createFromNew.getCourseTitle();
 				importedStudentsList = createFromNew.getImportedStudentsList();
 				hasCreatedNewCourse = createFromNew.getHasCreatedNewCourse();
+				ugOverallGrade = createFromNew.getUGOverallGrade();
+				gradOverallGrade = createFromNew.getGradOverallGrade();
 
 				dispose();
 			}
@@ -98,6 +104,12 @@ public class CreateCourseFrame extends JDialog {
  	public boolean getHasCreatedNewCourse() {
 		return this.hasCreatedNewCourse;
 	}
+	public OverallGrade getUGOverallGrade() {
+		return ugOverallGrade;
+	}
+	public OverallGrade getGradOverallGrade() {
+		return gradOverallGrade;
+	}
 
 	//==========================
 	// Setters
@@ -110,5 +122,11 @@ public class CreateCourseFrame extends JDialog {
 	}
  	public void setCourseTitle(String courseTitle) {
 		this.courseTitle = courseTitle;
+	}
+	public void setUGOverallGrade(OverallGrade ugOverallGrade) {
+		this.ugOverallGrade = ugOverallGrade;
+	}
+	public void setGradOverallGrade(OverallGrade gradOverallGrade) {
+		this.gradOverallGrade = gradOverallGrade;
 	}
 }
