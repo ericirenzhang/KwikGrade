@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
 
 public class MainDashboard extends JFrame {
 	private DefaultListModel DLM;

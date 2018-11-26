@@ -11,7 +11,6 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -32,37 +31,36 @@ public class AddStudentFrame extends JDialog {
 	
 	int n;
 	private final JPanel contentPanel = new JPanel();
-	private JTextField textFieldFname;
-	private JTextField textFieldLname;
-	private JTextField textFieldID;
-	private JTextField textFieldEmail;
-	private JTextField textFieldStatus;
-	private JLabel lblLastName;
-	private JLabel lblBuId;
-	private JLabel lblEmail;
-	private JLabel lblStatus;
-	private JTextField textFieldMiddle;
-	private JLabel lblMiddleInitial;
-	private JButton btnSave;
-	private JButton btnBack;
-	private JButton btnLoadGradingScheme;
+	private JTextField fNameField;
+	private JTextField lNameField;
+	private JTextField buIdField;
+	private JTextField emailField;
+	private JTextField statusField;
+	private JTextField mInitialField;
+	private JLabel lNameLabel;
+	private JLabel buIdLabel;
+	private JLabel emailLabel;
+	private JLabel statusLabel;
+	private JLabel mInitialLabel;
+	private JButton saveButton;
+	private JButton backButton;
+
 	private Student newStudent = new Student("","","","","");
-	
-	Course c = new Course("CS591",  "F18", "Java Intro", new OverallGrade(), new OverallGrade());
+
+	// TODO: replace this with actual course information
+	Course dummyCourse = new Course("CS591",  "F18", "Java Intro", new OverallGrade(), new OverallGrade());
 	SubCategory subCat1, subCat2;
 	ArrayList<SubCategory> subCatList1 = new ArrayList<SubCategory>();
 	ArrayList<SubCategory> subCatList2 = new ArrayList<SubCategory>();
 	CourseCategory courseCat1, courseCat2;
 	ArrayList<CourseCategory> courseCatList = new ArrayList<CourseCategory>();
 	OverallGrade og;
-	
-	static JPanel panel = new JPanel();
-	static JPanel panel1 = new JPanel();
-    static Integer indexer = 1;
-    static List<JLabel> listOfLabels = new ArrayList<JLabel>();
-    static List<JTextField> listOfTextFields = new ArrayList<JTextField>();
-    private JPanel panel_2;
-    private JScrollPane scrollPane;
+
+    static List<JLabel> gradingSchemeLabels = new ArrayList<JLabel>();
+    static List<JTextField> gradingSchemeFields = new ArrayList<JTextField>();
+    private JPanel gradingSchemePanel;
+    private JScrollPane gradingSchemeScrollPane;
+
 	/**
 	 * Launch the application.
 	 */
@@ -81,7 +79,7 @@ public class AddStudentFrame extends JDialog {
 	 */
 	public AddStudentFrame() {
 
-		//*** Dummy data with 2 categories. One with 2 sub categories and the other with no sub category (handled as having one sub category) ***
+		//TODO: remove this later. Dummy data with 2 categories. One with 2 sub categories and the other with no sub category (handled as having one sub category) ***
 		
 		n = 1; //To keep track of number of rows to add in the grading scheme panel
 		
@@ -110,195 +108,167 @@ public class AddStudentFrame extends JDialog {
 		
 		GridBagConstraints frameConstraints = new GridBagConstraints();
 		
-		{
-			textFieldFname = new JTextField();
-			textFieldFname.setBounds(53, 60, 130, 26);
-			contentPanel.add(textFieldFname);
-			textFieldFname.setColumns(10);
-		}
-		{
-			textFieldLname = new JTextField();
-			textFieldLname.setBounds(382, 60, 130, 26);
-			textFieldLname.setColumns(10);
-			contentPanel.add(textFieldLname);
-		}
-		{
-			textFieldID = new JTextField();
-			textFieldID.setBounds(53, 124, 130, 26);
-			textFieldID.setColumns(10);
-			contentPanel.add(textFieldID);
-		}
-		{
-			textFieldEmail = new JTextField();
-			textFieldEmail.setBounds(217, 124, 130, 26);
-			textFieldEmail.setColumns(10);
-			contentPanel.add(textFieldEmail);
-		}
-		{
-			textFieldStatus = new JTextField();
-			textFieldStatus.setBounds(382, 124, 130, 26);
-			textFieldStatus.setColumns(10);
-			contentPanel.add(textFieldStatus);
-		}
-		{
-			JLabel lblFirstName = new JLabel("First Name");
-			lblFirstName.setBounds(53, 45, 98, 16);
-			contentPanel.add(lblFirstName);
-		}
-		{
-			lblLastName = new JLabel("Last Name");
-			lblLastName.setBounds(382, 45, 81, 16);
-			contentPanel.add(lblLastName);
-		}
-		{
-			lblBuId = new JLabel("BU ID");
-			lblBuId.setBounds(53, 109, 61, 16);
-			contentPanel.add(lblBuId);
-		}
-		{
-			lblEmail = new JLabel("Email");
-			lblEmail.setBounds(217, 109, 61, 16);
-			contentPanel.add(lblEmail);
-		}
-		{
-			lblStatus = new JLabel("Status");
-			lblStatus.setBounds(382, 109, 61, 16);
-			contentPanel.add(lblStatus);
-		}
-		{
-			textFieldMiddle = new JTextField();
-			textFieldMiddle.setBounds(217, 60, 130, 26);
-			textFieldMiddle.setColumns(10);
-			contentPanel.add(textFieldMiddle);
-		}
-		{
-			lblMiddleInitial = new JLabel("Middle Initial");
-			lblMiddleInitial.setBounds(217, 45, 98, 16);
-			contentPanel.add(lblMiddleInitial);
-		}
-		{
-			btnSave = new JButton("Save");
-			btnSave.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					//Student newStudent;
-					if(textFieldMiddle.getText() != null)
-						newStudent = new Student(textFieldFname.getText(),textFieldMiddle.getText(),textFieldLname.getText(),textFieldID.getText(),textFieldEmail.getText());
-					else
-						newStudent = new Student(textFieldFname.getText(),"",textFieldLname.getText(),textFieldID.getText(),textFieldEmail.getText());
-					
-					c.setActiveStudents(newStudent);
-					
-				}
-			});
-			btnSave.setBounds(597, 85, 117, 29);
-			contentPanel.add(btnSave);
-		}
-		{
-			btnBack = new JButton("Back");
-			btnBack.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					 //new MainDashboard().setVisible(true); //This actually has to go back to Course Management page 
-					dispose();
-				}
-			});
-			btnBack.setBounds(597, 124, 117, 29);
-			contentPanel.add(btnBack);
-		}
-		{
-			
-			//===============
-			btnLoadGradingScheme = new JButton("Load Grading Scheme");
-			btnLoadGradingScheme.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					panel_2.removeAll();
-					listOfTextFields.clear();
-					listOfLabels.clear();
-					
-					// Create constraints
-		            GridBagConstraints textFieldConstraints = new GridBagConstraints();
-		            GridBagConstraints labelConstraints = new GridBagConstraints();
-		            	ArrayList<ArrayList<SubCategory>> listOfLists = new ArrayList<ArrayList<SubCategory>>();
-		            	listOfLists.add(subCatList1);
-		            	listOfLists.add(subCatList2);
-		            	ArrayList<String> inputText = new ArrayList<String>();
-		            	inputText.add("FinalGrade");
-		            	//for each CourseCategory
-		            	//add each subCategory name
-		            	for(int i=0;i<courseCatList.size();i++) {
-		            		inputText.add(courseCatList.get(i).getName());
-		            		for(int j=0;j<listOfLists.get(i).size();j++) {
-		            			inputText.add(listOfLists.get(i).get(j).getName());
-		            		}
-		            	}
-		            	
-		            	// Create label and text field
-						for(int i=0;i<n;i++) {
-			            JTextField jTextField = new JTextField();
-			            jTextField.setSize(100, 200);
-			            listOfTextFields.add(jTextField);
-			            listOfLabels.add(new JLabel(inputText.get(i)));
-			            
-			            // Text field constraints
-		                textFieldConstraints.gridx = 1;
-		                textFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
-		                textFieldConstraints.weightx = 0.5;
-		                textFieldConstraints.insets = new Insets(10, 10, 10, 10);
-		                textFieldConstraints.gridy = i;
+		fNameField = new JTextField();
+		fNameField.setBounds(53, 60, 130, 26);
+		contentPanel.add(fNameField);
+		fNameField.setColumns(10);
 
-		                // Label constraints
-		                labelConstraints.gridx = 0;
-		                labelConstraints.gridy = i;
-		                labelConstraints.insets = new Insets(10, 10, 10, 10);
+		lNameField = new JTextField();
+		lNameField.setBounds(382, 60, 130, 26);
+		lNameField.setColumns(10);
+		contentPanel.add(lNameField);
 
-		                // Add them to panel
-		                panel_2.add(listOfLabels.get(i), labelConstraints);
-		                panel_2.add(listOfTextFields.get(i), textFieldConstraints);
-						}
+		buIdField = new JTextField();
+		buIdField.setBounds(53, 124, 130, 26);
+		buIdField.setColumns(10);
+		contentPanel.add(buIdField);
 
-						// Align components top-to-bottom
-		                /*GridBagConstraints c = new GridBagConstraints();
-		                c.gridx = 0;
-		                c.gridy = indexer;
-		                c.weighty = 1;
-		                panel_2.add(new JLabel(), c);*/
-		                panel_2.updateUI();
-			}});
-			btnLoadGradingScheme.setBounds(573, 165, 169, 29);
-			contentPanel.add(btnLoadGradingScheme);
-			//===============
-			
-	        // Add panel to frame
-	        frameConstraints.gridx = 0;
-	        frameConstraints.gridy = 1;
-	        frameConstraints.weighty = 1;
-			{
-				scrollPane = new JScrollPane();
-				scrollPane.setBounds(60, 209, 654, 253);
-				contentPanel.add(scrollPane);
-				panel_2 = new JPanel();
-				scrollPane.setViewportView(panel_2);
-				panel_2.setPreferredSize(new Dimension(300, 300));
-				panel_2.setLayout(new GridBagLayout());
-				panel_2.setBorder(LineBorder.createBlackLineBorder());
+		emailField = new JTextField();
+		emailField.setBounds(217, 124, 130, 26);
+		emailField.setColumns(10);
+		contentPanel.add(emailField);
+
+		statusField = new JTextField();
+		statusField.setBounds(382, 124, 130, 26);
+		statusField.setColumns(10);
+		contentPanel.add(statusField);
+
+		JLabel lblFirstName = new JLabel("First Name");
+		lblFirstName.setBounds(53, 45, 98, 16);
+		contentPanel.add(lblFirstName);
+
+		lNameLabel = new JLabel("Last Name");
+		lNameLabel.setBounds(382, 45, 81, 16);
+		contentPanel.add(lNameLabel);
+
+		buIdLabel = new JLabel("BU ID");
+		buIdLabel.setBounds(53, 109, 61, 16);
+		contentPanel.add(buIdLabel);
+
+		emailLabel = new JLabel("Email");
+		emailLabel.setBounds(217, 109, 61, 16);
+		contentPanel.add(emailLabel);
+
+		statusLabel = new JLabel("Status");
+		statusLabel.setBounds(382, 109, 61, 16);
+		contentPanel.add(statusLabel);
+
+		mInitialField = new JTextField();
+		mInitialField.setBounds(217, 60, 130, 26);
+		mInitialField.setColumns(10);
+		contentPanel.add(mInitialField);
+
+		mInitialLabel = new JLabel("Middle Initial");
+		mInitialLabel.setBounds(217, 45, 98, 16);
+		contentPanel.add(mInitialLabel);
+
+		saveButton = new JButton("Save");
+		saveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//Student newStudent;
+				if(mInitialField.getText() != null)
+					newStudent = new Student(fNameField.getText(), mInitialField.getText(), lNameField.getText(), buIdField.getText(), emailField.getText());
+				else
+					newStudent = new Student(fNameField.getText(),"", lNameField.getText(), buIdField.getText(), emailField.getText());
+
+				dummyCourse.addActiveStudents(newStudent);
+
+			}
+		});
+		saveButton.setBounds(597, 85, 117, 29);
+		contentPanel.add(saveButton);
+
+		backButton = new JButton("Back");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 //new MainDashboard().setVisible(true); //This actually has to go back to Course Management page
+				dispose();
+			}
+		});
+		backButton.setBounds(597, 124, 117, 29);
+		contentPanel.add(backButton);
+
+		// Add panel to frame
+		frameConstraints.gridx = 0;
+		frameConstraints.gridy = 1;
+		frameConstraints.weighty = 1;
+
+		gradingSchemeScrollPane = new JScrollPane();
+		gradingSchemeScrollPane.setBounds(60, 209, 654, 253);
+		contentPanel.add(gradingSchemeScrollPane);
+		gradingSchemePanel = new JPanel();
+		gradingSchemeScrollPane.setViewportView(gradingSchemePanel);
+		gradingSchemePanel.setPreferredSize(new Dimension(300, 300));
+		gradingSchemePanel.setLayout(new GridBagLayout());
+		gradingSchemePanel.setBorder(LineBorder.createBlackLineBorder());
+
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(buttonPane, BorderLayout.SOUTH);
+
+		JButton okButton = new JButton("OK");
+		okButton.setActionCommand("OK");
+		buttonPane.add(okButton);
+		getRootPane().setDefaultButton(okButton);
+
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.setActionCommand("Cancel");
+		buttonPane.add(cancelButton);
+
+		gradingSchemePanel.removeAll();
+		gradingSchemeFields.clear();
+		gradingSchemeLabels.clear();
+
+		// Create constraints
+		GridBagConstraints textFieldConstraints = new GridBagConstraints();
+		GridBagConstraints labelConstraints = new GridBagConstraints();
+		ArrayList<ArrayList<SubCategory>> listOfLists = new ArrayList<ArrayList<SubCategory>>();
+		listOfLists.add(subCatList1);
+		listOfLists.add(subCatList2);
+		ArrayList<String> inputText = new ArrayList<String>();
+		inputText.add("FinalGrade");
+		//for each CourseCategory
+		//add each subCategory name
+		for(int i=0;i<courseCatList.size();i++) {
+			inputText.add(courseCatList.get(i).getName());
+			for(int j=0;j<listOfLists.get(i).size();j++) {
+				inputText.add(listOfLists.get(i).get(j).getName());
 			}
 		}
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
-			}
+
+		// Create label and text field
+		for(int i=0;i<n;i++) {
+			JTextField jTextField = new JTextField();
+			jTextField.setSize(100, 200);
+			gradingSchemeFields.add(jTextField);
+			gradingSchemeLabels.add(new JLabel(inputText.get(i)));
+
+			// Text field constraints
+			textFieldConstraints.gridx = 1;
+			textFieldConstraints.fill = GridBagConstraints.HORIZONTAL;
+			textFieldConstraints.weightx = 0.5;
+			textFieldConstraints.insets = new Insets(10, 10, 10, 10);
+			textFieldConstraints.gridy = i;
+
+			// Label constraints
+			labelConstraints.gridx = 0;
+			labelConstraints.gridy = i;
+			labelConstraints.insets = new Insets(10, 10, 10, 10);
+
+			// Add them to panel
+			gradingSchemePanel.add(gradingSchemeLabels.get(i), labelConstraints);
+			gradingSchemePanel.add(gradingSchemeFields.get(i), textFieldConstraints);
 		}
+
+		// Align components top-to-bottom
+					/*GridBagConstraints dummyCourse = new GridBagConstraints();
+					dummyCourse.gridx = 0;
+					dummyCourse.gridy = indexer;
+					dummyCourse.weighty = 1;
+					gradingSchemePanel.add(new JLabel(), dummyCourse);*/
+		gradingSchemePanel.updateUI();
 	}
+
 	//==========================
 	// Getters
 	//==========================
