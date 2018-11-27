@@ -5,14 +5,12 @@ import models.OverallGrade;
 import models.Student;
 import models.UndergraduateStudent;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -145,6 +143,7 @@ public class CreateFromNewFrame extends JDialog {
 		contentPanel.add(underGraduateScrollPane);
 		
 		ugCourseCategoryTable = new JTable();
+		ugCourseCategoryTable.setGridColor(Color.BLACK);
 		ugCourseCategoryTable.setRowHeight(25);
 		underGraduateScrollPane.setViewportView(ugCourseCategoryTable);
 		dispCourseCategoryTable( ugTableModel, ugCourseCategoryTable, ugTableModelRows);
@@ -154,6 +153,8 @@ public class CreateFromNewFrame extends JDialog {
 		contentPanel.add(graduateScrollPane);
 		
 		gradCourseCategoryTable = new JTable();
+		gradCourseCategoryTable.setGridColor(Color.BLACK);
+
 		gradCourseCategoryTable.setRowHeight(25);
 		graduateScrollPane.setViewportView(gradCourseCategoryTable);
 		gradCourseCategoryTable.setModel(gradTableModel);

@@ -109,6 +109,7 @@ public class Course implements Serializable {
 	public String getCourseTitle() {
 		return this.courseTitle;
 	}
+
 	public boolean getIsOpen() {
 		return this.isOpen;
 	}
@@ -153,7 +154,7 @@ public class Course implements Serializable {
 		this.courseGradDefaultGradeScheme = gradingScheme;
 	}
 	
-	public void setActiveStudents(Student activeStudents) {
+	public void addActiveStudents(Student activeStudents) {
 		this.activeStudents.add(activeStudents);
 	}
 

@@ -167,59 +167,54 @@ public class CreateFromExistingFrame extends JDialog {
 		JList cloneCourseList = new JList();
 		scrollPane.setViewportView(cloneCourseList);
 		cloneCourseList.setModel(loadCourseList(MainDashboard.getKwikGrade().getActiveCourses()));
-		System.out.println("HELLO");
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				//TODO: Need to implement feature to actually clone the courses
-				//Need to implement methods to get the grading scheme
-				JButton okButton = new JButton("OK"); 
-				okButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						courseNum = courseNumField.getText();
-						courseTerm = courseTermField.getText();
-						courseTitle = courseTitleField.getText();
-						filePath = studentFilepathField.getText();
-						
-						int cloneIndex = cloneCourseList.getSelectedIndex();
-						if(cloneIndex == -1) {
-							JOptionPane.showMessageDialog(null, "You have not selected a course!");
-							return;
-						}
-						
-						clonedUGGradingScheme = getUGGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex);
-						clonedGradGradingScheme = getGradGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex);
 
-						if(courseNum.equals("") || courseTerm.equals("") || courseTitle.equals("")) {
-							JOptionPane.showMessageDialog(null, "Must enter in required information!");
-							return;
-						}
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(buttonPane, BorderLayout.SOUTH);
+		//TODO: Need to implement feature to actually clone the courses
+		// Need to implement methods to get the grading scheme
+		JButton okButton = new JButton("OK");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				courseNum = courseNumField.getText();
+				courseTerm = courseTermField.getText();
+				courseTitle = courseTitleField.getText();
+				filePath = studentFilepathField.getText();
 
-						if(!filePath.equals("")) {
-							addImportedStudents(filePath);
-						}
+				int cloneIndex = cloneCourseList.getSelectedIndex();
+				if(cloneIndex == -1) {
+					JOptionPane.showMessageDialog(null, "You have not selected a course!");
+					return;
+				}
 
-						hasCreatedNewCourse = true;
+				clonedUGGradingScheme = getUGGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex);
+				clonedGradGradingScheme = getGradGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex);
 
-						dispose();
-					}
-				});
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
+				if(courseNum.equals("") || courseTerm.equals("") || courseTitle.equals("")) {
+					JOptionPane.showMessageDialog(null, "Must enter in required information!");
+					return;
+				}
+
+				if(!filePath.equals("")) {
+					addImportedStudents(filePath);
+				}
+
+				hasCreatedNewCourse = true;
+
+				dispose();
 			}
-			{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.addActionListener(new ActionListener() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						dispose();
-					}
-				});
-				buttonPane.add(cancelButton);
+		});
+		buttonPane.add(okButton);
+		getRootPane().setDefaultButton(okButton);
+
+		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
 			}
-		}
+		});
+		buttonPane.add(cancelButton);
 	}
 
 	public void addImportedStudents(String filePath) {
@@ -255,7 +250,7 @@ public class CreateFromExistingFrame extends JDialog {
 			rawStudentData.close();
 			System.out.println("Student Import Complete!");
 		}
-		//will change this to prompt user for another file
+		// TODO: change this to prompt user for another file
 		catch(Exception e) {
 			System.out.println("COULD NOT FIND FILE!!!!");
 		}

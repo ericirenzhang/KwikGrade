@@ -47,13 +47,6 @@ public class CourseOverviewFrame extends JDialog {
 		return studentTableModel;
 	}
 	
-//	public DefaultTableModel displayStudents(Course course) {
-//		for(int i = 0; i < course.getActiveStudents().size(); i++) {
-//			studentTableModel.addRow(new Object[] {course.getActiveStudents().get(i).getfName(),course.getActiveStudents().get(i).getMiddleInitial(), course.getActiveStudents().get(i).getlName()} );
-//		}
-//		return studentTableModel;
-//	}
-	
 	public void updateStudentTable() {
 		studentDisplayTable.setModel(displayStudents(managedCourse.getActiveStudents()));
 	}
@@ -80,12 +73,12 @@ public class CourseOverviewFrame extends JDialog {
 	 */
 	public CourseOverviewFrame(Course managedCourse) {
 		this.managedCourse = managedCourse;
+
 		setBounds(100, 100, 746, 586);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 38, 545, 498);
@@ -93,7 +86,6 @@ public class CourseOverviewFrame extends JDialog {
 
 		//Creates the titles for the table model
 		//studentTableModel = new DefaultTableModel();
-
 
 		//Creates the table itself
 		studentDisplayTable = new JTable();
@@ -129,7 +121,7 @@ public class CourseOverviewFrame extends JDialog {
 		contentPanel.add(kwikStatsTable);
 		kwikStatsTable.setModel(displayKwikStats(managedCourse));
 
-		//button to add student
+		// button to add student
 		JButton addStudentButton = new JButton("Add Student");
 		addStudentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -162,13 +154,14 @@ public class CourseOverviewFrame extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
+
 		addGradeButton.setBounds(565, 110, 155, 40);
 		contentPanel.add(addGradeButton);
 		
 		JButton manageCategoryButton = new JButton("Manage Categories");
 		manageCategoryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//Temp code just to have it shown that it works
+				// TODO: delete this later, temp code just to have it shown that it works
 				System.out.println(managedCourse.getCourseGradDefaultGradeScheme().getCourseCategoryList().get(0).getName());
 				System.out.println(managedCourse.getCourseGradDefaultGradeScheme().getCourseCategoryList().get(1).getName());
 			}
