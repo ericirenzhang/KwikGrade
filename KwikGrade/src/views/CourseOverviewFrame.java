@@ -152,6 +152,9 @@ public class CourseOverviewFrame extends JDialog {
 		JButton addGradeButton = new JButton("Enter New Grades");
 		addGradeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				AddGradeFrame addGrade = new AddGradeFrame(managedCourse);
+				addGrade.setModal(true);
+				addGrade.setVisible(true);
 			}
 		});
 
