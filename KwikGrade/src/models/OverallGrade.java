@@ -17,13 +17,14 @@ public class OverallGrade implements Serializable {
 		numOfCategories = 0;
 		categoryList = new ArrayList<CourseCategory>();
 	}
-	
+
 	//constructor if someone wants to define all variables
 	public OverallGrade(double overallGrade, int numOfCategories, ArrayList<CourseCategory> categoryList) {
 		this.overallGrade = overallGrade;
 		this.numOfCategories = numOfCategories;
 		this.categoryList = categoryList;
 	}
+  
 	//constructor if someone wants to define the categorylist
 	public OverallGrade(ArrayList<CourseCategory> categoryList) {
 		this.overallGrade = 0.0;
@@ -90,6 +91,10 @@ public class OverallGrade implements Serializable {
 	
 	public void setNumOfCategories(int numOfCategories){
 		this.numOfCategories = numOfCategories;
+	}
+    
+   public void setCategoryList(CourseCategory categoryList) {
+		this.categoryList.add(categoryList);
 	}
 
 }

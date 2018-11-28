@@ -160,6 +160,10 @@ public class Course implements Serializable {
 	public void addActiveStudents(Student activeStudents) {
 		this.activeStudents.add(activeStudents);
 	}
+	
+	public void setActiveStudents(Student activeStudents) {
+		this.activeStudents.add(activeStudents);
+	}
 
 
 }

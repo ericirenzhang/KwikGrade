@@ -174,9 +174,9 @@ public class AddStudentFrame extends JDialog {
 					newStudent = new Student(fNameField.getText(),"", lNameField.getText(), buIdField.getText(), emailField.getText());
 
 				dummyCourse.addActiveStudents(newStudent);
-
 			}
 		});
+		
 		saveButton.setBounds(597, 85, 117, 29);
 		contentPanel.add(saveButton);
 
