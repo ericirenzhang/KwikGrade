@@ -52,7 +52,7 @@ public class ManageStudentFrame extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		
-		GridBagConstraints frameConstraints = new GridBagConstraints();
+//		GridBagConstraints frameConstraints = new GridBagConstraints();
 		
 		fNameField = new JTextField(managedStudent.getfName());
 		fNameField.setBounds(53, 60, 130, 26);
@@ -136,9 +136,9 @@ public class ManageStudentFrame extends JDialog {
 		contentPanel.add(backButton);
 
 		// Add panel to frame
-		frameConstraints.gridx = 0;
-		frameConstraints.gridy = 1;
-		frameConstraints.weighty = 1;
+//		frameConstraints.gridx = 0;
+//		frameConstraints.gridy = 1;
+//		frameConstraints.weighty = 1;
 
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -156,7 +156,7 @@ public class ManageStudentFrame extends JDialog {
 		// ======================================
 		// Build Grading Scheme Grid Layout
 		// ======================================
-		JScrollPane gradingSchemeScrollPane = generateGradingSchemeTable(overallGradeScheme);
+		JScrollPane gradingSchemeScrollPane = generateGradingSchemeTable(managedStudent, overallGradeScheme);
 		contentPanel.add(gradingSchemeScrollPane);
 	}
 
@@ -172,7 +172,7 @@ public class ManageStudentFrame extends JDialog {
 	 * @param overallGradeScheme
      * @return JScrollPane containing the entire grading scheme table
 	 */
-	private JScrollPane generateGradingSchemeTable(OverallGrade overallGradeScheme) {
+	private JScrollPane generateGradingSchemeTable(Student managedStudent, OverallGrade overallGradeScheme) {
 		JPanel parentPanel = new JPanel();
 		parentPanel.setBackground(Color.WHITE);
 
@@ -211,6 +211,8 @@ public class ManageStudentFrame extends JDialog {
 
 		// Set up static cells since these will be hardcoded.
 		schemeGrid[0][1].add(new JLabel("Final Grade"));
+		String studentGradePercentage = String.format("%.2f%%%n", 100 * managedStudent.getOverallGrade().getOverallGrade());
+		schemeGrid[2][1].add(new JLabel(studentGradePercentage));
 		schemeGrid[2][0].add(new JLabel("Total Percentage"));
 
 		// TODO: once we add in the toggle for points gained and points subtracted, this string will have to change dynamically
@@ -223,7 +225,8 @@ public class ManageStudentFrame extends JDialog {
 			CourseCategory currCategory = overallGradeScheme.getCourseCategoryList().get(i);
 			String categoryWeightPercentage = String.format("%.2f%%%n", 100 * currCategory.getWeight());
 
-			schemeGrid[0][i+colOffset].add(new JLabel(currCategory.getName()));
+			schemeGrid[0][i+colOffset].setLayout(new BoxLayout(schemeGrid[0][i+colOffset], BoxLayout.Y_AXIS));
+			schemeGrid[0][i+colOffset].add(new JLabel(currCategory.getName() + " (Weight)"));
 			schemeGrid[0][i+colOffset].add(new JTextField(categoryWeightPercentage));
 
 			for (int j = 0; j < currCategory.getSubCategoryList().size(); j++) {
@@ -231,14 +234,16 @@ public class ManageStudentFrame extends JDialog {
 				String subCategoryWeightPercentage = String.format("%.2f%%%n", 100 * currSubCategory.getWeight());
 
 				// Show name and weight percentage
-				schemeGrid[1][j+i+colOffset+1].add(new JLabel(currSubCategory.getName()));
+				schemeGrid[1][j+i+colOffset+1].setLayout(new BoxLayout(schemeGrid[1][j+i+colOffset+1], BoxLayout.Y_AXIS));
+				schemeGrid[1][j+i+colOffset+1].add(new JLabel(currSubCategory.getName() + " (Weight)"));
 				schemeGrid[1][j+i+colOffset+1].add(new JTextField(subCategoryWeightPercentage));
 
-				// TODO: show total percentage
+				// Show total percentage, points gained and total points.
+				String subCategoryNonWeightedPercentage = String.format("%.2f%%%n", 100 * currSubCategory.getNonWeightedValue());
+				schemeGrid[2][j+i+colOffset+1].add(new JLabel(subCategoryNonWeightedPercentage));
+				schemeGrid[3][j+i+colOffset+1].add(new JTextField(Double.toString(currSubCategory.getPointsGained())));
+				schemeGrid[4][j+i+colOffset+1].add(new JTextField(Double.toString(currSubCategory.getTotalPoints())));
 
-				// show points gained
-
-				// show total points
 			}
 			colOffset += currCategory.getSubCategoryList().size();
 		}
@@ -255,12 +260,6 @@ public class ManageStudentFrame extends JDialog {
 		for(int i = 0; i < overallGradeScheme.getCourseCategoryList().size(); i++) {
 			CourseCategory currCategory = overallGradeScheme.getCourseCategoryList().get(i);
 			numCols += 1;
-
-			// TODO: delete this once we're able to have SubCategories and test this
-			SubCategory tmpSubCategory = new SubCategory(currCategory.getName() + "1", 0.4, 40.0, 50.0);
-			currCategory.addSubCategory(tmpSubCategory);
-			tmpSubCategory = new SubCategory(currCategory.getName() + "2", 0.4, 40.0, 50.0);
-			currCategory.addSubCategory(tmpSubCategory);
 
 			for (int j = 0; j < currCategory.getSubCategoryList().size(); j++) {
 				numCols += 1;
