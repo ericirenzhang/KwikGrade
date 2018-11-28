@@ -239,7 +239,7 @@ public class MainDashboard extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				int manageIndex = activeCourseDisplayList.getSelectedIndex();
 				try {
-					CourseOverviewFrame courseOverview = new CourseOverviewFrame(kwikGrade.getActiveCourses().get(manageIndex));
+					CourseOverviewFrame courseOverview = new CourseOverviewFrame(kwikGrade, kwikGrade.getActiveCourses().get(manageIndex));
 					courseOverview.setModal(true);
 					courseOverview.setVisible(true);
 					

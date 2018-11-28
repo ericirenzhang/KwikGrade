@@ -1,26 +1,14 @@
 package views;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import models.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-
-import models.Course;
-import models.CourseCategory;
-import models.OverallGrade;
-import models.Student;
-import models.SubCategory;
-
-import java.awt.event.ActionListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
+import java.awt.event.ActionListener;
 
-public class AddStudentFrame extends JDialog {
+public class ManageStudentFrame extends JDialog {
 	private static int CATEGORY_SCHEME_ROW_LEFT_PADDING = 10;
 	private static int SUB_CATEGORY_SCHEME_ROW_LEFT_PADDING = 75;
 
@@ -44,7 +32,7 @@ public class AddStudentFrame extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public AddStudentFrame(Course managedCourse) {
+	public ManageStudentFrame(Student managedStudent, Course managedCourse) {
 		OverallGrade overallGradeScheme;
 
 		//TODO: add if-else logic on which overall grade scheme to use. By default we will use the Undergraduate schema
@@ -58,26 +46,27 @@ public class AddStudentFrame extends JDialog {
 		
 		GridBagConstraints frameConstraints = new GridBagConstraints();
 		
-		fNameField = new JTextField();
+		fNameField = new JTextField(managedStudent.getfName());
 		fNameField.setBounds(53, 60, 130, 26);
 		contentPanel.add(fNameField);
 		fNameField.setColumns(10);
 
-		lNameField = new JTextField();
+		lNameField = new JTextField(managedStudent.getlName());
 		lNameField.setBounds(382, 60, 130, 26);
 		lNameField.setColumns(10);
 		contentPanel.add(lNameField);
 
-		buIdField = new JTextField();
+		buIdField = new JTextField(managedStudent.getBuId());
 		buIdField.setBounds(53, 124, 130, 26);
 		buIdField.setColumns(10);
 		contentPanel.add(buIdField);
 
-		emailField = new JTextField();
+		emailField = new JTextField(managedStudent.getEmail());
 		emailField.setBounds(217, 124, 130, 26);
 		emailField.setColumns(10);
 		contentPanel.add(emailField);
 
+		// TODO: update this with a dropdown menu instead.
 		statusField = new JTextField();
 		statusField.setBounds(382, 124, 130, 26);
 		statusField.setColumns(10);
@@ -164,7 +153,7 @@ public class AddStudentFrame extends JDialog {
 	}
 
 	/**
-	 * Generates the grading scheme table, which is built using GridLayout.
+     * Generates the grading scheme table, which is built using GridLayout.
 	 *
 	 * We build this using a nested structure as follows:
 	 * - JScrollPane that we return
@@ -173,7 +162,7 @@ public class AddStudentFrame extends JDialog {
 	 * 			- Each array cell can then contain JLabels, JLabels + JTextField, etc
 	 *
 	 * @param overallGradeScheme
-	 * @return JScrollPane containing the entire grading scheme table
+     * @return JScrollPane containing the entire grading scheme table
 	 */
 	private JScrollPane generateGradingSchemeTable(OverallGrade overallGradeScheme) {
 		JPanel parentPanel = new JPanel();

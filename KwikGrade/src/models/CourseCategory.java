@@ -6,7 +6,6 @@ import java.util.ArrayList;
 public class CourseCategory implements Serializable {
 	private String name;
 	private double weight;
-	private int numOfSubCat; // We need to determine the number of sub categories each Category has through the GUI
 	private ArrayList<SubCategory> subCategoryList;
 
 	// TODO: delete this empty constructor when we can properly instantiate CourseCategory
@@ -36,9 +35,13 @@ public class CourseCategory implements Serializable {
 		
 		for(int i=0;i<subCategoryList.size();i++)
 		{
-			result+=subCategoryList.get(i).calcWeightedValue();
+			result+=subCategoryList.get(i).getWeightedValue();
 		}
 		return result*getWeight();
+	}
+
+	public void addSubCategory(SubCategory subCategory) {
+		this.subCategoryList.add(subCategory);
 	}
 	
 	//==========================
@@ -50,18 +53,16 @@ public class CourseCategory implements Serializable {
 	public String getName(){
 		return this.name;
 	}
+	public ArrayList<SubCategory> getSubCategoryList() { return this.subCategoryList; }
 	public int getNumOfSubCat(){
-		return this.numOfSubCat;
+		return this.subCategoryList.size();
 	}
-	
+
 	//==========================
 	// Setters
 	//==========================
 	public void setName(String name){
 		this.name = name;
-	}
-	public void setNumOfsubCat(int numOfSubCat){
-		this.numOfSubCat = numOfSubCat;
 	}
 	public void setWeight(double weight){
 		this.weight = weight;

@@ -5,7 +5,6 @@ import java.io.Serializable;
 public class SubCategory implements Serializable {
 	String name;
 	double weight;
-	double value;
 	double pointsGained;
 	double totalPoints;
 
@@ -14,10 +13,9 @@ public class SubCategory implements Serializable {
 
 	}
 
-	public SubCategory(String name, double weight, double value, double pointsGained, double totalPoints) {
+	public SubCategory(String name, double weight, double pointsGained, double totalPoints) {
 		this.name = name;
 		this.weight = weight;
-		this.value = value;
 		this.pointsGained = pointsGained;
 		this.totalPoints = totalPoints;
 	}
@@ -55,12 +53,12 @@ public class SubCategory implements Serializable {
 	 *
 	 * @return
 	 */
-	public double calcWeightedValue()
+	public double getWeightedValue()
 	{
 		return (pointsGained/totalPoints)*weight;
 	}
 	
-	public double calcRawScore()
+	public double getNonWeightedValue()
 	{
 		return (pointsGained/totalPoints);
 	}
