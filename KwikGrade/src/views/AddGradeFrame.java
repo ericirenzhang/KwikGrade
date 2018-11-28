@@ -52,11 +52,19 @@ public class AddGradeFrame extends JDialog {
 	
 	private String assignName;
 	
+	//list of only grad or undergrad students
+	private ArrayList<Student> ugStudentList;
+	private ArrayList<Student> gradStudentList;
+	
+	//pointer array, shows how a student in the grad/undergrad student list relates to the entire student list
+	private ArrayList<Integer> ugLocationPointer = new ArrayList<Integer>();
+	private ArrayList<Integer> gradLocationPointer = new ArrayList<Integer>();
+	
 	private DefaultComboBoxModel catNameDropdownModel; 
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	
 	//iterates through and creates a tablemodel of students dynamiclly
-	public DefaultTableModel displayStudents(ArrayList<Student> Students) {
+	public DefaultTableModel displayAllStudents(ArrayList<Student> Students) {
 		addGradeTableModel = new DefaultTableModel();
 		Object[] title = {"Name", "Points"};
 		addGradeTableModel.setColumnIdentifiers(title);
@@ -66,9 +74,44 @@ public class AddGradeFrame extends JDialog {
 		return addGradeTableModel;
 	}
 	
-	//method that updates the student table
-	public void updateStudentTable() {
-		studentGradeTable.setModel(displayStudents(managedCourse.getActiveStudents()));
+	public DefaultTableModel dispGradUGStudents(ArrayList<Student> Students, boolean undergrad) {
+		String statusFlag;
+		if(undergrad == true){
+			statusFlag = "Undergraduate";
+		}
+		else {
+			statusFlag = "Graduate";
+		}
+		
+		addGradeTableModel = new DefaultTableModel();
+		Object[] title = {"Name", "Points"};
+		addGradeTableModel.setColumnIdentifiers(title);
+		for(int i = 0; i < Students.size(); i++) {
+			if (Students.get(i).getStatus().equals(statusFlag)) {
+			addGradeTableModel.addRow(new Object[] {Students.get(i).getfName()+" "+Students.get(i).getMiddleInitial()+" "+Students.get(i).getlName()} );
+			}
+		}
+		return addGradeTableModel;
+	}
+	
+//	//method that updates the student table
+//	public void updateStudentTable() {
+//		studentGradeTable.setModel(displayAllStudents(managedCourse.getActiveStudents()));
+//	}
+	
+	//creates a pointer array that tells you, where each undergrad and grad student is located in the course's enrolled students
+	public void createPointerArray(Course course) {
+		for(int i = 0; i < course.getActiveStudents().size(); i++) {
+			if(course.getActiveStudents().get(i).getStatus().equals("Graduate")) {
+				gradLocationPointer.add(i);
+				System.out.println("Grad Student Index "+i);
+			}
+			else if (course.getActiveStudents().get(i).getStatus().equals("Undergraduate")) {
+				ugLocationPointer.add(i);
+				System.out.println("UG Student Index "+i);
+
+			}
+		}
 	}
 	
 	//resets the dropdown menu to update the display of categories within a course
@@ -125,6 +168,7 @@ public class AddGradeFrame extends JDialog {
 	 */
 	public AddGradeFrame(Course managedCourse) {
 		this.managedCourse = managedCourse;
+		createPointerArray(managedCourse);
 		ugOverallGrade = managedCourse.getCourseUnderGradDefaultGradeScheme();
 		gradOverallGrade = managedCourse.getCourseGradDefaultGradeScheme();
 		
@@ -161,11 +205,14 @@ public class AddGradeFrame extends JDialog {
 				//displays only the course categories that are relevant depending on if grad, UG, or all students are selected
 				if (gradeSchemeDropdown.getSelectedItem().equals("Undergraduate")) {
 					catNameDropdown.setModel(catNameDropdownUpdater(managedCourse, true));
+					studentGradeTable.setModel(dispGradUGStudents(managedCourse.getActiveStudents(), true));
 				}
 				else if (gradeSchemeDropdown.getSelectedItem().equals("Graduate")){
 					catNameDropdown.setModel(catNameDropdownUpdater(managedCourse, false));
+					studentGradeTable.setModel(dispGradUGStudents(managedCourse.getActiveStudents(), false));
 				}
 				else {
+					studentGradeTable.setModel(displayAllStudents(managedCourse.getActiveStudents()));
 					catNameDropdown.setModel(commonCourseCategories(managedCourse));
 				}
 			}
@@ -242,7 +289,7 @@ public class AddGradeFrame extends JDialog {
 		studentGradeTable = new JTable();
 		scrollPane.setViewportView(studentGradeTable);
 		contentPanel.setLayout(gl_contentPanel);
-		updateStudentTable();
+		studentGradeTable.setModel(displayAllStudents(managedCourse.getActiveStudents()));
 		
 		{
 			JPanel buttonPane = new JPanel();
@@ -272,6 +319,9 @@ public class AddGradeFrame extends JDialog {
 							JOptionPane.showMessageDialog(null, "Select either Points Gained or Points Lost!");
 						}
 						
+						for(int gradeAddIndex = 0; gradeAddIndex < studentGradeTable.getRowCount(); gradeAddIndex++) {
+							System.out.println(gradeAddIndex);
+						}
 						
 						
 					}
