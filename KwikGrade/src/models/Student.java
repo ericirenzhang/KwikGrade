@@ -56,7 +56,7 @@ public class Student implements Serializable {
 	}
 	
 	public OverallGrade getOverallGrade() {
-		return this.getOverallGrade();
+		return this.grade;
 	}
 
 	// ========================================
