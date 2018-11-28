@@ -26,6 +26,10 @@ public class CourseCategory implements Serializable {
 		this.subCategoryList = new ArrayList<SubCategory>();
 	}
 	
+	public void addSubCategory(String name, double weight, double value, double pointsGained, double totalPoints) {
+		this.subCategoryList.add(new SubCategory(name, weight, value, pointsGained, totalPoints));
+	}
+	
 	public double calcGradeCategory(){
 		int n = getNumOfSubCat();
 		for(int i=0;i<n;i++){

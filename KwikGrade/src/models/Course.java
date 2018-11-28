@@ -157,14 +157,9 @@ public class Course implements Serializable {
 		this.courseGradDefaultGradeScheme = gradingScheme;
 	}
 	
-<<<<<<< HEAD
 	public void addActiveStudents(Student activeStudents) {
 		this.activeStudents.add(activeStudents);
 	}
 
-=======
-	public void setActiveStudents(Student activeStudents) {
-		this.activeStudents.add(activeStudents);
-	}
->>>>>>> created JTable and dynamic JList to add grade
+
 }

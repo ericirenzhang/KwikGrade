@@ -48,6 +48,10 @@ public class Student implements Serializable {
 	public String getFullName() {
 		return String.format("%s %s. %s", this.fName, this.middleInitial, this.lName);
 	}
+	
+	public OverallGrade getOverallGrade() {
+		return this.getOverallGrade();
+	}
 
 	// ========================================
 	// Setters

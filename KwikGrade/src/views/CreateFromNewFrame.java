@@ -279,7 +279,7 @@ public class CreateFromNewFrame extends JDialog {
 				for(int gradIndex = 0; gradIndex < gradTableModelRows; gradIndex++) {
 					try {
 					String gradCategoryName = gradCourseCategoryTable.getValueAt(gradIndex, 0).toString();
-					double gradCategoryWeight = Double.parseDouble(String.valueOf(ugCourseCategoryTable.getValueAt(gradIndex, 1)));
+					double gradCategoryWeight = Double.parseDouble(String.valueOf(gradCourseCategoryTable.getValueAt(gradIndex, 1)));
 					gradOverallGrade.addCourseCategory(gradCategoryName, gradCategoryWeight);
 					}
 					//tried to implement logic for a blank table...does not work...need to rethink
