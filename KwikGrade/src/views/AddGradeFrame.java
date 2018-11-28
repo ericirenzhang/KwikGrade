@@ -344,6 +344,8 @@ public class AddGradeFrame extends JDialog {
 							return;
 						}
 						
+						//TODO: need to add logic if student is undergrad or grad with pointer arrays
+						
 						if (gradeSchemeDropdown.getSelectedIndex() == 0) {
 							//iterates through entire list of students
 							for(int gradeAddIndex = 0; gradeAddIndex < studentGradeTable.getRowCount(); gradeAddIndex++) {
