@@ -1,10 +1,8 @@
 package views;
 
+import helpers.FileManager;
 import models.Course;
 import models.KwikGrade;
-
-import java.io.*;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -23,15 +21,15 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 
 public class MainDashboard extends JFrame {
+	private static final String SERIALIZED_FILE_NAME_ACTIVE = "serializedActiveCourseSaveData.ser";
+	private static final String SERIALIZED_FILE_NAME_CLOSED = "serializedClosedCourseSaveData.ser";
+
 	private DefaultListModel DLM;
 
 	private JPanel contentPane;
 	private static KwikGrade kwikGrade;
 	private JList activeCourseDisplayList;
 	private JList closedCourseDisplayList;
-
-	private static final String SERIALIZED_FILE_NAME_ACTIVE = "serializedActiveCourseSaveData.ser";
-	private static final String SERIALIZED_FILE_NAME_CLOSED = "serializedClosedCourseSaveData.ser";
 	
 	/**
 	 * Pulls active course names for display in dynamic Jlist
@@ -47,69 +45,14 @@ public class MainDashboard extends JFrame {
 	}
 
 	/**
-	 * Saves all courses and their state to a local file.
-	 * @param courseList
-	 */
-	public static void saveFile(ArrayList<Course> courseList, String saveFileName) {
-		FileOutputStream fileOutputStream;
-		ObjectOutputStream objectOutputStream;
-
-		try {
-			fileOutputStream = new FileOutputStream(saveFileName);
-			objectOutputStream = new ObjectOutputStream(fileOutputStream);
-
-			// Write Course list to file.
-			objectOutputStream.writeObject(courseList);
-			objectOutputStream.close();
-
-			System.out.println("Successfully saved data.");
-		}
-		catch(IOException ioe) {
-			ioe.printStackTrace();
-		}
-	}
-
-	/**
-	 * Load courses from saved local file.
-	 * @param saveFileName
-	 * @return ArrayList of Courses from saved file
-	 */
-	public static ArrayList<Course> loadFile(String saveFileName) {
-		ArrayList<Course> savedCoursesList = new ArrayList<>();
-		FileInputStream fileInputStream;
-		ObjectInputStream objectInputStream;
-
-		try {
-			fileInputStream = new FileInputStream(saveFileName);
-			objectInputStream = new ObjectInputStream(fileInputStream);
-			savedCoursesList = (ArrayList<Course>) objectInputStream.readObject();
-			objectInputStream.close();
-
-			System.out.println("Successfully loaded save data.");
-			return savedCoursesList;
-		}
-		catch(FileNotFoundException fnfe) {
-			System.out.println("File not found: " + fnfe.getMessage());
-		}
-		catch(IOException ioe) {
-			ioe.printStackTrace();
-		}
-		catch(ClassNotFoundException cnfe) {
-			cnfe.printStackTrace();
-		}
-
-		return savedCoursesList;
-	}
-
-	/**
 	 * Create the MainDashboard Frame.
 	 */
 	public MainDashboard() {
 		kwikGrade = new KwikGrade();
 
 		// Load from saved file.
-		kwikGrade.setActiveCourses(loadFile(SERIALIZED_FILE_NAME_ACTIVE));
-		kwikGrade.setClosedCourses(loadFile(SERIALIZED_FILE_NAME_CLOSED));
+		kwikGrade.setActiveCourses(FileManager.loadFile(SERIALIZED_FILE_NAME_ACTIVE));
+		kwikGrade.setClosedCourses(FileManager.loadFile(SERIALIZED_FILE_NAME_CLOSED));
 
 		// Set up JFrame.
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -151,7 +94,7 @@ public class MainDashboard extends JFrame {
 					kwikGrade.addCourse(createCourse.getCourseNum(), createCourse.getCourseTerm(), createCourse.getCourseTitle(), createCourse.getImportedStudentsList(), createCourse.getUGOverallGrade(), createCourse.getGradOverallGrade());
 
 					//saves file upon course creation
-					saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
+					FileManager.saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
 					updateCourseDisplayModel();
 				}
 			}
@@ -196,8 +139,8 @@ public class MainDashboard extends JFrame {
 		JButton saveCourseButton = new JButton("Save");
 		saveCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
-				saveFile(kwikGrade.getClosedCourses(), SERIALIZED_FILE_NAME_CLOSED);
+				FileManager.saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
+				FileManager.saveFile(kwikGrade.getClosedCourses(), SERIALIZED_FILE_NAME_CLOSED);
 				JOptionPane.showMessageDialog(null, "Successfully Saved!");
 			}
 		});
@@ -226,7 +169,7 @@ public class MainDashboard extends JFrame {
 				catch (Exception eDelete) {
 					JOptionPane.showMessageDialog(null, "No course is selected!");
 				}
-				saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
+				FileManager.saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
 				updateCourseDisplayModel();
 			}
 		});

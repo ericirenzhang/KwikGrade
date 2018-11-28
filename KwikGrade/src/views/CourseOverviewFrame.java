@@ -1,5 +1,6 @@
 package views;
 
+import helpers.FileManager;
 import models.Course;
 import models.KwikGrade;
 import models.Student;
@@ -24,7 +25,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.JScrollPane;
 
 public class CourseOverviewFrame extends JDialog {
-
 	private final JPanel contentPanel = new JPanel();
 	private JTable studentDisplayTable;
 	private DefaultTableModel studentTableModel = new DefaultTableModel();
@@ -126,8 +126,8 @@ public class CourseOverviewFrame extends JDialog {
 				AddStudentFrame addStudent = new AddStudentFrame(managedCourse);
 				addStudent.setModal(true);
 				addStudent.setVisible(true);
-				Student studentToAdd = addStudent.getNewStudent();
-				managedCourse.addStudent(studentToAdd);
+//				Student studentToAdd = addStudent.getNewStudent();
+//				managedCourse.addStudent(studentToAdd);
 				updateStudentTable();
 			}
 		});
@@ -142,9 +142,9 @@ public class CourseOverviewFrame extends JDialog {
 				manageStudentFrame.setModal(true);
 				manageStudentFrame.setVisible(true);
 
-//				if(manageStudentFrame.didSave()) {
-//					saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
-//				}
+				if(manageStudentFrame.didSave()) {
+					FileManager.saveFile(kwikGrade.getActiveCourses(), MainDashboard.getActiveSaveFileName());
+				}
 			}
 		});
 		manageStudentButton.setBounds(565, 62, 155, 40);
@@ -177,8 +177,8 @@ public class CourseOverviewFrame extends JDialog {
 		JButton saveCloseButton = new JButton("Save and Close");
 		saveCloseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainDashboard.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
-				MainDashboard.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
+				FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
+				FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
 				JOptionPane.showMessageDialog(null, "Successfully Saved!");
 				dispose();
 			}

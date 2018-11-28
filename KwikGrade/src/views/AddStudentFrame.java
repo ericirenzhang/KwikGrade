@@ -1,28 +1,21 @@
 package views;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import models.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-
-import models.Course;
-import models.CourseCategory;
-import models.OverallGrade;
-import models.Student;
-import models.SubCategory;
-
-import java.awt.event.ActionListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
+import java.awt.event.ActionListener;
 
 public class AddStudentFrame extends JDialog {
-	private static int CATEGORY_SCHEME_ROW_LEFT_PADDING = 10;
-	private static int SUB_CATEGORY_SCHEME_ROW_LEFT_PADDING = 75;
+	private static int GRADING_SCHEME_ROW_COUNT = 3;
+	private static int GRADING_SCHEME_WIDTH = 900;
+	private static int GRADING_SCHEME_HEIGHT = 300;
+	private static int GRADING_SCHEME_COL_OFFSET = 1;
+
+	private static Color LIGHT_GRAY_COLOR = new Color(0xF0F0F0);
+	private static Color DARK_GRAY_COLOR = new Color(0xE0E0E0);
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField fNameField;
@@ -41,23 +34,25 @@ public class AddStudentFrame extends JDialog {
 
 	private Student newStudent;
 
+	private boolean didSave;
+
 	/**
 	 * Create the dialog.
 	 */
-	public AddStudentFrame(Course managedCourse) {
+	public AddStudentFrame(Course currCourse) {
 		OverallGrade overallGradeScheme;
 
 		//TODO: add if-else logic on which overall grade scheme to use. By default we will use the Undergraduate schema
-		overallGradeScheme = managedCourse.getCourseUnderGradDefaultGradeScheme();
-		
+		overallGradeScheme = currCourse.getCourseUnderGradDefaultGradeScheme();
+
 		setBounds(100, 100, 1000, 600);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		
+
 		GridBagConstraints frameConstraints = new GridBagConstraints();
-		
+
 		fNameField = new JTextField();
 		fNameField.setBounds(53, 60, 130, 26);
 		contentPanel.add(fNameField);
@@ -78,6 +73,7 @@ public class AddStudentFrame extends JDialog {
 		emailField.setColumns(10);
 		contentPanel.add(emailField);
 
+		// TODO: update this with a dropdown menu instead.
 		statusField = new JTextField();
 		statusField.setBounds(382, 124, 130, 26);
 		statusField.setColumns(10);
@@ -121,8 +117,8 @@ public class AddStudentFrame extends JDialog {
 				else
 					newStudent = new Student(fNameField.getText(),"", lNameField.getText(), buIdField.getText(), emailField.getText());
 
-				managedCourse.addActiveStudents(newStudent);
-
+				currCourse.addActiveStudents(newStudent);
+				didSave = true;
 			}
 		});
 		saveButton.setBounds(597, 85, 117, 29);
@@ -131,7 +127,7 @@ public class AddStudentFrame extends JDialog {
 		backButton = new JButton("Back");
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 //new MainDashboard().setVisible(true); //This actually has to go back to Course Management page
+				//new MainDashboard().setVisible(true); //This actually has to go back to Course Management page
 				dispose();
 			}
 		});
@@ -179,9 +175,69 @@ public class AddStudentFrame extends JDialog {
 		JPanel parentPanel = new JPanel();
 		parentPanel.setBackground(Color.WHITE);
 
-		// Compute number of categories + subcategories
-		int numCols = 2;
-		int numRows = 5;
+		// Number of columns in our GridLayout will be equivalent to number of categories + subcategories.
+		int numCols = getNumCategoryAndSubCategory(overallGradeScheme);
+
+		// Define GridLayout.
+		parentPanel.setLayout(new GridLayout(GRADING_SCHEME_ROW_COUNT, numCols));
+		parentPanel.setBounds(75, 200, GRADING_SCHEME_WIDTH, GRADING_SCHEME_HEIGHT);
+
+		// Create grid of JPanels
+		JPanel[][] schemeGrid = new JPanel[GRADING_SCHEME_ROW_COUNT][numCols];
+		for(int i = 0; i < GRADING_SCHEME_ROW_COUNT; i++) {
+			for(int j = 0; j < numCols; j++) {
+				schemeGrid[i][j] = new JPanel();
+				JPanel currPanel = schemeGrid[i][j];
+				currPanel.setPreferredSize(new Dimension(150, 50));
+
+				// Styling to make the table look like the mockup.
+				if(i == 0) {
+					currPanel.setBackground(LIGHT_GRAY_COLOR);
+				} else if (i == 1) {
+					currPanel.setBackground(DARK_GRAY_COLOR);
+				} else {
+					currPanel.setBackground(Color.WHITE);
+				}
+
+				// Only add borders on vertical sides.
+				currPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, new Color(0xD1D0D1)));
+
+				parentPanel.add(currPanel);
+			}
+		}
+
+		// Set up static cells since these will be hardcoded.
+		schemeGrid[0][0].add(new JLabel("Final Grade"));
+
+		// The first two columns are static with text. When we build the JPanels in the columns, they need to be offset by these initial columns with static text.
+		int colOffset = GRADING_SCHEME_COL_OFFSET;
+		for(int i = 0; i < overallGradeScheme.getCourseCategoryList().size(); i++) {
+			CourseCategory currCategory = overallGradeScheme.getCourseCategoryList().get(i);
+			String categoryWeightPercentage = String.format("%.2f%%%n", 100 * currCategory.getWeight());
+
+			schemeGrid[0][i+colOffset].add(new JLabel(currCategory.getName()));
+			schemeGrid[0][i+colOffset].add(new JTextField(categoryWeightPercentage));
+
+			for (int j = 0; j < currCategory.getSubCategoryList().size(); j++) {
+				SubCategory currSubCategory = currCategory.getSubCategoryList().get(j);
+				String subCategoryWeightPercentage = String.format("%.2f%%%n", 100 * currSubCategory.getWeight());
+
+				// Show name and weight percentage
+				schemeGrid[1][j+i+colOffset+1].add(new JLabel(currSubCategory.getName()));
+				schemeGrid[1][j+i+colOffset+1].add(new JTextField(subCategoryWeightPercentage));
+			}
+			colOffset += currCategory.getSubCategoryList().size();
+		}
+
+		// Add everything we just built into a JScrollPane.
+		JScrollPane scrollPane = new JScrollPane(parentPanel);
+		scrollPane.setBounds(75, 200, GRADING_SCHEME_WIDTH, GRADING_SCHEME_HEIGHT);
+
+		return scrollPane;
+	}
+
+	public int getNumCategoryAndSubCategory(OverallGrade overallGradeScheme) {
+		int numCols = 2; // the first two columns are allocated to static text
 		for(int i = 0; i < overallGradeScheme.getCourseCategoryList().size(); i++) {
 			CourseCategory currCategory = overallGradeScheme.getCourseCategoryList().get(i);
 			numCols += 1;
@@ -197,76 +253,10 @@ public class AddStudentFrame extends JDialog {
 			}
 		}
 
-		// Define GridLayout with number of columns=categories+subcategories
-		parentPanel.setLayout(new GridLayout(numRows,numCols));
-		parentPanel.setBounds(75, 200, 900, 300);
-
-		JPanel[][] schemeGrid = new JPanel[numRows][numCols];
-		for(int i = 0; i < numRows; i++) {
-			for(int j = 0; j < numCols; j++) {
-				schemeGrid[i][j] = new JPanel();
-				JPanel currPanel = schemeGrid[i][j];
-				currPanel.setPreferredSize(new Dimension(150, 50));
-
-				if(i == 0) {
-					currPanel.setBackground(new Color(0xF0F0F0));
-				} else if (i == 1) {
-					currPanel.setBackground(new Color(0xE0E0E0));
-				} else if (i == 3){
-					currPanel.setBackground(new Color(0x97FFBF));
-				} else {
-					currPanel.setBackground(Color.WHITE);
-				}
-				currPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, new Color(0xD1D0D1)));
-
-				parentPanel.add(currPanel);
-			}
-		}
-
-		JScrollPane scrollPane = new JScrollPane(parentPanel);
-		scrollPane.setBounds(75, 200, 900, 300);
-
-		// Set up static cells
-		schemeGrid[0][1].add(new JLabel("Final Grade"));
-		schemeGrid[2][0].add(new JLabel("Total Percentage"));
-
-		// TODO: once we add in the toggle for points gained and points subtracted, this string will have to change dynamically
-		schemeGrid[3][0].add(new JLabel("Points Gained"));
-
-		schemeGrid[4][0].add(new JLabel("Total Points"));
-
-		int offset = 2;
-		for(int i = 0; i < overallGradeScheme.getCourseCategoryList().size(); i++) {
-			CourseCategory currCategory = overallGradeScheme.getCourseCategoryList().get(i);
-			String categoryWeightPercentage = String.format("%.2f%%%n", 100 * currCategory.getWeight());
-
-			schemeGrid[0][i+offset].add(new JLabel(currCategory.getName()));
-			schemeGrid[0][i+offset].add(new JTextField(categoryWeightPercentage));
-
-			for (int j = 0; j < currCategory.getSubCategoryList().size(); j++) {
-				SubCategory currSubCategory = currCategory.getSubCategoryList().get(j);
-				String subCategoryWeightPercentage = String.format("%.2f%%%n", 100 * currSubCategory.getWeight());
-
-				// show name and weight percentage
-				schemeGrid[1][j+i+offset+1].add(new JLabel(currSubCategory.getName()));
-				schemeGrid[1][j+i+offset+1].add(new JTextField(subCategoryWeightPercentage));
-
-				// show total percentage
-
-				// show points gained
-
-				// show total points
-			}
-			offset += currCategory.getSubCategoryList().size();
-		}
-
-		return scrollPane;
+		return numCols;
 	}
 
-	//==========================
-	// Getters
-	//==========================
-	public Student getNewStudent() {
-		return this.newStudent;
+	public boolean didSave() {
+		return this.didSave;
 	}
 }
