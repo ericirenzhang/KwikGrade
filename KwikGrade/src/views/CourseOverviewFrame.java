@@ -29,7 +29,8 @@ public class CourseOverviewFrame extends JDialog {
 	private JTable studentDisplayTable;
 	private DefaultTableModel studentTableModel = new DefaultTableModel();
 	private DefaultTableModel statsTableModel;
-	private static Course managedCourse;
+	private Course managedCourse;
+
 	private int selectedRow;
 	private JTable kwikStatsTable;
 
@@ -45,6 +46,14 @@ public class CourseOverviewFrame extends JDialog {
 	
 	public void updateStudentTable() {
 		studentDisplayTable.setModel(displayStudents(managedCourse.getActiveStudents()));
+	}
+
+	public void setManagedCourse(Course managedCourse) {
+		this.managedCourse = managedCourse;
+	}
+
+	public Course getManagedCourse() {
+		return this.managedCourse;
 	}
 	
 	
@@ -124,9 +133,13 @@ public class CourseOverviewFrame extends JDialog {
 		JButton addStudentButton = new JButton("Add Student");
 		addStudentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddStudentFrame addStudent = new AddStudentFrame(managedCourse);
+				AddStudentFrame addStudent = new AddStudentFrame(getManagedCourse());
+//				kwikGrade.setActiveCourses(FileManager.loadFile(MainDashboard.getActiveSaveFileName()));
+//				kwikGrade.setClosedCourses(FileManager.loadFile(MainDashboard.getClosedSaveFileName()));
+
 				addStudent.setModal(true);
 				addStudent.setVisible(true);
+
 //				Student studentToAdd = addStudent.getNewStudent();
 //				managedCourse.addStudent(studentToAdd);
 				updateStudentTable();
@@ -138,8 +151,8 @@ public class CourseOverviewFrame extends JDialog {
 		JButton manageStudentButton = new JButton("Manage Student");
 		manageStudentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Student student = managedCourse.getActiveStudents().get(selectedRow);
-				ManageStudentFrame manageStudentFrame = new ManageStudentFrame(student, managedCourse);
+				Student student = getManagedCourse().getActiveStudents().get(selectedRow);
+				ManageStudentFrame manageStudentFrame = new ManageStudentFrame(student, getManagedCourse());
 				manageStudentFrame.setModal(true);
 				manageStudentFrame.setVisible(true);
 
@@ -154,9 +167,11 @@ public class CourseOverviewFrame extends JDialog {
 		JButton addGradeButton = new JButton("Enter New Grades");
 		addGradeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddGradeFrame addGrade = new AddGradeFrame(managedCourse);
+				AddGradeFrame addGrade = new AddGradeFrame(getManagedCourse());
 				addGrade.setModal(true);
 				addGrade.setVisible(true);
+
+				setManagedCourse(addGrade.getManagedCourse());
 				updateStudentTable();
 				
 			}

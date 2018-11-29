@@ -8,7 +8,7 @@ public class Student implements Serializable {
 	private String lName;
 	private String buId;
 	private String email;
-	private OverallGrade overallGrade;
+	protected OverallGrade overallGrade;
 	private String status;
 	// TODO: add OverallGrade objects once implemented
 	// TODO: add comments string as attribute

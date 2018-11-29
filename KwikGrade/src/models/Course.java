@@ -161,8 +161,8 @@ public class Course implements Serializable {
 		this.activeStudents.add(activeStudents);
 	}
 	
-	public void setActiveStudents(Student activeStudents) {
-		this.activeStudents.add(activeStudents);
+	public void setActiveStudents(ArrayList<Student> activeStudents) {
+		this.activeStudents = activeStudents;
 	}
 
 

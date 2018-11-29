@@ -35,6 +35,7 @@ public class ManageStudentFrame extends JDialog {
 	private JButton backButton;
 
 	private Student newStudent;
+	private GradingSchemeGrid gradingSchemeGrid;
 
 	private boolean didSave;
 
@@ -46,7 +47,7 @@ public class ManageStudentFrame extends JDialog {
 
 		//TODO: add if-else logic on which overall grade scheme to use. By default we will use the Undergraduate schema
 		overallGradeScheme = managedCourse.getCourseUnderGradDefaultGradeScheme();
-		
+
 		setBounds(100, 100, 1000, 600);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -136,30 +137,35 @@ public class ManageStudentFrame extends JDialog {
 		backButton.setBounds(597, 124, 117, 29);
 		contentPanel.add(backButton);
 
-		// Add panel to frame
-//		frameConstraints.gridx = 0;
-//		frameConstraints.gridy = 1;
-//		frameConstraints.weighty = 1;
-
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-		JButton okButton = new JButton("OK");
-		okButton.setActionCommand("OK");
-		buttonPane.add(okButton);
-		getRootPane().setDefaultButton(okButton);
+		JButton saveButton = new JButton("Save");
+		saveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO: add save functionality, currently just filler
+				dispose();
+			}
+		});
+		buttonPane.add(saveButton);
+		getRootPane().setDefaultButton(saveButton);
 
 		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+
 		cancelButton.setActionCommand("Cancel");
 		buttonPane.add(cancelButton);
 
 		// ======================================
 		// Build Grading Scheme Grid
 		// ======================================
-		GradingSchemeGrid gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
+		gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
 		gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_STUDENT);
-
 		JScrollPane gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
 		contentPanel.add(gradingSchemeScrollPane);
 	}

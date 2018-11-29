@@ -107,15 +107,10 @@ public class GradingSchemeGrid {
             appendCategoryColumn(currCategory);
 
             // TODO: delete this once we're able to have SubCategories and test this
-            if(this.gradingSchemeType == GradingSchemeType.MANAGE_STUDENT) {
-                SubCategory tmpSubCategory = new SubCategory(currCategory.getName() + "1", 0.4, 40.0, 50.0);
+            if(this.gradingSchemeType == GradingSchemeType.ADD_STUDENT) {
+                SubCategory tmpSubCategory = new SubCategory(currCategory.getName() + "1", 0.5, 40.0, 50.0);
                 currCategory.addSubCategory(tmpSubCategory);
                 tmpSubCategory = new SubCategory(currCategory.getName() + "2", 0.5, 40.0, 50.0);
-                currCategory.addSubCategory(tmpSubCategory);
-            } else {
-                SubCategory tmpSubCategory = new SubCategory(currCategory.getName() + "1", 0.4, 0.0, 50.0);
-                currCategory.addSubCategory(tmpSubCategory);
-                tmpSubCategory = new SubCategory(currCategory.getName() + "2", 0.5, 0.0, 50.0);
                 currCategory.addSubCategory(tmpSubCategory);
             }
 
@@ -394,6 +389,7 @@ public class GradingSchemeGrid {
     public void rerenderGradeValues() {
         this.modifiedGradeScheme = getOverallGradeFromFields();
 
+        // TODO: add check to avoid doing this in Manage Categories because Manage Categories only has two rows
         // Manually update Final Grade column for now
         JPanel currPanel = schemeGrid.get(2).get(1);
         for (Component c : currPanel.getComponents()) {

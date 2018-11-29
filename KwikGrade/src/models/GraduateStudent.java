@@ -10,7 +10,7 @@ public class GraduateStudent extends Student {
 	
 	public GraduateStudent(String fName, String middleInitial, String lName, String buId, String email, String status, OverallGrade overallGrade) {
 		super(fName, middleInitial, lName, buId, email);
-		this.grade = grade.copyOverallGrade(overallGrade);
+		this.overallGrade = overallGrade.copyOverallGrade(overallGrade);
 		this.status  = status;
 	}
 	

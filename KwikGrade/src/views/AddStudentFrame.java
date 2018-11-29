@@ -69,9 +69,6 @@ public class AddStudentFrame extends JDialog {
 		//TODO: add if-else logic on which overall grade scheme to use. By default we will use the Undergraduate schema
 		overallGradeScheme = currCourse.getCourseUnderGradDefaultGradeScheme();
 
-		gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
-		gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.ADD_STUDENT);
-
 		setBounds(100, 100, 1000, 600);
 
 		getContentPane().setLayout(new BorderLayout());
@@ -180,6 +177,8 @@ public class AddStudentFrame extends JDialog {
 		// ======================================
 		// Build Grading Scheme Grid Layout
 		// ======================================
+		gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
+		gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.ADD_STUDENT);
 		JScrollPane gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
 		contentPanel.add(gradingSchemeScrollPane);
 	}

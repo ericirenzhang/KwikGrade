@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import helpers.FileManager;
 import models.Course;
 import models.CourseCategory;
 import models.OverallGrade;
@@ -378,8 +379,8 @@ public class AddGradeFrame extends JDialog {
 //								System.out.println("Index of the Category "+categoryIndex);
 								
 								OverallGrade studentOverallGrade = studentList.get(gradeAddIndex).getOverallGrade();
-								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(assignNameText.getText(), 1, 100, studentPoints, totalAssignValue);
-								studentOverallGrade.calcOverallGrade();
+								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, studentPoints, totalAssignValue));
+								studentList.get(gradeAddIndex).setOverallGrade(studentOverallGrade);
 							}
 						}
 						//checks if the Undergraduate students are selected
@@ -392,8 +393,8 @@ public class AddGradeFrame extends JDialog {
 								
 								OverallGrade studentOverallGrade = studentList.get(ugLocationPointer.get(gradeAddIndex)).getOverallGrade();
 								
-								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(assignNameText.getText(), 1, 100, studentPoints, totalAssignValue);
-								studentOverallGrade.calcOverallGrade();
+								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, studentPoints, totalAssignValue));
+								studentList.get(ugLocationPointer.get(gradeAddIndex)).setOverallGrade(studentOverallGrade);
 							}
 						}
 						
@@ -410,15 +411,16 @@ public class AddGradeFrame extends JDialog {
 								OverallGrade studentOverallGrade = studentList.get(gradLocationPointer.get(gradeAddIndex)).getOverallGrade();
 								//System.out.println(studentOverallGrade);
 								
-								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(assignNameText.getText(), 1, 100, studentPoints, totalAssignValue);
-								studentOverallGrade.calcOverallGrade();
+								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, studentPoints, totalAssignValue));
+								studentList.get(ugLocationPointer.get(gradeAddIndex)).setOverallGrade(studentOverallGrade);;
 								
 								//System.out.println("subcategory list "+studentOverallGrade.getCourseCategoryList().get(0).getSubCategoryList());
 							}
 						}
-						
-						MainDashboard.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
-						MainDashboard.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
+
+						managedCourse.setActiveStudents(studentList);
+						FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
+						FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
 						
 						dispose();
 
@@ -440,5 +442,9 @@ public class AddGradeFrame extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+	}
+
+	public Course getManagedCourse() {
+		return this.managedCourse;
 	}
 }
