@@ -1,6 +1,7 @@
 package views;
 
 import models.*;
+import views.components.GradingSchemeGrid;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -33,6 +34,7 @@ public class AddStudentFrame extends JDialog {
 	private JButton backButton;
 
 	private Student newStudent;
+	private GradingSchemeGrid gradingSchemeGrid;
 
 	private boolean didSave;
 
@@ -44,6 +46,9 @@ public class AddStudentFrame extends JDialog {
 
 		//TODO: add if-else logic on which overall grade scheme to use. By default we will use the Undergraduate schema
 		overallGradeScheme = currCourse.getCourseUnderGradDefaultGradeScheme();
+
+		gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
+		gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.ADD_STUDENT);
 
 		setBounds(100, 100, 1000, 600);
 		getContentPane().setLayout(new BorderLayout());
@@ -108,32 +113,6 @@ public class AddStudentFrame extends JDialog {
 		mInitialLabel.setBounds(217, 45, 98, 16);
 		contentPanel.add(mInitialLabel);
 
-		saveButton = new JButton("Save");
-		saveButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//Student newStudent;
-				if(mInitialField.getText() != null)
-					newStudent = new Student(fNameField.getText(), mInitialField.getText(), lNameField.getText(), buIdField.getText(), emailField.getText());
-				else
-					newStudent = new Student(fNameField.getText(),"", lNameField.getText(), buIdField.getText(), emailField.getText());
-
-				currCourse.addActiveStudents(newStudent);
-				didSave = true;
-			}
-		});
-		saveButton.setBounds(597, 85, 117, 29);
-		contentPanel.add(saveButton);
-
-		backButton = new JButton("Back");
-		backButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//new MainDashboard().setVisible(true); //This actually has to go back to Course Management page
-				dispose();
-			}
-		});
-		backButton.setBounds(597, 124, 117, 29);
-		contentPanel.add(backButton);
-
 		// Add panel to frame
 		frameConstraints.gridx = 0;
 		frameConstraints.gridy = 1;
@@ -143,117 +122,42 @@ public class AddStudentFrame extends JDialog {
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-		JButton okButton = new JButton("OK");
-		okButton.setActionCommand("OK");
-		buttonPane.add(okButton);
-		getRootPane().setDefaultButton(okButton);
+		JButton saveButton = new JButton("Save");
+		saveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// Create a new student from the TextFields.
+				if(mInitialField.getText() != null)
+					newStudent = new Student(fNameField.getText(), mInitialField.getText(), lNameField.getText(), buIdField.getText(), emailField.getText());
+				else
+					newStudent = new Student(fNameField.getText(),"", lNameField.getText(), buIdField.getText(), emailField.getText());
+
+				// Construct an OverallGrade from what the professor has entered on the grading scheme grid.
+				OverallGrade overallGrade = gradingSchemeGrid.getOverallGradeFromFields();
+				newStudent.setOverallGrade(overallGrade);
+
+				// Add the student to the course.
+				currCourse.addActiveStudents(newStudent);
+				didSave = true;
+				dispose();
+			}
+		});
+		buttonPane.add(saveButton);
+		getRootPane().setDefaultButton(saveButton);
 
 		JButton cancelButton = new JButton("Cancel");
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
 		cancelButton.setActionCommand("Cancel");
 		buttonPane.add(cancelButton);
 
 		// ======================================
 		// Build Grading Scheme Grid Layout
 		// ======================================
-		JScrollPane gradingSchemeScrollPane = generateGradingSchemeTable(overallGradeScheme);
+		JScrollPane gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
 		contentPanel.add(gradingSchemeScrollPane);
-	}
-
-	/**
-	 * Generates the grading scheme table, which is built using GridLayout.
-	 *
-	 * We build this using a nested structure as follows:
-	 * - JScrollPane that we return
-	 * 	- Parent JPanel that uses a GridLayout and holds...
-	 * 		- 2D array of JPanels, where each JPanel represents a "cell" in the table
-	 * 			- Each array cell can then contain JLabels, JLabels + JTextField, etc
-	 *
-	 * @param overallGradeScheme
-	 * @return JScrollPane containing the entire grading scheme table
-	 */
-	private JScrollPane generateGradingSchemeTable(OverallGrade overallGradeScheme) {
-		JPanel parentPanel = new JPanel();
-		parentPanel.setBackground(Color.WHITE);
-
-		// Number of columns in our GridLayout will be equivalent to number of categories + subcategories.
-		int numCols = getNumCategoryAndSubCategory(overallGradeScheme);
-
-		// Define GridLayout.
-		parentPanel.setLayout(new GridLayout(GRADING_SCHEME_ROW_COUNT, numCols));
-		parentPanel.setBounds(75, 200, GRADING_SCHEME_WIDTH, GRADING_SCHEME_HEIGHT);
-
-		// Create grid of JPanels
-		JPanel[][] schemeGrid = new JPanel[GRADING_SCHEME_ROW_COUNT][numCols];
-		for(int i = 0; i < GRADING_SCHEME_ROW_COUNT; i++) {
-			for(int j = 0; j < numCols; j++) {
-				schemeGrid[i][j] = new JPanel();
-				JPanel currPanel = schemeGrid[i][j];
-				currPanel.setPreferredSize(new Dimension(150, 50));
-
-				// Styling to make the table look like the mockup.
-				if(i == 0) {
-					currPanel.setBackground(LIGHT_GRAY_COLOR);
-				} else if (i == 1) {
-					currPanel.setBackground(DARK_GRAY_COLOR);
-				} else {
-					currPanel.setBackground(Color.WHITE);
-				}
-
-				// Only add borders on vertical sides.
-				currPanel.setBorder(BorderFactory.createMatteBorder(0, 1, 0, 1, new Color(0xD1D0D1)));
-
-				parentPanel.add(currPanel);
-			}
-		}
-
-		// Set up static cells since these will be hardcoded.
-		schemeGrid[0][0].add(new JLabel("Final Grade"));
-
-		// The first two columns are static with text. When we build the JPanels in the columns, they need to be offset by these initial columns with static text.
-		int colOffset = GRADING_SCHEME_COL_OFFSET;
-		for(int i = 0; i < overallGradeScheme.getCourseCategoryList().size(); i++) {
-			CourseCategory currCategory = overallGradeScheme.getCourseCategoryList().get(i);
-			String categoryWeightPercentage = String.format("%.2f%%%n", 100 * currCategory.getWeight());
-
-			schemeGrid[0][i+colOffset].add(new JLabel(currCategory.getName()));
-			schemeGrid[0][i+colOffset].add(new JTextField(categoryWeightPercentage));
-
-			for (int j = 0; j < currCategory.getSubCategoryList().size(); j++) {
-				SubCategory currSubCategory = currCategory.getSubCategoryList().get(j);
-				String subCategoryWeightPercentage = String.format("%.2f%%%n", 100 * currSubCategory.getWeight());
-
-				// Show name and weight percentage
-				schemeGrid[1][j+i+colOffset+1].add(new JLabel(currSubCategory.getName()));
-				schemeGrid[1][j+i+colOffset+1].add(new JTextField(subCategoryWeightPercentage));
-			}
-			colOffset += currCategory.getSubCategoryList().size();
-		}
-
-		// Add everything we just built into a JScrollPane.
-		JScrollPane scrollPane = new JScrollPane(parentPanel);
-		scrollPane.setBounds(75, 200, GRADING_SCHEME_WIDTH, GRADING_SCHEME_HEIGHT);
-
-		return scrollPane;
-	}
-
-	public int getNumCategoryAndSubCategory(OverallGrade overallGradeScheme) {
-		int numCols = 2; // the first two columns are allocated to static text
-		for(int i = 0; i < overallGradeScheme.getCourseCategoryList().size(); i++) {
-			CourseCategory currCategory = overallGradeScheme.getCourseCategoryList().get(i);
-			numCols += 1;
-
-			// TODO: delete this once we're able to have SubCategories and test this
-			SubCategory tmpSubCategory = new SubCategory(currCategory.getName() + "1", 0.4, 40.0, 50.0);
-			currCategory.addSubCategory(tmpSubCategory);
-			tmpSubCategory = new SubCategory(currCategory.getName() + "2", 0.4, 40.0, 50.0);
-			currCategory.addSubCategory(tmpSubCategory);
-
-			for (int j = 0; j < currCategory.getSubCategoryList().size(); j++) {
-				numCols += 1;
-			}
-		}
-
-		return numCols;
 	}
 
 	public boolean didSave() {

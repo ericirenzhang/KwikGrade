@@ -138,7 +138,7 @@ public class CourseOverviewFrame extends JDialog {
 		manageStudentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Student student = managedCourse.getActiveStudents().get(selectedRow);
-				ManageStudentFrame manageStudentFrame= new ManageStudentFrame(student, managedCourse);
+				ManageStudentFrame manageStudentFrame = new ManageStudentFrame(student, managedCourse);
 				manageStudentFrame.setModal(true);
 				manageStudentFrame.setVisible(true);
 
@@ -162,7 +162,8 @@ public class CourseOverviewFrame extends JDialog {
 		JButton manageCategoryButton = new JButton("Manage Categories");
 		manageCategoryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ManageCategoriesFrame manageCategoriesFrame = new ManageCategoriesFrame();
+				// TODO: add support later for undergraduate vs. graduate scheme on Manage Categories page. Default to Undergrad for now.
+				ManageCategoriesFrame manageCategoriesFrame = new ManageCategoriesFrame(managedCourse.getCourseUnderGradDefaultGradeScheme());
 				manageCategoriesFrame.setModal(true);
 				manageCategoriesFrame.setVisible(true);
 

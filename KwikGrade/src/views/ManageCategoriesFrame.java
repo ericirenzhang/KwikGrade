@@ -1,11 +1,12 @@
 package views;
 
+import models.OverallGrade;
+import views.components.GradingSchemeGrid;
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 public class ManageCategoriesFrame extends JDialog {
@@ -15,7 +16,7 @@ public class ManageCategoriesFrame extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ManageCategoriesFrame() {
+	public ManageCategoriesFrame(OverallGrade overallGradeScheme) {
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new FlowLayout());
@@ -35,7 +36,12 @@ public class ManageCategoriesFrame extends JDialog {
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.setActionCommand("Cancel");
 		buttonPane.add(cancelButton);
-			
+
+		GradingSchemeGrid gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
+		gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
+
+		JScrollPane gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
+		contentPanel.add(gradingSchemeScrollPane);
 		
 	}
 

@@ -75,4 +75,8 @@ public class Student implements Serializable {
 		this.email = email;
 	}
 
+	public void setOverallGrade(OverallGrade overallGrade) {
+		this.overallGrade = overallGrade;
+	}
+
 }
