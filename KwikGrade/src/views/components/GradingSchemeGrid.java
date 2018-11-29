@@ -56,12 +56,12 @@ public class GradingSchemeGrid {
             case ADD_STUDENT:
                 gradingSchemeRowCount = 5;
                 // TODO: this Points Gained may need to dynamically change based on the switch we will add
-                firstColumnText = new String[]{"", "", "Final Score", "Points Gained on Item", "Total Points on Item"};
+                firstColumnText = new String[]{"", "", "Final Raw Score", "Points Gained on Item", "Total Points on Item"};
                 secondColumnText = new String[]{"Final Grade", "", finalGrade, "", ""};
                 break;
             case MANAGE_STUDENT:
                 gradingSchemeRowCount = 5;
-                firstColumnText = new String[]{"", "", "Final Score", "Points Gained on Item", "Total Points on Item"};
+                firstColumnText = new String[]{"", "", "Final Raw Score", "Points Gained on Item", "Total Points on Item"};
                 secondColumnText = new String[]{"Final Grade", "", finalGrade, "", ""};
                 break;
             case MANAGE_CATEGORIES:
@@ -110,13 +110,13 @@ public class GradingSchemeGrid {
             if(this.gradingSchemeType == GradingSchemeType.MANAGE_STUDENT) {
                 SubCategory tmpSubCategory = new SubCategory(currCategory.getName() + "1", 0.4, 40.0, 50.0);
                 currCategory.addSubCategory(tmpSubCategory);
-//                tmpSubCategory = new SubCategory(currCategory.getName() + "2", 0.4, 40.0, 50.0);
-//                currCategory.addSubCategory(tmpSubCategory);
+                tmpSubCategory = new SubCategory(currCategory.getName() + "2", 0.5, 40.0, 50.0);
+                currCategory.addSubCategory(tmpSubCategory);
             } else {
                 SubCategory tmpSubCategory = new SubCategory(currCategory.getName() + "1", 0.4, 0.0, 50.0);
                 currCategory.addSubCategory(tmpSubCategory);
-//                tmpSubCategory = new SubCategory(currCategory.getName() + "2", 0.4, 0.0, 50.0);
-//                currCategory.addSubCategory(tmpSubCategory);
+                tmpSubCategory = new SubCategory(currCategory.getName() + "2", 0.5, 0.0, 50.0);
+                currCategory.addSubCategory(tmpSubCategory);
             }
 
 
@@ -150,23 +150,24 @@ public class GradingSchemeGrid {
         for(int rowIndex = 0; rowIndex < gradingSchemeRowCount; rowIndex++) {
             JPanel currPanel = schemeGrid.get(rowIndex).get(lastColumnIndex);
             JTextField currTextField = new JTextField();
-            currTextField.getDocument().addDocumentListener(new DocumentListener() {
-                public void changedUpdate(DocumentEvent e) {
-                    System.out.println("potato");
-                }
-                public void removeUpdate(DocumentEvent e) {
-                }
-                public void insertUpdate(DocumentEvent e) {
+            currTextField.addFocusListener(new FocusListener() {
+                @Override
+                public void focusGained(FocusEvent e) {
+
                 }
 
+                @Override
+                public void focusLost(FocusEvent e) {
+                    rerenderGradeValues();
+                }
             });
 
             switch(rowIndex) {
                 case 0:
                     break;
                 case 1:
-                    // Show name and weight percentage
                     currPanel.setLayout(new BoxLayout(currPanel, BoxLayout.Y_AXIS));
+                    // Show name and weight percentage
                     currPanel.add(new JLabel(currSubCategory.getName() + " (Weight)"));
                     currTextField.setText(subCategoryWeightPercentage);
                     currPanel.add(currTextField);
@@ -175,10 +176,12 @@ public class GradingSchemeGrid {
                     currPanel.add(new JLabel(subCategoryNonWeightedPercentage));
                     break;
                 case 3:
+                    currPanel.setLayout(new BoxLayout(currPanel, BoxLayout.Y_AXIS));
                     currTextField.setText(Double.toString(currSubCategory.getPointsGained()));
                     currPanel.add(currTextField);
                     break;
                 case 4:
+                    currPanel.setLayout(new BoxLayout(currPanel, BoxLayout.Y_AXIS));
                     currTextField.setText(Double.toString(currSubCategory.getTotalPoints()));
                     currPanel.add(currTextField);
                     break;
@@ -201,43 +204,42 @@ public class GradingSchemeGrid {
         // Since we're appending a column, we can get the column index we want to add to by simply getting the last column.
         int lastColumnIndex = buildBlankColumn();
 
-        // Course information always gets displayed in just the first row (row 0).
-        int courseRow = 0;
-
         String categoryWeightPercentage = String.format("%.2f", 100 * currCategory.getWeight());
 
-        JPanel currPanel = schemeGrid.get(courseRow).get(lastColumnIndex);
-        JTextField currTextField = new JTextField();
-        currTextField.addFocusListener(new FocusListener() {
-           @Override
-           public void focusGained(FocusEvent e) {
+        for(int rowIndex = 0; rowIndex < gradingSchemeRowCount; rowIndex++) {
+            JPanel currPanel = schemeGrid.get(rowIndex).get(lastColumnIndex);
+            JTextField currTextField = new JTextField();
+            currTextField.addFocusListener(new FocusListener() {
+                @Override
+                public void focusGained(FocusEvent e) {
 
-           }
+                }
 
-           @Override
-           public void focusLost(FocusEvent e) {
-                System.out.println("hot potato");
-           }
-       });
+                @Override
+                public void focusLost(FocusEvent e) {
+                    rerenderGradeValues();
+                }
+            });
 
-        currTextField.getDocument().addDocumentListener(new DocumentListener() {
-            public void changedUpdate(DocumentEvent e) {
+            switch(rowIndex) {
+                case 0:
+                    currPanel.setLayout(new BoxLayout(currPanel, BoxLayout.Y_AXIS));
+                    currPanel.add(new JLabel(currCategory.getName() + " (Weight)"));
+                    currTextField.setText(categoryWeightPercentage);
+                    currPanel.add(currTextField);
+                case 1:
+                    break;
+                case 2:
+                    currPanel.add(new JLabel(Double.toString(currCategory.getCategoryFinalWeightedScore())));
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                default:
+                    break;
             }
-
-            public void removeUpdate(DocumentEvent e) {
-                System.out.println("remove category");
-            }
-
-            public void insertUpdate(DocumentEvent e) {
-                System.out.println("insert category");
-            }
-
-        });
-
-        currPanel.setLayout(new BoxLayout(schemeGrid.get(courseRow).get(lastColumnIndex), BoxLayout.Y_AXIS));
-        currPanel.add(new JLabel(currCategory.getName() + " (Weight)"));
-        currTextField.setText(categoryWeightPercentage);
-        currPanel.add(currTextField);
+        }
 
         JPanel firstRowPanel = schemeGrid.get(0).get(lastColumnIndex);
         courseCategoryColMapping.put(firstRowPanel, currCategory);
@@ -366,6 +368,87 @@ public class GradingSchemeGrid {
             }
         }
         return overallGradeFromFields;
+    }
+
+    /**
+     * Helper function to help a matching CourseCategory from this.modifiedGradeScheme.
+     *
+     * Used in the context of rerendering:
+     *  When we rerender, we go through each column and the CourseCategory and rerender it with this.modifiedGradeScheme's CourseCategory
+     *
+     * @param courseCategory
+     * @return
+     */
+    public CourseCategory findMatchingCategory(CourseCategory courseCategory) {
+        for(int i = 0 ; i < this.modifiedGradeScheme.getCourseCategoryList().size(); i++) {
+            if(courseCategory.getName() == this.modifiedGradeScheme.getCourseCategoryList().get(i).getName()) {
+                return this.modifiedGradeScheme.getCourseCategoryList().get(i);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * When the user clicks away from the JTextField, we need to update all the appropriate JLabels.
+     */
+    public void rerenderGradeValues() {
+        this.modifiedGradeScheme = getOverallGradeFromFields();
+
+        // Manually update Final Grade column for now
+        JPanel currPanel = schemeGrid.get(2).get(1);
+        for (Component c : currPanel.getComponents()) {
+            if (c instanceof JLabel) {
+                // Row 2 is the category final score, update it
+                ((JLabel) c).setText(Double.toString(this.modifiedGradeScheme.getOverallGrade()));
+            }
+        }
+
+        for (int columnIndex = 0; columnIndex < schemeGrid.get(0).size(); columnIndex++) {
+            currPanel = schemeGrid.get(0).get(columnIndex);
+
+            // If it's a Course Category column
+            if (courseCategoryColMapping.containsKey(currPanel)) {
+                // Create CourseCategory object of weight from textfield and getName
+                CourseCategory currCategory = courseCategoryColMapping.get(currPanel);
+
+                CourseCategory categoryToUpdateWith = findMatchingCategory(currCategory);
+                double categoryFinalWeightedScore = categoryToUpdateWith.getCategoryFinalWeightedScore();
+
+                // for each row
+                for (int rowIndex = 0; rowIndex < gradingSchemeRowCount; rowIndex++) {
+                    JPanel rowPanel = schemeGrid.get(rowIndex).get(columnIndex);
+                    // Get TextField with value.
+                    for (Component c : rowPanel.getComponents()) {
+                        if (c instanceof JLabel) {
+                            if(rowIndex == 2) {
+                                // Row 2 is the category final score, update it
+                                ((JLabel) c).setText(Double.toString(categoryFinalWeightedScore));
+                            }
+                        }
+                    }
+                }
+                courseCategoryColMapping.put(currPanel, categoryToUpdateWith);
+
+                // for each subcategory within CourseCategory (we can make this assumption since SubCategory cannot be edited from any of these pages)
+                for (int subCategoryIndex = 0; subCategoryIndex < categoryToUpdateWith.getSubCategoryList().size(); subCategoryIndex++) {
+                    SubCategory currSubCategory = categoryToUpdateWith.getSubCategoryList().get(subCategoryIndex);
+
+                    // for each row
+                    for (int rowIndex = 0; rowIndex < gradingSchemeRowCount; rowIndex++) {
+                        JPanel rowPanel = schemeGrid.get(rowIndex).get(columnIndex+subCategoryIndex+1);
+                        // Get JLabel with value.
+                        for (Component c : rowPanel.getComponents()) {
+                            if (c instanceof JLabel) {
+                                double subCategoryFinalWeightedScore = currSubCategory.getRawFinalScore();
+                                if(rowIndex == 2) {
+                                    ((JLabel) c).setText(Double.toString(subCategoryFinalWeightedScore));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
