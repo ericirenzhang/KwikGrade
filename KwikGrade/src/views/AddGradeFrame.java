@@ -68,7 +68,7 @@ public class AddGradeFrame extends JDialog {
 	private JTextField assignValueText;
 	private double totalAssignValue;
 	
-	//iterates through and creates a tablemodel of students dynamiclly
+	//iterates through and creates a tablemodel of all students
 	public DefaultTableModel displayAllStudents(ArrayList<Student> Students) {
 		addGradeTableModel = new DefaultTableModel();
 		Object[] title = {"Name", "Points"};
@@ -79,6 +79,7 @@ public class AddGradeFrame extends JDialog {
 		return addGradeTableModel;
 	}
 	
+	//dynamiclly displays graduate or undergraduate students
 	public DefaultTableModel dispGradUGStudents(ArrayList<Student> Students, boolean undergrad) {
 		String statusFlag;
 		if(undergrad == true){
@@ -109,12 +110,9 @@ public class AddGradeFrame extends JDialog {
 		for(int i = 0; i < course.getActiveStudents().size(); i++) {
 			if(course.getActiveStudents().get(i).getStatus().equals("Graduate")) {
 				gradLocationPointer.add(i);
-				System.out.println("Grad Student Index "+i);
 			}
 			else if (course.getActiveStudents().get(i).getStatus().equals("Undergraduate")) {
 				ugLocationPointer.add(i);
-				System.out.println("UG Student Index "+i);
-
 			}
 		}
 	}
@@ -155,9 +153,9 @@ public class AddGradeFrame extends JDialog {
 	}
 	
 	//determines whether the records are points gained, or lost
-	public double togglePoints(double pointsGainedOrLost, double totalAssignPoints, boolean isPointsLost) {
+	public double togglePoints(double pointsGainedOrLost, double totalAssignPoints, boolean pointsGained) {
 		// if isPointsLost is true, it means user uploads points lost
-		if(isPointsLost == true) {
+		if(pointsGained == false) {
 			double totalPointsEarned = totalAssignPoints - pointsGainedOrLost;
 			return totalPointsEarned;
 		}
@@ -311,7 +309,7 @@ public class AddGradeFrame extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("Add New Grades");
+				JButton okButton = new JButton("Save New Grades");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						assignName = assignNameText.getText();
@@ -331,12 +329,10 @@ public class AddGradeFrame extends JDialog {
 						//toggles values depending on radio button
 						if(ptsEarnedRadio.isSelected()) {
 							pointsGained = true;
-							JOptionPane.showMessageDialog(null, "Points Gained!");
 
 						}
 						else if(ptsLostRadio.isSelected()) {
 							pointsGained = false;
-							JOptionPane.showMessageDialog(null, "Points Lost!");
 
 						}
 						else {
@@ -344,52 +340,72 @@ public class AddGradeFrame extends JDialog {
 							return;
 						}
 						
-						//TODO: need to add logic if student is undergrad or grad with pointer arrays
-						
+						//TODO: this is ugly as hell, but it works. I will clean it up during code refactor phase - Eric
+						//Need to give Sean some asprin for the heart attack he will have when he sees this
 						if (gradeSchemeDropdown.getSelectedIndex() == 0) {
 							//iterates through entire list of students
 							for(int gradeAddIndex = 0; gradeAddIndex < studentGradeTable.getRowCount(); gradeAddIndex++) {
 //								System.out.println("this code works1");
-								
 								//looks for index for the associated course category for that student object
 								//needed because, for undergrad and grad student with same category, may be in different indexes in the list of course categories
 								int categoryIndex = 0;
 //								System.out.println("this code works2");
-								
-								System.out.println(studentList.get(gradeAddIndex).getOverallGrade().getOverallGrade());
-								
+//								System.out.println(studentList.get(gradeAddIndex).getOverallGrade().getOverallGrade());
 								ArrayList<CourseCategory> currentStudentCourseCat = studentList.get(gradeAddIndex).getOverallGrade().getCourseCategoryList();
-								
 //								System.out.println("this code works3");
-								
 								for (int courseCatIndex = 0; courseCatIndex < currentStudentCourseCat.size(); courseCatIndex ++) {
-									
 //									System.out.println("this code works33");
-
 									if (currentStudentCourseCat.get(courseCatIndex).getName().equals(catNameDropdown.getSelectedItem())) {
 										categoryIndex = courseCatIndex;
 									}
 								}
 								double points = Double.parseDouble(String.valueOf(studentGradeTable.getValueAt(gradeAddIndex, 1)));
-								
 								double studentPoints = togglePoints(points, totalAssignValue, pointsGained);
-								
 //								System.out.println("This is the total assignment Value "+totalAssignValue);
 //								System.out.println("This is the total points gained for a student "+studentPoints);
-//								
 //								System.out.println("Index of the Category "+categoryIndex);
-
 								
-								studentList.get(gradeAddIndex).getOverallGrade().getCourseCategoryList().get(categoryIndex).addSubCategory(assignNameText.getText(), 0.5, 100, studentPoints, totalAssignValue);
 								
+								studentList.get(gradeAddIndex).getOverallGrade().getCourseCategoryList().get(categoryIndex).addSubCategory(assignNameText.getText(), 1, 100, studentPoints, totalAssignValue);
 							}
 						}
-						for(int gradeAddIndex = 0; gradeAddIndex < studentGradeTable.getRowCount(); gradeAddIndex++) {
-							
-//							System.out.println(gradeAddIndex);
+						//checks if the Undergraduate students are selected
+						else if (gradeSchemeDropdown.getSelectedIndex() == 1) {
+							for(int gradeAddIndex = 0; gradeAddIndex < studentGradeTable.getRowCount(); gradeAddIndex++) {
+								double points = Double.parseDouble(String.valueOf(studentGradeTable.getValueAt(gradeAddIndex, 1)));
+								double studentPoints = togglePoints(points, totalAssignValue, pointsGained);
+								
+								int categoryIndex = catNameDropdown.getSelectedIndex();
+								
+								OverallGrade studentOverallGrade = studentList.get(ugLocationPointer.get(gradeAddIndex)).getOverallGrade();
+								
+								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(assignNameText.getText(), 1, 100, studentPoints, totalAssignValue);
+								studentOverallGrade.calcOverallGrade();
+							}
 						}
 						
+						//if not all, and not undergrad, must be grad students
+						else {
+							for(int gradeAddIndex = 0; gradeAddIndex < studentGradeTable.getRowCount(); gradeAddIndex++) {
+								double points = Double.parseDouble(String.valueOf(studentGradeTable.getValueAt(gradeAddIndex, 1)));
+								double studentPoints = togglePoints(points, totalAssignValue, pointsGained);
+								
+								int categoryIndex = catNameDropdown.getSelectedIndex();
+								//System.out.println("grad index "+gradLocationPointer.get(gradeAddIndex));
+								OverallGrade studentOverallGrade = studentList.get(gradLocationPointer.get(gradeAddIndex)).getOverallGrade();
+								//System.out.println(studentOverallGrade);
+								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(assignNameText.getText(), 1, 100, studentPoints, totalAssignValue);
+								studentOverallGrade.calcOverallGrade();
+								//System.out.println("subcategory list "+studentOverallGrade.getCourseCategoryList().get(0).getSubCategoryList());
+							}
+						}
 						
+						MainDashboard.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
+						MainDashboard.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
+						
+						dispose();
+
+
 					}
 				});
 				okButton.setActionCommand("OK");

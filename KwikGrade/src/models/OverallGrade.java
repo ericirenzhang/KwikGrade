@@ -53,18 +53,35 @@ public class OverallGrade implements Serializable {
 	}
 	
 	//computes the overall grade for the course
-	public double calcOverallGrade() {
-		int n = getNumOfCategories();
-		for(int i=0;i<n;i++){
-			
-			//TODO: Define CourseCategory and use correct constructor
-			CourseCategory course = new CourseCategory(); //Here we need to instantiate CourseCategory objects from GUI
-			categoryList.add(course);
-		}
+	public void calcOverallGrade() {
+		int n = categoryList.size();
+//		for(int i=0 ; i < n ; i++){
+//			
+//			//TODO: Define CourseCategory and use correct constructor
+//			CourseCategory course = new CourseCategory(); //Here we need to instantiate CourseCategory objects from GUI
+//			categoryList.add(course);
+//		}
 		for(int i=0;i<categoryList.size();i++){
 			overallGrade += categoryList.get(i).calcGradeCategory();
+			System.out.println("the (overallgrade) category name is "+categoryList.get(i).getName()+" and points are "+categoryList.get(i).calcGradeCategory());
 		}
-		return overallGrade;
+		this.overallGrade = overallGrade;
+	}
+	
+	
+	//this makes a copy of the overall grade object with a new object, so the references are not the same
+	//This is ugly as hell. Only needed to get it to work to support a deadline, but will be cleaned up
+	public static OverallGrade copyOverallGrade(OverallGrade overallGradeObj) {
+		double overallGradeNew = overallGradeObj.getOverallGrade();
+		ArrayList<CourseCategory> newCategoryList = new ArrayList<CourseCategory>();
+		
+		for(int i = 0; i < overallGradeObj.getCourseCategoryList().size(); i++) {
+			String newCategoryName = overallGradeObj.getCourseCategoryList().get(i).getName();
+			double newCategoryWeight = overallGradeObj.getCourseCategoryList().get(i).getWeight();
+			newCategoryList.add(new CourseCategory(newCategoryName, newCategoryWeight, new ArrayList<SubCategory>() ));
+		}
+		OverallGrade newOverallGrade = new OverallGrade(overallGradeNew, newCategoryList.size(), newCategoryList);
+		return newOverallGrade;
 	}
 	
 	//==========================
