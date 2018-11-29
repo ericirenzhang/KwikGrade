@@ -380,7 +380,8 @@ public class AddGradeFrame extends JDialog {
 								
 								OverallGrade studentOverallGrade = studentList.get(gradeAddIndex).getOverallGrade();
 								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, studentPoints, totalAssignValue));
-								studentList.get(gradeAddIndex).setOverallGrade(studentOverallGrade);
+								//studentList.get(gradeAddIndex).setOverallGrade(studentOverallGrade);
+								studentOverallGrade.updateOverallGrade();
 							}
 						}
 						//checks if the Undergraduate students are selected
@@ -394,7 +395,8 @@ public class AddGradeFrame extends JDialog {
 								OverallGrade studentOverallGrade = studentList.get(ugLocationPointer.get(gradeAddIndex)).getOverallGrade();
 								
 								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, studentPoints, totalAssignValue));
-								studentList.get(ugLocationPointer.get(gradeAddIndex)).setOverallGrade(studentOverallGrade);
+								//studentList.get(ugLocationPointer.get(gradeAddIndex)).setOverallGrade(studentOverallGrade);
+								studentOverallGrade.updateOverallGrade();
 							}
 						}
 						
@@ -412,8 +414,8 @@ public class AddGradeFrame extends JDialog {
 								//System.out.println(studentOverallGrade);
 								
 								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, studentPoints, totalAssignValue));
-								studentList.get(ugLocationPointer.get(gradeAddIndex)).setOverallGrade(studentOverallGrade);;
-								
+								//studentList.get(ugLocationPointer.get(gradeAddIndex)).setOverallGrade(studentOverallGrade);;
+								studentOverallGrade.updateOverallGrade();
 								//System.out.println("subcategory list "+studentOverallGrade.getCourseCategoryList().get(0).getSubCategoryList());
 							}
 						}
