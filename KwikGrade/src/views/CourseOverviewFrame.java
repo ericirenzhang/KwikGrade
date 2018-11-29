@@ -17,6 +17,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
@@ -163,6 +165,18 @@ public class CourseOverviewFrame extends JDialog {
 		});
 		manageStudentButton.setBounds(565, 62, 155, 40);
 		contentPanel.add(manageStudentButton);
+		
+		// Double click on a student to manage
+		studentDisplayTable.addMouseListener(new MouseAdapter() {
+		    public void mousePressed(MouseEvent mouseEvent) {
+		        JTable table =(JTable) mouseEvent.getSource();
+		        Point point = mouseEvent.getPoint();
+		        int row = table.rowAtPoint(point);
+		        if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+		        	manageStudentButton.doClick(); 
+		        }
+		    }
+		});		
 		
 		JButton addGradeButton = new JButton("Enter New Grades");
 		addGradeButton.addActionListener(new ActionListener() {

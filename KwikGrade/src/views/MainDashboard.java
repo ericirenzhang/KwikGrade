@@ -15,6 +15,8 @@ import java.awt.Font;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JList;
@@ -199,6 +201,16 @@ public class MainDashboard extends JFrame {
 		openCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		openCourseButton.setBounds(478, 20, 166, 71);
 		contentPane.add(openCourseButton);
+		
+		// Double click on a course to open
+		activeCourseDisplayList.addMouseListener(new MouseAdapter(){
+ 		    @Override
+ 		    public void mouseClicked(MouseEvent e){
+ 		        if(e.getClickCount()==2){
+ 		        	openCourseButton.doClick();
+ 		        }
+ 		    }
+ 		});
 	}
 
 	public void updateCourseDisplayModel() {
