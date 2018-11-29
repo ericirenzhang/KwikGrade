@@ -1,13 +1,11 @@
 package views;
 
-import views.MainDashboard;
-
+import helpers.FileManager;
 import models.Course;
 import models.KwikGrade;
 import models.Student;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.*;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -24,11 +22,9 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
-import java.awt.Font;
 import javax.swing.JScrollPane;
 
 public class CourseOverviewFrame extends JDialog {
-
 	private final JPanel contentPanel = new JPanel();
 	private JTable studentDisplayTable;
 	private DefaultTableModel studentTableModel = new DefaultTableModel();
@@ -36,13 +32,13 @@ public class CourseOverviewFrame extends JDialog {
 	private static Course managedCourse;
 	private int selectedRow;
 	private JTable kwikStatsTable;
-	
+
 	public DefaultTableModel displayStudents(ArrayList<Student> Students) {
 		studentTableModel = new DefaultTableModel();
 		Object[] title = {"First Name", "Middle Initial", "Last Name", "Grade"};
 		studentTableModel.setColumnIdentifiers(title);
 		for(int i = 0; i < Students.size(); i++) {
-			studentTableModel.addRow(new Object[] {Students.get(i).getfName(),Students.get(i).getMiddleInitial(), Students.get(i).getlName()} );
+			studentTableModel.addRow(new Object[] {Students.get(i).getfName(),Students.get(i).getMiddleInitial(), Students.get(i).getlName(), Students.get(i).getOverallGradeObject().getOverallGrade()} );
 		}
 		return studentTableModel;
 	}
@@ -71,7 +67,7 @@ public class CourseOverviewFrame extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public CourseOverviewFrame(Course managedCourse) {
+	public CourseOverviewFrame(KwikGrade kwikGrade, Course managedCourse) {
 		this.managedCourse = managedCourse;
 
 		setBounds(100, 100, 746, 586);
@@ -89,6 +85,7 @@ public class CourseOverviewFrame extends JDialog {
 
 		//Creates the table itself
 		studentDisplayTable = new JTable();
+		studentDisplayTable.setGridColor(Color.BLACK); // set lines to black for Mac
 		studentDisplayTable.setRowHeight(25);
 		scrollPane.setViewportView(studentDisplayTable);
 		studentDisplayTable.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -115,6 +112,7 @@ public class CourseOverviewFrame extends JDialog {
 		statsTableModel.setColumnIdentifiers(statsTableTitle);
 
 		kwikStatsTable = new JTable();
+		kwikStatsTable.setGridColor(Color.BLACK); // set lines to black for Mac
 		kwikStatsTable.setRowHeight(30);
 		kwikStatsTable.setFont(new Font("Tahoma", Font.PLAIN, 24));
 		kwikStatsTable.setBounds(565, 315, 155, 221);
@@ -125,11 +123,11 @@ public class CourseOverviewFrame extends JDialog {
 		JButton addStudentButton = new JButton("Add Student");
 		addStudentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddStudentFrame addStudent = new AddStudentFrame();
+				AddStudentFrame addStudent = new AddStudentFrame(managedCourse);
 				addStudent.setModal(true);
 				addStudent.setVisible(true);
-				Student studentToAdd = addStudent.getNewSudent();
-				managedCourse.addStudent(studentToAdd);
+//				Student studentToAdd = addStudent.getNewStudent();
+//				managedCourse.addStudent(studentToAdd);
 				updateStudentTable();
 			}
 		});
@@ -140,10 +138,13 @@ public class CourseOverviewFrame extends JDialog {
 		manageStudentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Student student = managedCourse.getActiveStudents().get(selectedRow);
-				JOptionPane.showMessageDialog(null, student);
-//					ManageStudentFrame manageStudentFrame= new ManageStudentFrame();
-//					manageStudentFrame.setModal(true);
-//					manageStudentFrame.setVisible(true);
+				ManageStudentFrame manageStudentFrame = new ManageStudentFrame(student, managedCourse);
+				manageStudentFrame.setModal(true);
+				manageStudentFrame.setVisible(true);
+
+				if(manageStudentFrame.didSave()) {
+					FileManager.saveFile(kwikGrade.getActiveCourses(), MainDashboard.getActiveSaveFileName());
+				}
 			}
 		});
 		manageStudentButton.setBounds(565, 62, 155, 40);
@@ -161,9 +162,14 @@ public class CourseOverviewFrame extends JDialog {
 		JButton manageCategoryButton = new JButton("Manage Categories");
 		manageCategoryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// TODO: add support later for undergraduate vs. graduate scheme on Manage Categories page. Default to Undergrad for now.
+				ManageCategoriesFrame manageCategoriesFrame = new ManageCategoriesFrame(managedCourse.getCourseUnderGradDefaultGradeScheme());
+				manageCategoriesFrame.setModal(true);
+				manageCategoriesFrame.setVisible(true);
+
 				// TODO: delete this later, temp code just to have it shown that it works
-				System.out.println(managedCourse.getCourseGradDefaultGradeScheme().getCourseCategoryList().get(0).getName());
-				System.out.println(managedCourse.getCourseGradDefaultGradeScheme().getCourseCategoryList().get(1).getName());
+//				System.out.println(managedCourse.getCourseGradDefaultGradeScheme().getCourseCategoryList().get(0).getName());
+//				System.out.println(managedCourse.getCourseGradDefaultGradeScheme().getCourseCategoryList().get(1).getName());
 			}
 		});
 		manageCategoryButton.setBounds(565, 161, 155, 40);
@@ -172,8 +178,8 @@ public class CourseOverviewFrame extends JDialog {
 		JButton saveCloseButton = new JButton("Save and Close");
 		saveCloseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainDashboard.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
-				MainDashboard.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
+				FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
+				FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
 				JOptionPane.showMessageDialog(null, "Successfully Saved!");
 				dispose();
 			}
