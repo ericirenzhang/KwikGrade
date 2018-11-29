@@ -26,18 +26,25 @@ public class CourseCategory implements Serializable {
 		this.subCategoryList = new ArrayList<SubCategory>();
 	}
 	
+	public void addSubCategory(String name, double weight, double value, double pointsGained, double totalPoints) {
+		this.subCategoryList.add(new SubCategory(name, weight, value, pointsGained, totalPoints));
+	}
+	
 	public double calcGradeCategory(){
-		int n = getNumOfSubCat();
-		for(int i=0;i<n;i++){
-			SubCategory sub = new SubCategory(); //Here we need to instantiate SubCategory objects from GUI
-			subCategoryList.add(sub);
-		}
+		int n = subCategoryList.size();
+//		for(int i=0 ; i < n ; i++){
+//			SubCategory sub = new SubCategory(); //Here we need to instantiate SubCategory objects from GUI
+//			subCategoryList.add(sub);
+//		}
 		double result = 0.0;
 		
-		for(int i=0;i<subCategoryList.size();i++)
+		for(int i=0 ; i<subCategoryList.size() ; i++)
 		{
-			result+=subCategoryList.get(i).calcWeightedValue();
+			result = result + subCategoryList.get(i).calcWeightedValue();
+			//System.out.println("weight is "+subCategoryList.get(i).getWeight()+" points gained "+subCategoryList.get(i).getPointsGained()+" total points "+subCategoryList.get(i).getTotalPoints());
 		}
+		System.out.println("This category name is "+name+" and the points contrib is "+result);
+
 		return result*getWeight();
 	}
 	
@@ -52,6 +59,10 @@ public class CourseCategory implements Serializable {
 	}
 	public int getNumOfSubCat(){
 		return this.numOfSubCat;
+	}
+	
+	public ArrayList<SubCategory> getSubCategoryList() {
+		return this.subCategoryList;
 	}
 	
 	//==========================

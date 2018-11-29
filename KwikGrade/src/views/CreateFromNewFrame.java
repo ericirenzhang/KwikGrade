@@ -255,10 +255,6 @@ public class CreateFromNewFrame extends JDialog {
 					JOptionPane.showMessageDialog(null, "Must enter in required information!");
 					return;
 				}
-
-				if(!filePath.equals("")) {
-					addImportedStudents(filePath);
-				}
 				
 				//Parses through and grabs the name and weight 
 				for(int ugIndex = 0; ugIndex < ugTableModelRows; ugIndex++) {
@@ -279,7 +275,7 @@ public class CreateFromNewFrame extends JDialog {
 				for(int gradIndex = 0; gradIndex < gradTableModelRows; gradIndex++) {
 					try {
 					String gradCategoryName = gradCourseCategoryTable.getValueAt(gradIndex, 0).toString();
-					double gradCategoryWeight = Double.parseDouble(String.valueOf(ugCourseCategoryTable.getValueAt(gradIndex, 1)));
+					double gradCategoryWeight = Double.parseDouble(String.valueOf(gradCourseCategoryTable.getValueAt(gradIndex, 1)));
 					gradOverallGrade.addCourseCategory(gradCategoryName, gradCategoryWeight);
 					}
 					//tried to implement logic for a blank table...does not work...need to rethink
@@ -288,6 +284,10 @@ public class CreateFromNewFrame extends JDialog {
 						JOptionPane.showMessageDialog(null, "Make sure all Graduate Grading Scheme tables are filled!");
 						return;
 					}
+				}
+				
+				if(!filePath.equals("")) {
+					addImportedStudents(filePath);
 				}
 
 				hasCreatedNewCourse = true;
@@ -343,9 +343,9 @@ public class CreateFromNewFrame extends JDialog {
 					String email = splitLine.get(4);
 					String standing = splitLine.get(5);
 					if(standing.equals("Undergraduate")) {
-						this.importedStudentList.add(new UndergraduateStudent(fName, middleInitial, lName, buId, email, "Undergraduate"));
+						this.importedStudentList.add(new UndergraduateStudent(fName, middleInitial, lName, buId, email, "Undergraduate", ugOverallGrade));
 					} else if (standing.equals("Graduate")) {
-						this.importedStudentList.add(new GraduateStudent(fName, middleInitial, lName, buId, email, "Graduate"));
+						this.importedStudentList.add(new GraduateStudent(fName, middleInitial, lName, buId, email, "Graduate", gradOverallGrade));
  					} else {
 						this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
 					}
@@ -358,9 +358,9 @@ public class CreateFromNewFrame extends JDialog {
 					String email = splitLine.get(3);
 					String standing = splitLine.get(4);
 					if(standing.equals("Undergraduate")) {
-						this.importedStudentList.add(new UndergraduateStudent(fName, middleInitial, lName, buId, email, "Undergraduate"));
+						this.importedStudentList.add(new UndergraduateStudent(fName, middleInitial, lName, buId, email, "Undergraduate", ugOverallGrade));
 					} else if (standing.equals("Graduate")) {
-						this.importedStudentList.add(new GraduateStudent(fName, middleInitial, lName, buId, email, "Graduate"));
+						this.importedStudentList.add(new GraduateStudent(fName, middleInitial, lName, buId, email, "Graduate", gradOverallGrade));
 					} else {
 						this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
 					}

@@ -24,9 +24,12 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import models.Course;
+import models.GraduateStudent;
 import models.KwikGrade;
 import models.OverallGrade;
 import models.Student;
+import models.UndergraduateStudent;
+
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -43,6 +46,7 @@ public class CreateFromExistingFrame extends JDialog {
 	private String courseTerm;
 	private String courseTitle;
 	private String filePath;
+	private int cloneCourseIndex;
 	private OverallGrade clonedUGGradingScheme;
 	private OverallGrade clonedGradGradingScheme;
 	private DefaultListModel DLM;
@@ -180,6 +184,7 @@ public class CreateFromExistingFrame extends JDialog {
 				courseTerm = courseTermField.getText();
 				courseTitle = courseTitleField.getText();
 				filePath = studentFilepathField.getText();
+				cloneCourseIndex = cloneCourseList.getSelectedIndex();
 
 				int cloneIndex = cloneCourseList.getSelectedIndex();
 				if(cloneIndex == -1) {
@@ -187,8 +192,9 @@ public class CreateFromExistingFrame extends JDialog {
 					return;
 				}
 
-				clonedUGGradingScheme = getUGGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex);
-				clonedGradGradingScheme = getGradGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex);
+				//created copies of a grade scheme
+				clonedUGGradingScheme = clonedUGGradingScheme.copyOverallGrade(getUGGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex));
+				clonedGradGradingScheme = clonedGradGradingScheme.copyOverallGrade(getGradGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex));
 
 				if(courseNum.equals("") || courseTerm.equals("") || courseTitle.equals("")) {
 					JOptionPane.showMessageDialog(null, "Must enter in required information!");
@@ -200,7 +206,7 @@ public class CreateFromExistingFrame extends JDialog {
 				}
 
 				hasCreatedNewCourse = true;
-
+				
 				dispose();
 			}
 		});
@@ -234,7 +240,13 @@ public class CreateFromExistingFrame extends JDialog {
 					String buId = splitLine.get(3);
 					String email = splitLine.get(4);
 					String standing = splitLine.get(5);
-					this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
+					if(standing.equals("Undergraduate")) {
+						this.importedStudentList.add(new UndergraduateStudent(fName, middleInitial, lName, buId, email, "Undergraduate", clonedUGGradingScheme));
+					} else if (standing.equals("Graduate")) {
+						this.importedStudentList.add(new GraduateStudent(fName, middleInitial, lName, buId, email, "Graduate", clonedGradGradingScheme));
+ 					} else {
+						this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
+					}
 				}
 				else { //if no middle initial, then 5 items in string
 					String fName = splitLine.get(0);
@@ -243,7 +255,13 @@ public class CreateFromExistingFrame extends JDialog {
 					String buId = splitLine.get(2);
 					String email = splitLine.get(3);
 					String standing = splitLine.get(4);
-					this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
+					if(standing.equals("Undergraduate")) {
+						this.importedStudentList.add(new UndergraduateStudent(fName, middleInitial, lName, buId, email, "Undergraduate", clonedUGGradingScheme));
+					} else if (standing.equals("Graduate")) {
+						this.importedStudentList.add(new GraduateStudent(fName, middleInitial, lName, buId, email, "Graduate", clonedGradGradingScheme));
+					} else {
+						this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
+					}
 				}
 			}
 
@@ -278,6 +296,15 @@ public class CreateFromExistingFrame extends JDialog {
 	}
 	public boolean getHasCreatedNewCourse() {
 		return this.hasCreatedNewCourse;
+	}
+	public int getCloneCourseIndex() {
+		return this.cloneCourseIndex;
+	}
+	public OverallGrade getUGOverallGrade() {
+		return clonedUGGradingScheme;
+	}
+	public OverallGrade getGradOverallGrade() {
+		return clonedGradGradingScheme;
 	}
 	
 	//=============================

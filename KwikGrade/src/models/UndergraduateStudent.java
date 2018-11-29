@@ -8,6 +8,12 @@ public class UndergraduateStudent extends Student {
 		this.status  = status;
 	}
 	
+	public UndergraduateStudent(String fName, String middleInitial, String lName, String buId, String email, String status, OverallGrade overallGrade) {
+		super(fName, middleInitial, lName, buId, email);
+		this.grade = grade.copyOverallGrade(overallGrade);
+		this.status  = status;
+	}
+	
 	public String getStatus() {
 		return this.status;
 	}
