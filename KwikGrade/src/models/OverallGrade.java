@@ -31,6 +31,19 @@ public class OverallGrade implements Serializable {
 	public void addCourseCategory(String name, double weight) {
 		CourseCategory categoryToAdd = new CourseCategory(name, weight);
 		this.categoryList.add(categoryToAdd);
+		this.updateOverallGrade();
+	}
+
+	public void addCourseCategory(CourseCategory courseCategory) {
+		this.categoryList.add(courseCategory);
+		this.updateOverallGrade();
+	}
+
+	public void updateOverallGrade() {
+		this.overallGrade = 0;
+		for(int i = 0; i < this.categoryList.size(); i++) {
+			this.overallGrade += this.categoryList.get(i).getCategoryFinalWeightedScore();
+		}
 	}
 
 	//checks if the weights of all the CourseCategories equal to 1.0
@@ -46,22 +59,7 @@ public class OverallGrade implements Serializable {
 			return false;
 		}
 	}
-	
-	//computes the overall grade for the course
-	public double calcOverallGrade() {
-		int n = getNumOfCategories();
-		for(int i=0;i<n;i++){
-			
-			//TODO: Define CourseCategory and use correct constructor
-			CourseCategory course = new CourseCategory(); //Here we need to instantiate CourseCategory objects from GUI
-			categoryList.add(course);
-		}
-		for(int i=0;i<categoryList.size();i++){
-			overallGrade += categoryList.get(i).calcGradeCategory();
-		}
-		return overallGrade;
-	}
-	
+
 	//==========================
 	// Getters
 	//==========================

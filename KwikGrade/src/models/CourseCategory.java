@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class CourseCategory implements Serializable {
 	private String name;
 	private double weight;
+	private double categoryFinalWeightedScore;
 	private ArrayList<SubCategory> subCategoryList;
 
 	// TODO: delete this empty constructor when we can properly instantiate CourseCategory
@@ -17,6 +18,7 @@ public class CourseCategory implements Serializable {
 		this.name = name;
 		this.weight = weight;
 		this.subCategoryList = subCategoryList;
+		this.updateCategoryFinalWeightedScore();
 	}
 	
 	public CourseCategory(String name, double weight) {
@@ -24,29 +26,27 @@ public class CourseCategory implements Serializable {
 		this.weight = weight;
 		this.subCategoryList = new ArrayList<SubCategory>();
 	}
-	
-	public double calcGradeCategory(){
-		int n = getNumOfSubCat();
-		for(int i=0;i<n;i++){
-			SubCategory sub = new SubCategory(); //Here we need to instantiate SubCategory objects from GUI
-			subCategoryList.add(sub);
-		}
-		double result = 0.0;
-		
-		for(int i=0;i<subCategoryList.size();i++)
-		{
-			result+=subCategoryList.get(i).getWeightedValue();
-		}
-		return result*getWeight();
-	}
 
 	public void addSubCategory(SubCategory subCategory) {
 		this.subCategoryList.add(subCategory);
+		this.updateCategoryFinalWeightedScore();
+	}
+
+	public void updateCategoryFinalWeightedScore() {
+		categoryFinalWeightedScore = 0;
+		for(int i = 0; i < subCategoryList.size(); i++) {
+			categoryFinalWeightedScore += subCategoryList.get(i).getWeightedFinalScore();
+		}
+		this.categoryFinalWeightedScore *= this.weight;
 	}
 	
 	//==========================
 	// Getters
 	//==========================
+	public double getCategoryFinalWeightedScore() {
+		return this.categoryFinalWeightedScore;
+	}
+
 	public double getWeight(){
 		return this.weight;
 	}
@@ -54,9 +54,6 @@ public class CourseCategory implements Serializable {
 		return this.name;
 	}
 	public ArrayList<SubCategory> getSubCategoryList() { return this.subCategoryList; }
-	public int getNumOfSubCat(){
-		return this.subCategoryList.size();
-	}
 
 	//==========================
 	// Setters

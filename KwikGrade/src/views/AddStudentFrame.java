@@ -34,6 +34,7 @@ public class AddStudentFrame extends JDialog {
 	private JButton backButton;
 
 	private Student newStudent;
+	private OverallGrade studentOverallGrade;
 	private GradingSchemeGrid gradingSchemeGrid;
 
 	private boolean didSave;
@@ -132,8 +133,9 @@ public class AddStudentFrame extends JDialog {
 					newStudent = new Student(fNameField.getText(),"", lNameField.getText(), buIdField.getText(), emailField.getText());
 
 				// Construct an OverallGrade from what the professor has entered on the grading scheme grid.
-				OverallGrade overallGrade = gradingSchemeGrid.getOverallGradeFromFields();
-				newStudent.setOverallGrade(overallGrade);
+				studentOverallGrade = gradingSchemeGrid.getOverallGradeFromFields();
+				newStudent.setOverallGrade(studentOverallGrade);
+				System.out.println("overallgrade????" + studentOverallGrade.getOverallGrade());
 
 				// Add the student to the course.
 				currCourse.addActiveStudents(newStudent);

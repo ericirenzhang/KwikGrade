@@ -49,7 +49,7 @@ public class Student implements Serializable {
 		return String.format("%s %s. %s", this.fName, this.middleInitial, this.lName);
 	}
 
-	public OverallGrade getOverallGrade() {
+	public OverallGrade getOverallGradeObject() {
 		return this.overallGrade;
 	}
 	// ========================================
