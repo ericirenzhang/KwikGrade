@@ -342,31 +342,44 @@ public class AddGradeFrame extends JDialog {
 						
 						//TODO: this is ugly as hell, but it works. I will clean it up during code refactor phase - Eric
 						//Need to give Sean some asprin for the heart attack he will have when he sees this
+						
 						if (gradeSchemeDropdown.getSelectedIndex() == 0) {
 							//iterates through entire list of students
+							
 							for(int gradeAddIndex = 0; gradeAddIndex < studentGradeTable.getRowCount(); gradeAddIndex++) {
+								
 //								System.out.println("this code works1");
 								//looks for index for the associated course category for that student object
 								//needed because, for undergrad and grad student with same category, may be in different indexes in the list of course categories
+								
 								int categoryIndex = 0;
+								
 //								System.out.println("this code works2");
-//								System.out.println(studentList.get(gradeAddIndex).getOverallGrade().getOverallGrade());
+								System.out.println(studentList.get(gradeAddIndex).getOverallGrade().getOverallGrade());
+								
 								ArrayList<CourseCategory> currentStudentCourseCat = studentList.get(gradeAddIndex).getOverallGrade().getCourseCategoryList();
+								
 //								System.out.println("this code works3");
+								
 								for (int courseCatIndex = 0; courseCatIndex < currentStudentCourseCat.size(); courseCatIndex ++) {
+									
 //									System.out.println("this code works33");
+									
 									if (currentStudentCourseCat.get(courseCatIndex).getName().equals(catNameDropdown.getSelectedItem())) {
 										categoryIndex = courseCatIndex;
+										System.out.println("This is course category "+categoryIndex);
 									}
 								}
 								double points = Double.parseDouble(String.valueOf(studentGradeTable.getValueAt(gradeAddIndex, 1)));
 								double studentPoints = togglePoints(points, totalAssignValue, pointsGained);
+								
 //								System.out.println("This is the total assignment Value "+totalAssignValue);
 //								System.out.println("This is the total points gained for a student "+studentPoints);
 //								System.out.println("Index of the Category "+categoryIndex);
 								
-								
-								studentList.get(gradeAddIndex).getOverallGrade().getCourseCategoryList().get(categoryIndex).addSubCategory(assignNameText.getText(), 1, 100, studentPoints, totalAssignValue);
+								OverallGrade studentOverallGrade = studentList.get(gradeAddIndex).getOverallGrade();
+								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(assignNameText.getText(), 1, 100, studentPoints, totalAssignValue);
+								studentOverallGrade.calcOverallGrade();
 							}
 						}
 						//checks if the Undergraduate students are selected
@@ -391,11 +404,15 @@ public class AddGradeFrame extends JDialog {
 								double studentPoints = togglePoints(points, totalAssignValue, pointsGained);
 								
 								int categoryIndex = catNameDropdown.getSelectedIndex();
+								
 								//System.out.println("grad index "+gradLocationPointer.get(gradeAddIndex));
+								
 								OverallGrade studentOverallGrade = studentList.get(gradLocationPointer.get(gradeAddIndex)).getOverallGrade();
 								//System.out.println(studentOverallGrade);
+								
 								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(assignNameText.getText(), 1, 100, studentPoints, totalAssignValue);
 								studentOverallGrade.calcOverallGrade();
+								
 								//System.out.println("subcategory list "+studentOverallGrade.getCourseCategoryList().get(0).getSubCategoryList());
 							}
 						}
@@ -414,6 +431,11 @@ public class AddGradeFrame extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}

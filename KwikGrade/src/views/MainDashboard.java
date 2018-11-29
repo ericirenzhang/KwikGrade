@@ -106,10 +106,12 @@ public class MainDashboard extends JFrame {
 	 */
 	public MainDashboard() {
 		kwikGrade = new KwikGrade();
+		
 
 		// Load from saved file.
 		kwikGrade.setActiveCourses(loadFile(SERIALIZED_FILE_NAME_ACTIVE));
 		kwikGrade.setClosedCourses(loadFile(SERIALIZED_FILE_NAME_CLOSED));
+		System.out.println(kwikGrade.getActiveCourses());
 
 		// Set up JFrame.
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -142,7 +144,7 @@ public class MainDashboard extends JFrame {
 		addCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				CreateCourseFrame createCourse = new CreateCourseFrame();
+				CreateCourseFrame createCourse = new CreateCourseFrame(kwikGrade);
 				createCourse.setModal(true);
 				createCourse.setVisible(true);
 
