@@ -92,18 +92,19 @@ public class CourseOverviewFrame extends JDialog {
 		studentDisplayTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		ListSelectionModel listModel = studentDisplayTable.getSelectionModel();
 		//this is check to make sure I actually selected something
-		listModel.addListSelectionListener(new ListSelectionListener() {
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				ListSelectionModel lsm=(ListSelectionModel) e.getSource();
-				if(lsm.isSelectionEmpty()) {
-					JOptionPane.showMessageDialog(null, "No selection");
-				}
-				else {
-					selectedRow=lsm.getMinSelectionIndex();
-				}
-			}
-		});
+		//TODO: remember why I needed this selection listener, I am not sure - Eric
+//		listModel.addListSelectionListener(new ListSelectionListener() {
+//			@Override
+//			public void valueChanged(ListSelectionEvent e) {
+//				ListSelectionModel lsm=(ListSelectionModel) e.getSource();
+//				if(lsm.isSelectionEmpty()) {
+//					JOptionPane.showMessageDialog(null, "No selection");
+//				}
+//				else {
+//					selectedRow=lsm.getMinSelectionIndex();
+//				}
+//			}
+//		});
 		
 		updateStudentTable();
 
@@ -153,6 +154,11 @@ public class CourseOverviewFrame extends JDialog {
 		JButton addGradeButton = new JButton("Enter New Grades");
 		addGradeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				AddGradeFrame addGrade = new AddGradeFrame(managedCourse);
+				addGrade.setModal(true);
+				addGrade.setVisible(true);
+				updateStudentTable();
+				
 			}
 		});
 

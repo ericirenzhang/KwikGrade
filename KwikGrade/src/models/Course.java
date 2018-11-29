@@ -13,8 +13,11 @@ public class Course implements Serializable {
 	private OverallGrade courseUnderGradDefaultGradeScheme = new OverallGrade();
 	private OverallGrade courseGradDefaultGradeScheme = new OverallGrade();
 
-	private ArrayList<Student> activeStudents;
+	public ArrayList<Student> activeStudents;
 	private ArrayList<Student> inactiveStudents;
+	
+	public Course() {
+	}
 	
 // course constructor for not adding bulk students
 	public Course(String courseNum, String courseTerm, String courseTitle, OverallGrade ugCourseCategory, OverallGrade gradCourseCategory) {
@@ -157,5 +160,10 @@ public class Course implements Serializable {
 	public void addActiveStudents(Student activeStudents) {
 		this.activeStudents.add(activeStudents);
 	}
+	
+	public void setActiveStudents(Student activeStudents) {
+		this.activeStudents.add(activeStudents);
+	}
+
 
 }

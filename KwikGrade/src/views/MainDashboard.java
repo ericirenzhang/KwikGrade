@@ -49,6 +49,7 @@ public class MainDashboard extends JFrame {
 	 */
 	public MainDashboard() {
 		kwikGrade = new KwikGrade();
+		
 
 		// Load from saved file.
 		kwikGrade.setActiveCourses(FileManager.loadFile(SERIALIZED_FILE_NAME_ACTIVE));
@@ -85,7 +86,7 @@ public class MainDashboard extends JFrame {
 		addCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
-				CreateCourseFrame createCourse = new CreateCourseFrame();
+				CreateCourseFrame createCourse = new CreateCourseFrame(kwikGrade);
 				createCourse.setModal(true);
 				createCourse.setVisible(true);
 
@@ -181,6 +182,7 @@ public class MainDashboard extends JFrame {
 		openCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int manageIndex = activeCourseDisplayList.getSelectedIndex();
+				System.out.println(manageIndex);
 				try {
 					CourseOverviewFrame courseOverview = new CourseOverviewFrame(kwikGrade, kwikGrade.getActiveCourses().get(manageIndex));
 					courseOverview.setModal(true);

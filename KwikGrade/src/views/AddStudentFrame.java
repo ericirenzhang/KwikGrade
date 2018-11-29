@@ -1,7 +1,28 @@
 package views;
 
-import models.*;
 import views.components.GradingSchemeGrid;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
+
+import models.Course;
+import models.CourseCategory;
+import models.OverallGrade;
+import models.Student;
+import models.SubCategory;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -52,6 +73,7 @@ public class AddStudentFrame extends JDialog {
 		gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.ADD_STUDENT);
 
 		setBounds(100, 100, 1000, 600);
+
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);

@@ -1,5 +1,6 @@
 package views;
 
+import models.KwikGrade;
 import models.OverallGrade;
 import models.Student;
 
@@ -21,6 +22,7 @@ public class CreateCourseFrame extends JDialog {
 	private String courseNum;
 	private String courseTerm;
 	private String courseTitle;
+	private int cloneCourseIndex;
 	private boolean hasCreatedNewCourse;
 
 	private ArrayList<Student> importedStudentsList = new ArrayList<>();
@@ -33,7 +35,7 @@ public class CreateCourseFrame extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public CreateCourseFrame() {
+	public CreateCourseFrame(KwikGrade kwikGrade) {
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -72,6 +74,8 @@ public class CreateCourseFrame extends JDialog {
 				courseTitle = createFromExisting.getCourseTitle();
 				importedStudentsList = createFromExisting.getImportedStudentsList();
 				hasCreatedNewCourse = createFromExisting.getHasCreatedNewCourse();
+				ugOverallGrade = createFromExisting.getUGOverallGrade();
+				gradOverallGrade = createFromExisting.getGradOverallGrade();
 
 				dispose();
 

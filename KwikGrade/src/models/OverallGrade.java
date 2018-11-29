@@ -9,18 +9,19 @@ import java.util.ArrayList;
 public class OverallGrade implements Serializable {
 	private double overallGrade;
 	private ArrayList<CourseCategory> categoryList = new ArrayList<CourseCategory>();
-	
+
 	//generic constructor
 	public OverallGrade() {
 		overallGrade = 0.0;
 		categoryList = new ArrayList<CourseCategory>();
 	}
-	
+
 	//constructor if someone wants to define all variables
 	public OverallGrade(double overallGrade, ArrayList<CourseCategory> categoryList) {
 		this.overallGrade = overallGrade;
 		this.categoryList = categoryList;
 	}
+  
 	//constructor if someone wants to define the categorylist
 	public OverallGrade(ArrayList<CourseCategory> categoryList) {
 		this.overallGrade = 0.0;
@@ -59,7 +60,23 @@ public class OverallGrade implements Serializable {
 			return false;
 		}
 	}
-
+	
+	//this makes a copy of the overall grade object with a new object, so the references are not the same
+	//TODO: This is ugly as hell. Only needed to get it to work to support a deadline, but will be cleaned up
+	//TODO: need to get whoever reads this some beer....for code beer goggles
+	public static OverallGrade copyOverallGrade(OverallGrade overallGradeObj) {
+		double overallGradeNew = overallGradeObj.getOverallGrade();
+		ArrayList<CourseCategory> newCategoryList = new ArrayList<CourseCategory>();
+		
+		for(int i = 0; i < overallGradeObj.getCourseCategoryList().size(); i++) {
+			String newCategoryName = overallGradeObj.getCourseCategoryList().get(i).getName();
+			double newCategoryWeight = overallGradeObj.getCourseCategoryList().get(i).getWeight();
+			newCategoryList.add(new CourseCategory(newCategoryName, newCategoryWeight, new ArrayList<SubCategory>() ));
+		}
+		OverallGrade newOverallGrade = new OverallGrade(overallGradeNew, newCategoryList);
+		return newOverallGrade;
+	}
+	
 	//==========================
 	// Getters
 	//==========================
@@ -81,7 +98,9 @@ public class OverallGrade implements Serializable {
 	public void setOverallGrade(double overallGrade) {
 		this.overallGrade = overallGrade;
 	}
-	
-
+    
+   public void addCategoryList(CourseCategory categoryList) {
+		this.categoryList.add(categoryList);
+	}
 }
 

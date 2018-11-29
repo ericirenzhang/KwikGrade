@@ -9,6 +9,7 @@ public class Student implements Serializable {
 	private String buId;
 	private String email;
 	private OverallGrade overallGrade;
+	private String status;
 	// TODO: add OverallGrade objects once implemented
 	// TODO: add comments string as attribute
 	
@@ -19,6 +20,7 @@ public class Student implements Serializable {
 		this.buId = buId;
 		this.email = email;
 		overallGrade = new OverallGrade();
+		this.status = "";
 	}
 
 	// ========================================
@@ -44,9 +46,17 @@ public class Student implements Serializable {
 	public String getEmail() {
 		return this.email;
 	}
+	
+	public String getStatus() {
+		return this.status;
+	}
 
 	public String getFullName() {
 		return String.format("%s %s. %s", this.fName, this.middleInitial, this.lName);
+	}
+	
+	public OverallGrade getOverallGrade() {
+		return this.overallGrade;
 	}
 
 	public OverallGrade getOverallGradeObject() {

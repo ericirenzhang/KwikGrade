@@ -53,6 +53,7 @@ public class CourseCategory implements Serializable {
 	public String getName(){
 		return this.name;
 	}
+
 	public ArrayList<SubCategory> getSubCategoryList() { return this.subCategoryList; }
 
 	//==========================
