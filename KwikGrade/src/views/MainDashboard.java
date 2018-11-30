@@ -80,7 +80,7 @@ public class MainDashboard extends JFrame {
 		activeCourseScrollPane.setViewportView(activeCourseDisplayList);
 		activeCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
-		// Loads courses upon login for display in dynamic list
+		// Loads courses upon verifyAndOpenDashboard for display in dynamic list
 		activeCourseDisplayList.setModel(loadCourseList(kwikGrade.getActiveCourses()));
 
 		JButton addCourseButton = new JButton("Add Course");
@@ -151,7 +151,7 @@ public class MainDashboard extends JFrame {
 		saveCourseButton.setBounds(480, 380, 166, 32);
 		contentPane.add(saveCourseButton);
     
-		// Loads courses upon login with button, for display in dynamic list
+		// Loads courses upon verifyAndOpenDashboard with button, for display in dynamic list
 		JButton refreshCourseButton = new JButton("Refresh");
 		refreshCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {

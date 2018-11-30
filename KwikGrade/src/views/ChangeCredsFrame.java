@@ -16,7 +16,7 @@ import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.awt.event.ActionEvent;
 
-public class ChangeCreds extends JDialog {
+public class ChangeCredsFrame extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JPasswordField newPasswordField;
@@ -26,37 +26,36 @@ public class ChangeCreds extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ChangeCreds() {
-		setBounds(100, 100, 450, 300);
+	public ChangeCredsFrame() {
+		setBounds(100, 100, 600, 300);
+		setLocationRelativeTo ( null );
+
+		// TODO: Update this with GridBagLayout so this scales upon resizing.
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(null);
-		
-		newPasswordField = new JPasswordField();
-		newPasswordField.setBounds(172, 105, 133, 20);
-		contentPanel.add(newPasswordField);
-		
-		retypePasswordField = new JPasswordField();
-		retypePasswordField.setBounds(172, 136, 133, 20);
-		contentPanel.add(retypePasswordField);
-		
+
+		JLabel newUsernameLabel = new JLabel("New Username");
+		newUsernameLabel.setBounds(67, 74, 95, 14);
+		contentPanel.add(newUsernameLabel);
 		newUsernameField = new JTextField();
 		newUsernameField.setBounds(172, 71, 133, 20);
 		contentPanel.add(newUsernameField);
 		newUsernameField.setColumns(10);
-		
-		JLabel newUsernameLabel = new JLabel("New Username");
-		newUsernameLabel.setBounds(67, 74, 95, 14);
-		contentPanel.add(newUsernameLabel);
-		
+
 		JLabel newPasswordLabel = new JLabel("New Password");
 		newPasswordLabel.setBounds(67, 108, 95, 14);
 		contentPanel.add(newPasswordLabel);
-		
+		newPasswordField = new JPasswordField();
+		newPasswordField.setBounds(172, 105, 133, 20);
+		contentPanel.add(newPasswordField);
+
 		JLabel retypePasswordLabel = new JLabel("Re-type Password");
 		retypePasswordLabel.setBounds(67, 139, 105, 14);
 		contentPanel.add(retypePasswordLabel);
+		retypePasswordField = new JPasswordField();
+		retypePasswordField.setBounds(172, 136, 133, 20);
+		contentPanel.add(retypePasswordField);
 
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -73,7 +72,7 @@ public class ChangeCreds extends JDialog {
 						changedCreds.close();
 					}
 					catch(Exception e1) {
-						System.out.println("COULD NOT FIND FILE!!!!");
+						JOptionPane.showMessageDialog(null, "Could not find \"logincredentials.txt\", please create one.");
 					}
 					dispose();
 				}
