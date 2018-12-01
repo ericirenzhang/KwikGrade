@@ -14,13 +14,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 
 public class CreateFromNewFrame extends JDialog {
 
@@ -37,17 +34,17 @@ public class CreateFromNewFrame extends JDialog {
 	private boolean hasCreatedNewCourse = false;
 
 	private ArrayList<Student> importedStudentList = new ArrayList<>();
-	private JPanel panel1;
-	
+
 	//attributes to store the Course Category lists
 	private JTable ugCourseCategoryTable;
 	private int ugTableModelRows = 1;
 	private DefaultTableModel ugTableModel = new DefaultTableModel(ugTableModelRows, 2);
+
 	private JTable gradCourseCategoryTable;
 	private int gradTableModelRows = 1;
 	private DefaultTableModel gradTableModel = new DefaultTableModel(gradTableModelRows, 2);
 	
-	//initializes the overallgrade objects for undergrads and graduates
+	// initializes the overallgrade objects for undergrads and graduates
 	private OverallGrade ugOverallGrade = new OverallGrade();
 	private OverallGrade gradOverallGrade = new OverallGrade();
 
@@ -55,7 +52,6 @@ public class CreateFromNewFrame extends JDialog {
 	 * Create the dialog.
 	 */
 	public CreateFromNewFrame() {
-
 		setBounds(100, 100, 585, 687);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -141,12 +137,12 @@ public class CreateFromNewFrame extends JDialog {
 		JScrollPane underGraduateScrollPane = new JScrollPane();
 		underGraduateScrollPane.setBounds(12, 362, 249, 180);
 		contentPanel.add(underGraduateScrollPane);
-		
+
 		ugCourseCategoryTable = new JTable();
 		ugCourseCategoryTable.setGridColor(Color.BLACK);
 		ugCourseCategoryTable.setRowHeight(25);
 		underGraduateScrollPane.setViewportView(ugCourseCategoryTable);
-		addTableRow( ugTableModel, ugCourseCategoryTable);
+		addTableRow(ugTableModel, ugCourseCategoryTable);
 		
 		JScrollPane graduateScrollPane = new JScrollPane();
 		graduateScrollPane.setBounds(304, 361, 246, 181);
@@ -154,12 +150,16 @@ public class CreateFromNewFrame extends JDialog {
 		
 		gradCourseCategoryTable = new JTable();
 		gradCourseCategoryTable.setGridColor(Color.BLACK);
-
 		gradCourseCategoryTable.setRowHeight(25);
 		graduateScrollPane.setViewportView(gradCourseCategoryTable);
-		gradCourseCategoryTable.setModel(gradTableModel);
-		addTableRow( gradTableModel, gradCourseCategoryTable);
+		addTableRow(gradTableModel, gradCourseCategoryTable);
 
+		// Set up Category table columns
+		Object[] gradeSchemeTableTitle = {"Category Name", "Weight (e.g. 0.5)"};
+		ugTableModel.setColumnIdentifiers(gradeSchemeTableTitle);
+		ugCourseCategoryTable.setModel(ugTableModel);
+		gradTableModel.setColumnIdentifiers(gradeSchemeTableTitle);
+		gradCourseCategoryTable.setModel(gradTableModel);
 		
 		JLabel ugCourseCategoryLabel = new JLabel("Undergraduate Grading Scheme");
 		ugCourseCategoryLabel.setBounds(60, 344, 200, 14);
@@ -175,8 +175,7 @@ public class CreateFromNewFrame extends JDialog {
 		ugAddRowButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//ugTableModelRows = ugTableModelRows + 1;
-				addTableRow( ugTableModel, ugCourseCategoryTable);
-				
+				addTableRow(ugTableModel, ugCourseCategoryTable);
 			}
 		});
 		ugAddRowButton.setBounds(12, 568, 115, 23);
@@ -194,8 +193,7 @@ public class CreateFromNewFrame extends JDialog {
 				else {
 					ugTableModelRows = ugTableModelRows;
 				}
-				removeTableRow( ugTableModel, ugCourseCategoryTable);
-				
+				removeTableRow(ugCourseCategoryTable);
 			}
 		});
 		ugSubRowButton.setBounds(140, 568, 121, 23);
@@ -208,7 +206,7 @@ public class CreateFromNewFrame extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				gradTableModelRows = gradTableModelRows + 1;
 				//gradTableModel.fireTableRowsInserted(gradTableModelRows-1, gradTableModelRows-1);
-				addTableRow( gradTableModel, gradCourseCategoryTable);
+				addTableRow(gradTableModel, gradCourseCategoryTable);
 			}
 		});
 		gradAddRowButton.setBounds(304, 568, 115, 23);
@@ -225,7 +223,7 @@ public class CreateFromNewFrame extends JDialog {
 				else {
 					gradTableModelRows = gradTableModelRows;
 				}
-				removeTableRow( gradTableModel, gradCourseCategoryTable);
+				removeTableRow(gradCourseCategoryTable);
 			}
 		});
 		gradSubRowButton.setBounds(429, 568, 121, 23);
@@ -308,26 +306,21 @@ public class CreateFromNewFrame extends JDialog {
 		});
 		buttonPane.add(cancelButton);
 	}
-
 	
 	/**
 	 * Dynamiclly displays the Course Category Table
 	 * Kept generic to allow for both UG and Grad to use
-	 * @param tableModel, table, tableRows
+	 * @param table
 	 */
 	public void addTableRow(DefaultTableModel tableModel, JTable table) {
 		tableModel = (DefaultTableModel) table.getModel();
 		tableModel.addRow(new Object[] {"",""});
-		Object[] gradeSchemeTableTitle = {"Category Name", "Weight (e.g. 0.5)"};
-		tableModel.setColumnIdentifiers(gradeSchemeTableTitle);
 		table.setModel(tableModel);
 	}
 	
-	public void removeTableRow(DefaultTableModel tableModel, JTable table) {
-		tableModel = (DefaultTableModel) table.getModel();
+	public void removeTableRow(JTable table) {
+		DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
 		tableModel.removeRow(tableModel.getRowCount()-1);
-		Object[] gradeSchemeTableTitle = {"Category Name", "Weight (e.g. 0.5)"};
-		tableModel.setColumnIdentifiers(gradeSchemeTableTitle);
 		table.setModel(tableModel);
 	}
 
