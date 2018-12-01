@@ -33,10 +33,9 @@ public class CourseOverviewFrame extends JDialog {
 	private DefaultTableModel statsTableModel;
 	private Course managedCourse;
 
-	private int selectedRow;
 	private JTable kwikStatsTable;
 
-	public DefaultTableModel displayStudents(ArrayList<Student> Students) {
+	public DefaultTableModel generateStudentTableModel(ArrayList<Student> Students) {
 		studentTableModel = new DefaultTableModel();
 		Object[] title = {"First Name", "Middle Initial", "Last Name", "Grade"};
 		studentTableModel.setColumnIdentifiers(title);
@@ -44,10 +43,6 @@ public class CourseOverviewFrame extends JDialog {
 			studentTableModel.addRow(new Object[] {Students.get(i).getfName(),Students.get(i).getMiddleInitial(), Students.get(i).getlName(), Students.get(i).getOverallGradeObject().getOverallGrade()} );
 		}
 		return studentTableModel;
-	}
-	
-	public void updateStudentTable() {
-		studentDisplayTable.setModel(displayStudents(managedCourse.getActiveStudents()));
 	}
 
 	public void setManagedCourse(Course managedCourse) {
@@ -61,19 +56,15 @@ public class CourseOverviewFrame extends JDialog {
 	
 	
 	public DefaultTableModel displayKwikStats(Course course) {
-//		statsTableModel.addRow(new Object[] {"Mean", course.calcMean()});
-//		statsTableModel.addRow(new Object[] {"Median", course.calcMedian()});
-//		statsTableModel.addRow(new Object[] {"Standard Deviation", course.calcStandardDeviation()});
 		statsTableModel.addRow(new Object[] {"Mean"});
-		statsTableModel.addRow(new Object[] {"Mean"});
+		statsTableModel.addRow(new Object[] {course.calcMean()});
 		statsTableModel.addRow(new Object[] {"Median"});
-		statsTableModel.addRow(new Object[] {"Median"});
+		statsTableModel.addRow(new Object[] {course.calcMedian()});
 		statsTableModel.addRow(new Object[] {"StDev"});
-		statsTableModel.addRow(new Object[] {"StDev"});
+		statsTableModel.addRow(new Object[] {course.calcStandardDeviation()});
 
 		return statsTableModel;
 	}
-
 
 	/**
 	 * Create the dialog.
@@ -87,37 +78,22 @@ public class CourseOverviewFrame extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 38, 545, 498);
-		contentPanel.add(scrollPane);
-
-		//Creates the titles for the table model
-		//studentTableModel = new DefaultTableModel();
+		//===================================
+		//Creating Tables for Kwikstats and Student Display
+		//===================================
+		
+		JScrollPane studentDisplayTableScrollPane = new JScrollPane();
+		studentDisplayTableScrollPane.setBounds(10, 38, 545, 498);
+		contentPanel.add(studentDisplayTableScrollPane);
 
 		//Creates the table itself
 		studentDisplayTable = new JTable();
 		studentDisplayTable.setGridColor(Color.BLACK); // set lines to black for Mac
 		studentDisplayTable.setRowHeight(25);
-		scrollPane.setViewportView(studentDisplayTable);
+		studentDisplayTableScrollPane.setViewportView(studentDisplayTable);
 		studentDisplayTable.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		studentDisplayTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		ListSelectionModel listModel = studentDisplayTable.getSelectionModel();
-		//this is check to make sure I actually selected something
-		//TODO: remember why I needed this selection listener, I am not sure - Eric
-//		listModel.addListSelectionListener(new ListSelectionListener() {
-//			@Override
-//			public void valueChanged(ListSelectionEvent e) {
-//				ListSelectionModel lsm=(ListSelectionModel) e.getSource();
-//				if(lsm.isSelectionEmpty()) {
-//					JOptionPane.showMessageDialog(null, "No selection");
-//				}
-//				else {
-//					selectedRow=lsm.getMinSelectionIndex();
-//				}
-//			}
-//		});
-		
-		updateStudentTable();
+		studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
 
 		statsTableModel = new DefaultTableModel();
 		Object[] statsTableTitle = {"Kwikstats"};
@@ -131,20 +107,17 @@ public class CourseOverviewFrame extends JDialog {
 		contentPanel.add(kwikStatsTable);
 		kwikStatsTable.setModel(displayKwikStats(managedCourse));
 
-		// button to add student
+		//===================================
+		//Creating and Displaying buttons
+		//===================================
+		
 		JButton addStudentButton = new JButton("Add Student");
 		addStudentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				AddStudentFrame addStudent = new AddStudentFrame(getManagedCourse());
-//				kwikGrade.setActiveCourses(FileManager.loadFile(MainDashboard.getActiveSaveFileName()));
-//				kwikGrade.setClosedCourses(FileManager.loadFile(MainDashboard.getClosedSaveFileName()));
-
 				addStudent.setModal(true);
 				addStudent.setVisible(true);
-
-//				Student studentToAdd = addStudent.getNewStudent();
-//				managedCourse.addStudent(studentToAdd);
-				updateStudentTable();
+				studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
 			}
 		});
 		addStudentButton.setBounds(565, 11, 155, 40);
@@ -153,13 +126,21 @@ public class CourseOverviewFrame extends JDialog {
 		JButton manageStudentButton = new JButton("Manage Student");
 		manageStudentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Student student = getManagedCourse().getActiveStudents().get(selectedRow);
-				ManageStudentFrame manageStudentFrame = new ManageStudentFrame(student, getManagedCourse());
-				manageStudentFrame.setModal(true);
-				manageStudentFrame.setVisible(true);
+				//checks to see if you actually selected anything from the table
+				if(studentDisplayTable.getSelectedRow() < 0) {
+					JOptionPane.showMessageDialog(null, "No selection");
+					return;
+				}
+				else {
+					Student student = getManagedCourse().getActiveStudents().get(studentDisplayTable.getSelectedRow());
+					ManageStudentFrame manageStudentFrame = new ManageStudentFrame(student, getManagedCourse());
+					manageStudentFrame.setModal(true);
+					manageStudentFrame.setVisible(true);
+					studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
 
-				if(manageStudentFrame.didSave()) {
-					FileManager.saveFile(kwikGrade.getActiveCourses(), MainDashboard.getActiveSaveFileName());
+					if(manageStudentFrame.didSave()) {
+						FileManager.saveFile(kwikGrade.getActiveCourses(), MainDashboard.getActiveSaveFileName());
+					}
 				}
 			}
 		});
@@ -186,8 +167,7 @@ public class CourseOverviewFrame extends JDialog {
 				addGrade.setVisible(true);
 
 				setManagedCourse(addGrade.getManagedCourse());
-				updateStudentTable();
-				
+				studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
 			}
 		});
 
@@ -201,10 +181,6 @@ public class CourseOverviewFrame extends JDialog {
 				ManageCategoriesFrame manageCategoriesFrame = new ManageCategoriesFrame(managedCourse.getCourseUnderGradDefaultGradeScheme());
 				manageCategoriesFrame.setModal(true);
 				manageCategoriesFrame.setVisible(true);
-
-				// TODO: delete this later, temp code just to have it shown that it works
-//				System.out.println(managedCourse.getCourseGradDefaultGradeScheme().getCourseCategoryList().get(0).getName());
-//				System.out.println(managedCourse.getCourseGradDefaultGradeScheme().getCourseCategoryList().get(1).getName());
 			}
 		});
 		manageCategoryButton.setBounds(565, 161, 155, 40);
