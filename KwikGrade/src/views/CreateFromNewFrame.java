@@ -39,7 +39,6 @@ public class CreateFromNewFrame extends JDialog {
 	private JTable ugCourseCategoryTable;
 	private int ugTableModelRows = 1;
 	private DefaultTableModel ugTableModel = new DefaultTableModel(ugTableModelRows, 2);
-
 	private JTable gradCourseCategoryTable;
 	private int gradTableModelRows = 1;
 	private DefaultTableModel gradTableModel = new DefaultTableModel(gradTableModelRows, 2);
@@ -174,8 +173,11 @@ public class CreateFromNewFrame extends JDialog {
 		JButton ugAddRowButton = new JButton("Add Category");
 		ugAddRowButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//ugTableModelRows = ugTableModelRows + 1;
-				addTableRow(ugTableModel, ugCourseCategoryTable);
+				ugTableModelRows = ugTableModelRows + 1;
+				if(null != ugCourseCategoryTable.getCellEditor()) {
+					ugCourseCategoryTable.getCellEditor().stopCellEditing();
+				}
+				addTableRow( ugTableModel, ugCourseCategoryTable);
 			}
 		});
 		ugAddRowButton.setBounds(12, 568, 115, 23);
@@ -193,7 +195,10 @@ public class CreateFromNewFrame extends JDialog {
 				else {
 					ugTableModelRows = ugTableModelRows;
 				}
-				removeTableRow(ugCourseCategoryTable);
+				if(null != ugCourseCategoryTable.getCellEditor()) {
+					ugCourseCategoryTable.getCellEditor().stopCellEditing();
+				}
+				removeTableRow( ugTableModel, ugCourseCategoryTable);
 			}
 		});
 		ugSubRowButton.setBounds(140, 568, 121, 23);
@@ -206,7 +211,10 @@ public class CreateFromNewFrame extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				gradTableModelRows = gradTableModelRows + 1;
 				//gradTableModel.fireTableRowsInserted(gradTableModelRows-1, gradTableModelRows-1);
-				addTableRow(gradTableModel, gradCourseCategoryTable);
+				if(null != gradCourseCategoryTable.getCellEditor()) {
+					gradCourseCategoryTable.getCellEditor().stopCellEditing();
+				}
+				addTableRow( gradTableModel, gradCourseCategoryTable);
 			}
 		});
 		gradAddRowButton.setBounds(304, 568, 115, 23);
@@ -223,7 +231,10 @@ public class CreateFromNewFrame extends JDialog {
 				else {
 					gradTableModelRows = gradTableModelRows;
 				}
-				removeTableRow(gradCourseCategoryTable);
+				if(null != gradCourseCategoryTable.getCellEditor()) {
+					gradCourseCategoryTable.getCellEditor().stopCellEditing();
+				}
+				removeTableRow( gradTableModel, gradCourseCategoryTable);
 			}
 		});
 		gradSubRowButton.setBounds(429, 568, 121, 23);
@@ -308,18 +319,23 @@ public class CreateFromNewFrame extends JDialog {
 	}
 	
 	/**
-	 * Dynamiclly displays the Course Category Table
+	 * Dynamically adds rows to the Course Category Table
 	 * Kept generic to allow for both UG and Grad to use
-	 * @param table
+	 * @param tableModel, table
 	 */
 	public void addTableRow(DefaultTableModel tableModel, JTable table) {
 		tableModel = (DefaultTableModel) table.getModel();
 		tableModel.addRow(new Object[] {"",""});
 		table.setModel(tableModel);
 	}
-	
-	public void removeTableRow(JTable table) {
-		DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+
+	/**
+	 * Dynamically removes rows to the Course Category Table
+	 * Kept generic to allow for both UG and Grad to use
+	 * @param tableModel, table
+	 */	
+	public void removeTableRow(DefaultTableModel tableModel, JTable table) {
+		tableModel = (DefaultTableModel) table.getModel();
 		tableModel.removeRow(tableModel.getRowCount()-1);
 		table.setModel(tableModel);
 	}
