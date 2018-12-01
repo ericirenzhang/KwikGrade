@@ -41,11 +41,11 @@ public class CreateFromNewFrame extends JDialog {
 	
 	//attributes to store the Course Category lists
 	private JTable ugCourseCategoryTable;
-	private int ugTableModelRows = 2;
-	private DefaultTableModel ugTableModel = new DefaultTableModel();
+	private int ugTableModelRows = 1;
+	private DefaultTableModel ugTableModel = new DefaultTableModel(ugTableModelRows, 2);
 	private JTable gradCourseCategoryTable;
-	private int gradTableModelRows = 2;
-	private DefaultTableModel gradTableModel = new DefaultTableModel();
+	private int gradTableModelRows = 1;
+	private DefaultTableModel gradTableModel = new DefaultTableModel(gradTableModelRows, 2);
 	
 	//initializes the overallgrade objects for undergrads and graduates
 	private OverallGrade ugOverallGrade = new OverallGrade();
@@ -146,7 +146,7 @@ public class CreateFromNewFrame extends JDialog {
 		ugCourseCategoryTable.setGridColor(Color.BLACK);
 		ugCourseCategoryTable.setRowHeight(25);
 		underGraduateScrollPane.setViewportView(ugCourseCategoryTable);
-		dispCourseCategoryTable( ugTableModel, ugCourseCategoryTable, ugTableModelRows);
+		addTableRow( ugTableModel, ugCourseCategoryTable);
 		
 		JScrollPane graduateScrollPane = new JScrollPane();
 		graduateScrollPane.setBounds(304, 361, 246, 181);
@@ -158,7 +158,7 @@ public class CreateFromNewFrame extends JDialog {
 		gradCourseCategoryTable.setRowHeight(25);
 		graduateScrollPane.setViewportView(gradCourseCategoryTable);
 		gradCourseCategoryTable.setModel(gradTableModel);
-		dispCourseCategoryTable( gradTableModel, gradCourseCategoryTable, gradTableModelRows);
+		addTableRow( gradTableModel, gradCourseCategoryTable);
 
 		
 		JLabel ugCourseCategoryLabel = new JLabel("Undergraduate Grading Scheme");
@@ -171,11 +171,11 @@ public class CreateFromNewFrame extends JDialog {
 		
 		//Adds a row to the dynamic undergraduate table
 		//TODO: Think of a way so that the values are saved if the table changes
-		JButton ugAddRowButton = new JButton("Add Row");
+		JButton ugAddRowButton = new JButton("Add Category");
 		ugAddRowButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ugTableModelRows = ugTableModelRows + 1;
-				dispCourseCategoryTable( ugTableModel, ugCourseCategoryTable, ugTableModelRows);
+				//ugTableModelRows = ugTableModelRows + 1;
+				addTableRow( ugTableModel, ugCourseCategoryTable);
 				
 			}
 		});
@@ -185,7 +185,7 @@ public class CreateFromNewFrame extends JDialog {
 		
 		//Removes a row from the Dynamic UnderGraduate Table
 		//TODO: Think of a way so that the values are saved if the table changes
-		JButton ugSubRowButton = new JButton("Subtract Row");
+		JButton ugSubRowButton = new JButton("Remove Category");
 		ugSubRowButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(ugTableModelRows > 1) {
@@ -194,7 +194,7 @@ public class CreateFromNewFrame extends JDialog {
 				else {
 					ugTableModelRows = ugTableModelRows;
 				}
-				dispCourseCategoryTable( ugTableModel, ugCourseCategoryTable, ugTableModelRows);
+				removeTableRow( ugTableModel, ugCourseCategoryTable);
 				
 			}
 		});
@@ -203,11 +203,12 @@ public class CreateFromNewFrame extends JDialog {
 		
 		//Adds a row to the dynamic graduate table
 		//TODO: Think of a way so that the values are saved if the table changes
-		JButton gradAddRowButton = new JButton("Add Row");
+		JButton gradAddRowButton = new JButton("Add Category");
 		gradAddRowButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				gradTableModelRows = gradTableModelRows + 1;
-				dispCourseCategoryTable( gradTableModel, gradCourseCategoryTable, gradTableModelRows);
+				//gradTableModel.fireTableRowsInserted(gradTableModelRows-1, gradTableModelRows-1);
+				addTableRow( gradTableModel, gradCourseCategoryTable);
 			}
 		});
 		gradAddRowButton.setBounds(304, 568, 115, 23);
@@ -215,7 +216,7 @@ public class CreateFromNewFrame extends JDialog {
 		
 		//Removes a row from the Dynamic Graduate Table
 		//TODO: Think of a way so that the values are saved if the table changes
-		JButton gradSubRowButton = new JButton("Subtract Row");
+		JButton gradSubRowButton = new JButton("Remove Category");
 		gradSubRowButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(gradTableModelRows > 1) {
@@ -224,7 +225,7 @@ public class CreateFromNewFrame extends JDialog {
 				else {
 					gradTableModelRows = gradTableModelRows;
 				}
-				dispCourseCategoryTable( gradTableModel, gradCourseCategoryTable, gradTableModelRows);
+				removeTableRow( gradTableModel, gradCourseCategoryTable);
 			}
 		});
 		gradSubRowButton.setBounds(429, 568, 121, 23);
@@ -314,9 +315,18 @@ public class CreateFromNewFrame extends JDialog {
 	 * Kept generic to allow for both UG and Grad to use
 	 * @param tableModel, table, tableRows
 	 */
-	public void dispCourseCategoryTable(DefaultTableModel tableModel, JTable table, int tableRows) {
-		tableModel = new DefaultTableModel(tableRows, 2);
-		Object[] gradeSchemeTableTitle = {"Category", "Weight"};
+	public void addTableRow(DefaultTableModel tableModel, JTable table) {
+		tableModel = (DefaultTableModel) table.getModel();
+		tableModel.addRow(new Object[] {"",""});
+		Object[] gradeSchemeTableTitle = {"Category Name", "Weight (e.g. 0.5)"};
+		tableModel.setColumnIdentifiers(gradeSchemeTableTitle);
+		table.setModel(tableModel);
+	}
+	
+	public void removeTableRow(DefaultTableModel tableModel, JTable table) {
+		tableModel = (DefaultTableModel) table.getModel();
+		tableModel.removeRow(tableModel.getRowCount()-1);
+		Object[] gradeSchemeTableTitle = {"Category Name", "Weight (e.g. 0.5)"};
 		tableModel.setColumnIdentifiers(gradeSchemeTableTitle);
 		table.setModel(tableModel);
 	}
