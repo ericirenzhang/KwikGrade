@@ -55,10 +55,8 @@ public class AddGradeFrame extends JDialog {
 	
 	private String assignName;
 	
-	//list of all, or only grad or undergrad students
+	//list of all students
 	private ArrayList<Student> studentList;
-	private ArrayList<Student> ugStudentList;
-	private ArrayList<Student> gradStudentList;
 		
 	//pointer array, shows how a student in the grad/undergrad student list relates to the entire student list
 	private ArrayList<Integer> ugLocationPointer = new ArrayList<Integer>();
@@ -100,11 +98,6 @@ public class AddGradeFrame extends JDialog {
 		}
 		return addGradeTableModel;
 	}
-	
-//	//method that updates the student table
-//	public void updateStudentTable() {
-//		studentGradeTable.setModel(displayAllStudents(managedCourse.getActiveStudents()));
-//	}
 	
 	//creates a pointer array that tells you, where each undergrad and grad student is located in the course's enrolled students
 	public void createPointerArray(Course course) {
@@ -238,7 +231,6 @@ public class AddGradeFrame extends JDialog {
 		assignValueText = new JTextField();
 		assignValueText.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		assignValueText.setColumns(10);
-	
 		
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
@@ -297,9 +289,7 @@ public class AddGradeFrame extends JDialog {
 						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 329, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
-		
 
-		
 		studentGradeTable = new JTable();
 		scrollPane.setViewportView(studentGradeTable);
 		contentPanel.setLayout(gl_contentPanel);
@@ -330,94 +320,39 @@ public class AddGradeFrame extends JDialog {
 						//toggles values depending on radio button
 						if(ptsEarnedRadio.isSelected()) {
 							pointsGained = true;
-
 						}
 						else if(ptsLostRadio.isSelected()) {
 							pointsGained = false;
-
 						}
 						else {
 							JOptionPane.showMessageDialog(null, "Select either Points Gained or Points Lost!");
 							return;
 						}
 						
-						//TODO: this is ugly as hell, but it works. I will clean it up during code refactor phase - Eric
-						//Need to give Sean some asprin for the heart attack he will have when he sees this
 						
-						if (gradeSchemeDropdown.getSelectedIndex() == 0) {
-							//iterates through entire list of students
+						for(int gradeAddIndex = 0; gradeAddIndex < studentGradeTable.getRowCount(); gradeAddIndex++) {
+							int studentIndex = gradeAddIndex;
+							int categoryIndex = 0;
 							
-							for(int gradeAddIndex = 0; gradeAddIndex < studentGradeTable.getRowCount(); gradeAddIndex++) {
-								
-//								System.out.println("this code works1");
-								//looks for index for the associated course category for that student object
-								//needed because, for undergrad and grad student with same category, may be in different indexes in the list of course categories
-								
-								int categoryIndex = 0;
-								
-//								System.out.println("this code works2");
-								System.out.println(studentList.get(gradeAddIndex).getOverallGrade().getOverallGrade());
-								
-								ArrayList<CourseCategory> currentStudentCourseCat = studentList.get(gradeAddIndex).getOverallGrade().getCourseCategoryList();
-								
-//								System.out.println("this code works3");
-								
-								for (int courseCatIndex = 0; courseCatIndex < currentStudentCourseCat.size(); courseCatIndex ++) {
-									
-//									System.out.println("this code works33");
-									
-									if (currentStudentCourseCat.get(courseCatIndex).getName().equals(catNameDropdown.getSelectedItem())) {
-										categoryIndex = courseCatIndex;
-										System.out.println("This is course category "+categoryIndex);
-									}
+							if (gradeSchemeDropdown.getSelectedIndex() == 1) {
+								studentIndex = ugLocationPointer.get(gradeAddIndex);
+							}
+							else if (gradeSchemeDropdown.getSelectedIndex() == 2) {
+								studentIndex = gradLocationPointer.get(gradeAddIndex);
+							}
+							
+							ArrayList<CourseCategory> currentStudentCourseCat = studentList.get(studentIndex).getOverallGrade().getCourseCategoryList();
+
+							for (int courseCatIndex = 0; courseCatIndex < currentStudentCourseCat.size(); courseCatIndex ++) {
+								if (currentStudentCourseCat.get(courseCatIndex).getName().equals(catNameDropdown.getSelectedItem())) {
+									categoryIndex = courseCatIndex;
 								}
-								double points = Double.parseDouble(String.valueOf(studentGradeTable.getValueAt(gradeAddIndex, 1)));
-								double studentPoints = togglePoints(points, totalAssignValue, pointsGained);
-								
-//								System.out.println("This is the total assignment Value "+totalAssignValue);
-//								System.out.println("This is the total points gained for a student "+studentPoints);
-//								System.out.println("Index of the Category "+categoryIndex);
-								
-								OverallGrade studentOverallGrade = studentList.get(gradeAddIndex).getOverallGrade();
-								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, studentPoints, totalAssignValue));
-								//studentList.get(gradeAddIndex).setOverallGrade(studentOverallGrade);
-								studentOverallGrade.updateOverallGrade();
 							}
-						}
-						//checks if the Undergraduate students are selected
-						else if (gradeSchemeDropdown.getSelectedIndex() == 1) {
-							for(int gradeAddIndex = 0; gradeAddIndex < studentGradeTable.getRowCount(); gradeAddIndex++) {
-								double points = Double.parseDouble(String.valueOf(studentGradeTable.getValueAt(gradeAddIndex, 1)));
-								double studentPoints = togglePoints(points, totalAssignValue, pointsGained);
-								
-								int categoryIndex = catNameDropdown.getSelectedIndex();
-								
-								OverallGrade studentOverallGrade = studentList.get(ugLocationPointer.get(gradeAddIndex)).getOverallGrade();
-								
-								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, studentPoints, totalAssignValue));
-								//studentList.get(ugLocationPointer.get(gradeAddIndex)).setOverallGrade(studentOverallGrade);
-								studentOverallGrade.updateOverallGrade();
-							}
-						}
-						
-						//if not all, and not undergrad, must be grad students
-						else {
-							for(int gradeAddIndex = 0; gradeAddIndex < studentGradeTable.getRowCount(); gradeAddIndex++) {
-								double points = Double.parseDouble(String.valueOf(studentGradeTable.getValueAt(gradeAddIndex, 1)));
-								double studentPoints = togglePoints(points, totalAssignValue, pointsGained);
-								
-								int categoryIndex = catNameDropdown.getSelectedIndex();
-								
-								//System.out.println("grad index "+gradLocationPointer.get(gradeAddIndex));
-								
-								OverallGrade studentOverallGrade = studentList.get(gradLocationPointer.get(gradeAddIndex)).getOverallGrade();
-								//System.out.println(studentOverallGrade);
-								
-								studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, studentPoints, totalAssignValue));
-								//studentList.get(ugLocationPointer.get(gradeAddIndex)).setOverallGrade(studentOverallGrade);;
-								studentOverallGrade.updateOverallGrade();
-								//System.out.println("subcategory list "+studentOverallGrade.getCourseCategoryList().get(0).getSubCategoryList());
-							}
+							
+							double studentPoints = togglePoints(Double.parseDouble(String.valueOf(studentGradeTable.getValueAt(gradeAddIndex, 1))), totalAssignValue, pointsGained);
+							OverallGrade studentOverallGrade = studentList.get(studentIndex).getOverallGrade();
+							studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, studentPoints, totalAssignValue));
+							studentOverallGrade.updateOverallGrade();
 						}
 
 						managedCourse.setActiveStudents(studentList);
@@ -425,8 +360,6 @@ public class AddGradeFrame extends JDialog {
 						FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
 						
 						dispose();
-
-
 					}
 				});
 				okButton.setActionCommand("OK");
