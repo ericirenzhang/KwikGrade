@@ -29,6 +29,7 @@ public class ChangeCredsFrame extends JDialog {
 	public ChangeCredsFrame() {
 		setBounds(100, 100, 600, 300);
 		setLocationRelativeTo ( null );
+		contentPanel.setLayout(null);
 
 		// TODO: Update this with GridBagLayout so this scales upon resizing.
 		getContentPane().setLayout(new BorderLayout());
