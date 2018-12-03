@@ -10,19 +10,16 @@ import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
 import models.Course;
 import models.CourseCategory;
+import models.GraduateStudent;
 import models.OverallGrade;
 import models.Student;
 import models.SubCategory;
+import models.UndergraduateStudent;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -44,7 +41,6 @@ public class AddStudentFrame extends JDialog {
 	private JTextField lNameField;
 	private JTextField buIdField;
 	private JTextField emailField;
-	private JTextField statusField;
 	private JTextField mInitialField;
 	private JLabel lNameLabel;
 	private JLabel buIdLabel;
@@ -56,6 +52,7 @@ public class AddStudentFrame extends JDialog {
 
 	private Student newStudent;
 	private OverallGrade studentOverallGrade;
+	private OverallGrade overallGradeScheme;
 	private GradingSchemeGrid gradingSchemeGrid;
 
 	private boolean didSave;
@@ -64,10 +61,7 @@ public class AddStudentFrame extends JDialog {
 	 * Create the dialog.
 	 */
 	public AddStudentFrame(Course currCourse) {
-		OverallGrade overallGradeScheme;
-
-		//TODO: add if-else logic on which overall grade scheme to use. By default we will use the Undergraduate schema
-		overallGradeScheme = currCourse.getCourseUnderGradDefaultGradeScheme();
+		overallGradeScheme = currCourse.getCourseGradDefaultGradeScheme();
 
 		setBounds(100, 100, 1000, 600);
 
@@ -98,30 +92,24 @@ public class AddStudentFrame extends JDialog {
 		emailField.setColumns(10);
 		contentPanel.add(emailField);
 
-		// TODO: update this with a dropdown menu instead.
-		statusField = new JTextField();
-		statusField.setBounds(382, 124, 130, 26);
-		statusField.setColumns(10);
-		contentPanel.add(statusField);
-
-		JLabel lblFirstName = new JLabel("First Name");
-		lblFirstName.setBounds(53, 45, 98, 16);
+		JLabel lblFirstName = new JLabel("First Name (Required)");
+		lblFirstName.setBounds(53, 45, 130, 16);
 		contentPanel.add(lblFirstName);
 
-		lNameLabel = new JLabel("Last Name");
-		lNameLabel.setBounds(382, 45, 81, 16);
+		lNameLabel = new JLabel("Last Name (Required)");
+		lNameLabel.setBounds(382, 45, 130, 16);
 		contentPanel.add(lNameLabel);
 
-		buIdLabel = new JLabel("BU ID");
-		buIdLabel.setBounds(53, 109, 61, 16);
+		buIdLabel = new JLabel("BU ID (Required)");
+		buIdLabel.setBounds(53, 109, 130, 16);
 		contentPanel.add(buIdLabel);
 
-		emailLabel = new JLabel("Email");
-		emailLabel.setBounds(217, 109, 61, 16);
+		emailLabel = new JLabel("Email (Required)");
+		emailLabel.setBounds(217, 109, 130, 16);
 		contentPanel.add(emailLabel);
 
-		statusLabel = new JLabel("Status");
-		statusLabel.setBounds(382, 109, 61, 16);
+		statusLabel = new JLabel("Status (Required)");
+		statusLabel.setBounds(382, 109, 130, 16);
 		contentPanel.add(statusLabel);
 
 		mInitialField = new JTextField();
@@ -129,9 +117,29 @@ public class AddStudentFrame extends JDialog {
 		mInitialField.setColumns(10);
 		contentPanel.add(mInitialField);
 
-		mInitialLabel = new JLabel("Middle Initial");
-		mInitialLabel.setBounds(217, 45, 98, 16);
+		mInitialLabel = new JLabel("Middle Initial (Optional)");
+		mInitialLabel.setBounds(217, 45, 130, 16);
 		contentPanel.add(mInitialLabel);
+		
+		JComboBox gradUndergradDropdown = new JComboBox();
+		gradUndergradDropdown.addItem("Undergraduate");
+		gradUndergradDropdown.addItem("Graduate");
+		
+		//trying to get the grid to dynamiclly generate the grade scheme...need help on how the grid generator actually works
+		//TODO: need Sean's support on this, to get it to work
+		
+//		gradUndergradDropdown.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				if (gradUndergradDropdown.getSelectedItem().equals("Undergraduate")) {
+//					overallGradeScheme = currCourse.getCourseUnderGradDefaultGradeScheme();
+//				}
+//				else {
+//					overallGradeScheme = currCourse.getCourseGradDefaultGradeScheme();
+//				}
+//			}
+//		});
+		gradUndergradDropdown.setBounds(382, 127, 130, 26);
+		contentPanel.add(gradUndergradDropdown);
 
 		// Add panel to frame
 		frameConstraints.gridx = 0;
@@ -142,19 +150,41 @@ public class AddStudentFrame extends JDialog {
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-		JButton saveButton = new JButton("Save");
+		JButton saveButton = new JButton("Save and Add");
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Create a new student from the TextFields.
-				if(mInitialField.getText() != null)
-					newStudent = new Student(fNameField.getText(), mInitialField.getText(), lNameField.getText(), buIdField.getText(), emailField.getText());
-				else
-					newStudent = new Student(fNameField.getText(),"", lNameField.getText(), buIdField.getText(), emailField.getText());
-
-				// Construct an OverallGrade from what the professor has entered on the grading scheme grid.
-				studentOverallGrade = gradingSchemeGrid.getOverallGradeFromFields();
-				newStudent.setOverallGrade(studentOverallGrade);
-				System.out.println("overallgrade????" + studentOverallGrade.getOverallGrade());
+				
+				//pulls data into variables to make code easier to read/follow, and to allow for a check of required fields
+				String fName = fNameField.getText();
+				String middleInitial;
+				String lName = lNameField.getText();
+				String buId = buIdField.getText();
+				String email = emailField.getText();
+				String gradUndergrad = (String) gradUndergradDropdown.getSelectedItem();
+				
+				if (fName.equals("")||lName.equals("")||buId.equals("")||email.equals("")||gradUndergradDropdown.getSelectedIndex()==-1) {
+					JOptionPane.showMessageDialog(null, "Please make sure all required fields are filled!");
+					return;
+				}
+				
+				//sets middle initial, if it is not specified
+				if (mInitialField.getText() == null) {
+					middleInitial = "";
+				}
+				else {
+					middleInitial = mInitialField.getText();
+				}
+								
+				//creates undergraduate or graduate students, and creates copies of default grading schemes
+				if (gradUndergrad.equals("Undergraduate")) {
+					studentOverallGrade = gradingSchemeGrid.getOverallGradeFromFields();
+					newStudent = new UndergraduateStudent(fName, middleInitial, lName, buId, email, gradUndergrad, studentOverallGrade);
+				}
+				else {
+					studentOverallGrade = gradingSchemeGrid.getOverallGradeFromFields();
+					newStudent = new GraduateStudent(fName, middleInitial, lName, buId, email, gradUndergrad, studentOverallGrade);
+				}
 
 				// Add the student to the course.
 				currCourse.addActiveStudents(newStudent);
@@ -173,6 +203,8 @@ public class AddStudentFrame extends JDialog {
 		});
 		cancelButton.setActionCommand("Cancel");
 		buttonPane.add(cancelButton);
+		
+		//TODO: Need Sean's help in figuring out how to make this dynamiclly display the overall grade scheme based on the dropdown
 
 		// ======================================
 		// Build Grading Scheme Grid Layout
@@ -181,6 +213,7 @@ public class AddStudentFrame extends JDialog {
 		gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.ADD_STUDENT);
 		JScrollPane gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
 		contentPanel.add(gradingSchemeScrollPane);
+
 	}
 
 	public boolean didSave() {

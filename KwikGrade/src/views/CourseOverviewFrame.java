@@ -30,7 +30,7 @@ public class CourseOverviewFrame extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTable studentDisplayTable;
 	private DefaultTableModel studentTableModel = new DefaultTableModel();
-	private DefaultTableModel statsTableModel;
+	private DefaultTableModel statsTableModel = new DefaultTableModel();
 	private Course managedCourse;
 
 	private JTable kwikStatsTable;
@@ -54,7 +54,9 @@ public class CourseOverviewFrame extends JDialog {
 	}
 	
 	
-	
+	//so this broke. I dont know how to get it to refresh, cause when you add new grades, it somehow adds a new table below the current table
+	//i tried doing statsTableModel = new DefaultTableModel() but that didnt work, it left the table blank
+	//TODO: fix this
 	public DefaultTableModel displayKwikStats(Course course) {
 		statsTableModel.addRow(new Object[] {"Mean"});
 		statsTableModel.addRow(new Object[] {course.calcMean()});
@@ -94,10 +96,6 @@ public class CourseOverviewFrame extends JDialog {
 		studentDisplayTable.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		studentDisplayTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
-
-		statsTableModel = new DefaultTableModel();
-		Object[] statsTableTitle = {"Kwikstats"};
-		statsTableModel.setColumnIdentifiers(statsTableTitle);
 
 		kwikStatsTable = new JTable();
 		kwikStatsTable.setGridColor(Color.BLACK); // set lines to black for Mac

@@ -9,11 +9,6 @@ public class SubCategory implements Serializable {
 	double pointsGained;
 	double totalPoints;
 
-	// TODO: Get rid of this empty constructor once CourseCategory can properly instantiate SubCategory with parameters
-	public SubCategory() {
-
-	}
-
 	public SubCategory(String name) {
 		this.name = name;
 	}

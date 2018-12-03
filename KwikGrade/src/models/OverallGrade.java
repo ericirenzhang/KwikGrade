@@ -62,8 +62,7 @@ public class OverallGrade implements Serializable {
 	}
 	
 	//this makes a copy of the overall grade object with a new object, so the references are not the same
-	//TODO: This is ugly as hell. Only needed to get it to work to support a deadline, but will be cleaned up
-	//TODO: need to get whoever reads this some beer....for code beer goggles
+	//Actually I think this is OK...I did some googling, basically only way to make a new object is to make a NEW one, then just grab attributes from the old one
 	public static OverallGrade copyOverallGrade(OverallGrade overallGradeObj) {
 		double overallGradeNew = overallGradeObj.getOverallGrade();
 		ArrayList<CourseCategory> newCategoryList = new ArrayList<CourseCategory>();
