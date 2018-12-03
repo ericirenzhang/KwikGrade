@@ -178,11 +178,11 @@ public class AddStudentFrame extends JDialog {
 								
 				//creates undergraduate or graduate students, and creates copies of default grading schemes
 				if (gradUndergrad.equals("Undergraduate")) {
-					studentOverallGrade = studentOverallGrade.copyOverallGrade(currCourse.getCourseUnderGradDefaultGradeScheme());
+					studentOverallGrade = gradingSchemeGrid.getOverallGradeFromFields();
 					newStudent = new UndergraduateStudent(fName, middleInitial, lName, buId, email, gradUndergrad, studentOverallGrade);
 				}
 				else {
-					studentOverallGrade = studentOverallGrade.copyOverallGrade(currCourse.getCourseGradDefaultGradeScheme());
+					studentOverallGrade = gradingSchemeGrid.getOverallGradeFromFields();
 					newStudent = new GraduateStudent(fName, middleInitial, lName, buId, email, gradUndergrad, studentOverallGrade);
 				}
 
