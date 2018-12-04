@@ -352,7 +352,11 @@ public class AddGradeFrame extends JDialog {
 							double studentPoints = togglePoints(Double.parseDouble(String.valueOf(studentGradeTable.getValueAt(gradeAddIndex, 1))), totalAssignValue, pointsGained);
 							OverallGrade studentOverallGrade = studentList.get(studentIndex).getOverallGrade();
 							studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, studentPoints, totalAssignValue));
+							
+							//function that balances the assignment weights
+							studentOverallGrade.balanceAssignWeights();
 							studentOverallGrade.updateOverallGrade();
+							
 						}
 
 						managedCourse.setActiveStudents(studentList);

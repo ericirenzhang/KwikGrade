@@ -9,11 +9,6 @@ public class CourseCategory implements Serializable {
 	private double categoryFinalWeightedScore;
 	private ArrayList<SubCategory> subCategoryList;
 
-	// TODO: delete this empty constructor when we can properly instantiate CourseCategory
-	public CourseCategory() {
-
-	}
-
 	public CourseCategory(String name, double weight, ArrayList<SubCategory> subCategoryList) {
 		this.name = name;
 		this.weight = weight;
@@ -27,6 +22,18 @@ public class CourseCategory implements Serializable {
 		this.subCategoryList = new ArrayList<SubCategory>();
 	}
 
+	//function that balances the assignment weights
+	public void balanceWeightSubcategory() {
+		int subCatSize = this.subCategoryList.size();
+		double gradeWeight = 0.0;
+		if(subCatSize != 0) {
+			gradeWeight = 1/subCatSize;
+		}
+		for(int i = 0; i < subCatSize; i++) {
+			subCategoryList.get(i).setWeight(gradeWeight);
+		}
+	}
+	
 	public void addSubCategory(SubCategory subCategory) {
 		this.subCategoryList.add(subCategory);
 		this.updateCategoryFinalWeightedScore();
