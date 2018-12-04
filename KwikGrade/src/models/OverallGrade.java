@@ -39,6 +39,12 @@ public class OverallGrade implements Serializable {
 		this.categoryList.add(courseCategory);
 		this.updateOverallGrade();
 	}
+	
+	public void balanceAssignWeights() {
+		for(int i = 0; i < this.categoryList.size(); i++) {
+			this.categoryList.get(i).balanceWeightSubcategory();
+		}
+	}
 
 	public void updateOverallGrade() {
 		this.overallGrade = 0;
