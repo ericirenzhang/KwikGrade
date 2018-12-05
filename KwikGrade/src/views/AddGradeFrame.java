@@ -50,7 +50,6 @@ public class AddGradeFrame extends JDialog {
 
 	private OverallGrade ugOverallGrade;
 	private OverallGrade gradOverallGrade;
-	private static Course managedCourse;
 	private boolean pointsGained;
 	
 	private String assignName;
@@ -164,7 +163,6 @@ public class AddGradeFrame extends JDialog {
 	 * Create the dialog.
 	 */
 	public AddGradeFrame(Course managedCourse) {
-		this.managedCourse = managedCourse;
 		createPointerArray(managedCourse);
 		ugOverallGrade = managedCourse.getCourseUnderGradDefaultGradeScheme();
 		gradOverallGrade = managedCourse.getCourseGradDefaultGradeScheme();
@@ -328,11 +326,11 @@ public class AddGradeFrame extends JDialog {
 							JOptionPane.showMessageDialog(null, "Select either Points Gained or Points Lost!");
 							return;
 						}
-						
-						
+
+						int categoryIndex = 0;
 						for(int gradeAddIndex = 0; gradeAddIndex < studentGradeTable.getRowCount(); gradeAddIndex++) {
 							int studentIndex = gradeAddIndex;
-							int categoryIndex = 0;
+
 							
 							if (gradeSchemeDropdown.getSelectedIndex() == 1) {
 								studentIndex = ugLocationPointer.get(gradeAddIndex);
@@ -356,9 +354,19 @@ public class AddGradeFrame extends JDialog {
 							//function that balances the assignment weights
 							studentOverallGrade.balanceAssignWeights();
 							studentOverallGrade.updateOverallGrade();
-							
 						}
 
+						// TODO: make sure overallgrade object from this frame gets saved back
+						if (gradeSchemeDropdown.getSelectedIndex() == 1) {
+							managedCourse.getCourseUnderGradDefaultGradeScheme().getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, 0, totalAssignValue));
+						}
+						else if (gradeSchemeDropdown.getSelectedIndex() == 2) {
+							managedCourse.getCourseGradDefaultGradeScheme().getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, 0, totalAssignValue));
+						} else {
+							// Otherwise, "All students" was selected, so update both undergraduate and graduate schema
+							managedCourse.getCourseUnderGradDefaultGradeScheme().getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, 0, totalAssignValue));
+							managedCourse.getCourseGradDefaultGradeScheme().getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, 0, totalAssignValue));
+						}
 						managedCourse.setActiveStudents(studentList);
 						FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
 						FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
@@ -383,7 +391,7 @@ public class AddGradeFrame extends JDialog {
 		}
 	}
 
-	public Course getManagedCourse() {
-		return this.managedCourse;
-	}
+//	public Course getManagedCourse() {
+//		return this.managedCourse;
+//	}
 }

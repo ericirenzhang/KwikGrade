@@ -61,7 +61,7 @@ public class AddStudentFrame extends JDialog {
 	 * Create the dialog.
 	 */
 	public AddStudentFrame(Course currCourse) {
-		overallGradeScheme = currCourse.getCourseGradDefaultGradeScheme();
+		overallGradeScheme = currCourse.getCourseUnderGradDefaultGradeScheme();
 
 		setBounds(100, 100, 1000, 600);
 

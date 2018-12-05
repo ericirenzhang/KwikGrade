@@ -62,7 +62,6 @@ public class Course implements Serializable {
 	//==========================
 	// Calculates Advanced Stats
 	//==========================
-	
 	public double calcMean() {
 		if(activeStudents.size() == 0) {
 			return 0;

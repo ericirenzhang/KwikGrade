@@ -104,7 +104,6 @@ public class CourseOverviewFrame extends JDialog {
 		//===================================
 		//Creating and Displaying buttons
 		//===================================
-		
 		JButton addStudentButton = new JButton("Add Student");
 		addStudentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -168,7 +167,7 @@ public class CourseOverviewFrame extends JDialog {
 				addGrade.setModal(true);
 				addGrade.setVisible(true);
 
-				setManagedCourse(addGrade.getManagedCourse());
+//				setManagedCourse(addGrade.getManagedCourse());
 				studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
 				updateStatsModel(managedCourse, statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);

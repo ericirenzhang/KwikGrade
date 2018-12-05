@@ -107,12 +107,12 @@ public class GradingSchemeGrid {
             appendCategoryColumn(currCategory);
 
             // TODO: delete this once we're able to have SubCategories and test this
-            if(this.gradingSchemeType == GradingSchemeType.ADD_STUDENT) {
-                SubCategory tmpSubCategory = new SubCategory(currCategory.getName() + "1", 0.5, 40.0, 50.0);
-                currCategory.addSubCategory(tmpSubCategory);
-                tmpSubCategory = new SubCategory(currCategory.getName() + "2", 0.5, 40.0, 50.0);
-                currCategory.addSubCategory(tmpSubCategory);
-            }
+//            if(this.gradingSchemeType == GradingSchemeType.ADD_STUDENT) {
+//                SubCategory tmpSubCategory = new SubCategory(currCategory.getName() + "1", 0.5, 40.0, 50.0);
+//                currCategory.addSubCategory(tmpSubCategory);
+//                tmpSubCategory = new SubCategory(currCategory.getName() + "2", 0.5, 40.0, 50.0);
+//                currCategory.addSubCategory(tmpSubCategory);
+//            }
 
 
             for (int subCategoryIndex = 0; subCategoryIndex < currCategory.getSubCategoryList().size(); subCategoryIndex++) {
@@ -121,6 +121,8 @@ public class GradingSchemeGrid {
                 appendSubCategoryColumn(currSubCategory);
             }
         }
+
+        rerenderGradeValues();
 
         // Add everything we just built into a JScrollPane.
         JScrollPane scrollPane = new JScrollPane(parentPanel);
@@ -252,7 +254,11 @@ public class GradingSchemeGrid {
             JPanel currPanel = schemeGrid.get(i).get(lastColumnIndex);
 
             String currText = rowTexts[i];
-            currPanel.add(new JLabel(currText));
+            JLabel textLabel = new JLabel(currText);
+            Font font = textLabel.getFont();
+            Font boldFont = new Font(font.getFontName(), Font.BOLD, 12);
+            textLabel.setFont(boldFont);
+            currPanel.add(textLabel);
         }
     }
 
@@ -282,7 +288,7 @@ public class GradingSchemeGrid {
                 } else if (i == 1) {
                     currPanel.setBackground(DARK_GRAY_COLOR);
                 } else if (i == 2) {
-                    currPanel.setBackground(LIGHT_BLUE_COLOR);
+                    currPanel.setBackground(Color.WHITE);
                 } else if (i == 3) {
                     currPanel.setBackground(LIGHT_GREEN_COLOR);
                 } else {
