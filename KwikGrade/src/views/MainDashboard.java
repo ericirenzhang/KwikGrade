@@ -68,6 +68,9 @@ public class MainDashboard extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
+		// =====================
+		// Active and closed course tables
+		// =====================
 		// Adding courses
 		JLabel activeCoursesLabel = new JLabel("Active Courses");
 		activeCoursesLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -91,12 +94,50 @@ public class MainDashboard extends JFrame {
 
 		// Loads courses upon verifyAndOpenDashboard for display in dynamic list
 		activeCourseDisplayList.setModel(loadCourseList(kwikGrade.getActiveCourses()));
+		
+		// Closing courses
+		JLabel closedCourseLabel = new JLabel("Closed Courses");
+		closedCourseLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		closedCourseLabel.setBounds(12, 281, 128, 42);
+		contentPane.add(closedCourseLabel);
+
+		JScrollPane closedCourseScrollPane = new JScrollPane();
+		closedCourseScrollPane.setBounds(12, 334, 456, 133);
+		contentPane.add(closedCourseScrollPane);
+
+		closedCourseDisplayList = new JList();
+		closedCourseScrollPane.setViewportView(closedCourseDisplayList);
+		closedCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		closedCourseDisplayList.setModel(loadCourseList(kwikGrade.getClosedCourses()));
+
+		// =====================
+		// Buttons
+		// =====================
+		JButton openCourseButton = new JButton("Open Course");
+		openCourseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int manageIndex = activeCourseDisplayList.getSelectedIndex();
+				System.out.println(manageIndex);
+				try {
+					CourseOverviewFrame courseOverview = new CourseOverviewFrame(kwikGrade, kwikGrade.getActiveCourses().get(manageIndex));
+					courseOverview.setModal(true);
+					courseOverview.setVisible(true);
+				}
+				catch (Exception eManage) {
+					JOptionPane.showMessageDialog(null, "Something went wrong with opening this course. Please contact the engineers!");
+				}
+
+			}
+		});
+		openCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		openCourseButton.setBounds(478, 20, 166, 71);
+		contentPane.add(openCourseButton);
 
 		JButton addCourseButton = new JButton("Add Course");
 		addCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		addCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+
 				CreateCourseFrame createCourse = new CreateCourseFrame(kwikGrade);
 				createCourse.setModal(true);
 				createCourse.setVisible(true);
@@ -113,28 +154,6 @@ public class MainDashboard extends JFrame {
 		});
 		addCourseButton.setBounds(478, 102, 166, 71);
 		contentPane.add(addCourseButton);
-		
-		// Closing courses
-		JLabel closedCourseLabel = new JLabel("Closed Courses");
-		closedCourseLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		closedCourseLabel.setBounds(12, 281, 128, 42);
-		contentPane.add(closedCourseLabel);
-
-		JScrollPane closedCourseScrollPane = new JScrollPane();
-		closedCourseScrollPane.setBounds(12, 334, 456, 133);
-		contentPane.add(closedCourseScrollPane);
-
-		closedCourseDisplayList = new JList();
-		closedCourseDisplayList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		closedCourseDisplayList.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) {
-				activeCourseDisplayList.clearSelection();
-			}
-		});
-		closedCourseScrollPane.setViewportView(closedCourseDisplayList);
-		closedCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		System.out.println(kwikGrade.getClosedCourses());
-		closedCourseDisplayList.setModel(loadCourseList(kwikGrade.getClosedCourses()));
 
 		JButton closeCourseButton = new JButton("Close Course");
 		closeCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -148,13 +167,32 @@ public class MainDashboard extends JFrame {
 				}
 				catch (Exception eClose) {
 					//exception for if an invalid course is selected
-					JOptionPane.showMessageDialog(null, "You have not selected a course!");
+					JOptionPane.showMessageDialog(null, "Something went wrong with closing this course, please contact the engineers!");
 				}
 				updateCourseDisplayModel();
 			}
 		});
 		closeCourseButton.setBounds(478, 186, 166, 71);
 		contentPane.add(closeCourseButton);
+
+		// Course deletion, can only be done to active courses
+		JButton deleteCourseButton = new JButton("Delete Course");
+		deleteCourseButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int deleteIndex = activeCourseDisplayList.getSelectedIndex();
+				try {
+					kwikGrade.deleteCourse(deleteIndex);
+				}
+				catch (Exception eDelete) {
+					JOptionPane.showMessageDialog(null, "Something went wrong with deleting this course, please contact the engineers!");
+				}
+				FileManager.saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
+				updateCourseDisplayModel();
+			}
+		});
+		deleteCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		deleteCourseButton.setBounds(478, 268, 166, 71);
+		contentPane.add(deleteCourseButton);
 
 		// Course saving
 		JButton saveCourseButton = new JButton("Save");
@@ -168,7 +206,7 @@ public class MainDashboard extends JFrame {
 
 		saveCourseButton.setBounds(480, 380, 166, 32);
 		contentPane.add(saveCourseButton);
-    
+
 		// Loads courses upon verifyAndOpenDashboard with button, for display in dynamic list
 		JButton refreshCourseButton = new JButton("Refresh");
 		refreshCourseButton.addActionListener(new ActionListener() {
@@ -178,82 +216,7 @@ public class MainDashboard extends JFrame {
 		});
 		refreshCourseButton.setBounds(480, 425, 166, 32);
 		contentPane.add(refreshCourseButton);
-		
-		// Course deletion, can only be done to active courses
-		JButton deleteCourseButton = new JButton("Delete Course");
-		deleteCourseButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				int deleteIndex = activeCourseDisplayList.getSelectedIndex();
-				try {
-					kwikGrade.deleteCourse(deleteIndex);
-				}
-				catch (Exception eDelete) {
-					JOptionPane.showMessageDialog(null, "No course is selected!");
-				}
-				FileManager.saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
-				updateCourseDisplayModel();
-			}
-		});
-		deleteCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		deleteCourseButton.setBounds(478, 268, 166, 71);
-		contentPane.add(deleteCourseButton);
-		
-		JButton openCourseButton = new JButton("Open Course");
-		openCourseButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				int manageIndex;
-				Course selectedCourse;
-				//determines if a closed course is selected or an active
-				if (closedCourseDisplayList.getSelectedIndex() < 0 && activeCourseDisplayList.getSelectedIndex() < 0 ) {
-					JOptionPane.showMessageDialog(null, "No course is selected!");
-					return;
-				}
-				else if (closedCourseDisplayList.getSelectedIndex() <= activeCourseDisplayList.getSelectedIndex()) {
-					manageIndex = activeCourseDisplayList.getSelectedIndex();
-					selectedCourse = kwikGrade.getActiveCourses().get(manageIndex);
-					
-					try {
-						CourseOverviewFrame courseOverview = new CourseOverviewFrame(kwikGrade, selectedCourse);
-						courseOverview.setModal(true);
-						courseOverview.setVisible(true);
-					}
-					catch (Exception eManage) {
-						JOptionPane.showMessageDialog(null, "No course is selected!");
-					}
-					
-				}
-				else {
-					manageIndex = closedCourseDisplayList.getSelectedIndex();
-					selectedCourse = kwikGrade.getClosedCourses().get(manageIndex);
-					
-					try {
-						ClosedCourseOverviewFrame courseOverview = new ClosedCourseOverviewFrame(kwikGrade, selectedCourse);
-						courseOverview.setModal(true);
-						courseOverview.setVisible(true);
-					}
-					catch (Exception eManage) {
-						JOptionPane.showMessageDialog(null, "No course is selected!");
-					}
-					
-				}
 
-				System.out.println(manageIndex);
-				
-//				try {
-//					CourseOverviewFrame courseOverview = new CourseOverviewFrame(kwikGrade, selectedCourse);
-//					courseOverview.setModal(true);
-//					courseOverview.setVisible(true);
-//				}
-//				catch (Exception eManage) {
-//					JOptionPane.showMessageDialog(null, "No course is selected!");
-//				}
-				
-			}
-		});
-		openCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		openCourseButton.setBounds(478, 20, 166, 71);
-		contentPane.add(openCourseButton);
-		
 		// Double click on a course to open
 		activeCourseDisplayList.addMouseListener(new MouseAdapter(){
  		    @Override

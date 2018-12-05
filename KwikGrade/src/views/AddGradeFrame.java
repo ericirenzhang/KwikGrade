@@ -50,7 +50,6 @@ public class AddGradeFrame extends JDialog {
 
 	private OverallGrade ugOverallGrade;
 	private OverallGrade gradOverallGrade;
-	private static Course managedCourse;
 	private boolean pointsGained;
 	
 	private String assignName;
@@ -65,8 +64,7 @@ public class AddGradeFrame extends JDialog {
 	private DefaultComboBoxModel catNameDropdownModel; 
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JTextField assignValueText;
-	private double totalAssignValue;
-	
+
 	//iterates through and creates a tablemodel of all students
 	public DefaultTableModel displayAllStudents(ArrayList<Student> Students) {
 		addGradeTableModel = new DefaultTableModel();
@@ -164,7 +162,6 @@ public class AddGradeFrame extends JDialog {
 	 * Create the dialog.
 	 */
 	public AddGradeFrame(Course managedCourse) {
-		this.managedCourse = managedCourse;
 		createPointerArray(managedCourse);
 		ugOverallGrade = managedCourse.getCourseUnderGradDefaultGradeScheme();
 		gradOverallGrade = managedCourse.getCourseGradDefaultGradeScheme();
@@ -304,7 +301,7 @@ public class AddGradeFrame extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						assignName = assignNameText.getText();
-						totalAssignValue = Double.parseDouble(String.valueOf(assignValueText.getText()));
+						double totalAssignValue = Double.parseDouble(String.valueOf(assignValueText.getText()));
 						
 						//checks if assignment name is empty
 						if(assignName.equals("")) {
@@ -328,11 +325,12 @@ public class AddGradeFrame extends JDialog {
 							JOptionPane.showMessageDialog(null, "Select either Points Gained or Points Lost!");
 							return;
 						}
-						
-						
+
 						for(int gradeAddIndex = 0; gradeAddIndex < studentGradeTable.getRowCount(); gradeAddIndex++) {
-							int studentIndex = gradeAddIndex;
 							int categoryIndex = 0;
+
+							int studentIndex = gradeAddIndex;
+
 							
 							if (gradeSchemeDropdown.getSelectedIndex() == 1) {
 								studentIndex = ugLocationPointer.get(gradeAddIndex);
@@ -356,9 +354,19 @@ public class AddGradeFrame extends JDialog {
 							//function that balances the assignment weights
 							studentOverallGrade.balanceAssignWeights();
 							studentOverallGrade.updateOverallGrade();
-							
 						}
 
+						// Updates the KwikGrade object's copy of the OverallGrade so it also has the updated scheme to be used for other frames.
+						if (gradeSchemeDropdown.getSelectedIndex() == 1) {
+							updateKwikGradeScheme(catNameDropdown, ugOverallGrade, totalAssignValue);
+						}
+						else if (gradeSchemeDropdown.getSelectedIndex() == 2) {
+							updateKwikGradeScheme(catNameDropdown, gradOverallGrade, totalAssignValue);
+						} else {
+							// Otherwise, "All students" was selected, so update both undergraduate and graduate schema
+							updateKwikGradeScheme(catNameDropdown, ugOverallGrade, totalAssignValue);
+							updateKwikGradeScheme(catNameDropdown, gradOverallGrade, totalAssignValue);
+						}
 						managedCourse.setActiveStudents(studentList);
 						FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
 						FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
@@ -383,7 +391,24 @@ public class AddGradeFrame extends JDialog {
 		}
 	}
 
-	public Course getManagedCourse() {
-		return this.managedCourse;
+	/**
+	 * Given the dropdown object and the KwikGrade OverallGrade object, modifies the OverallGrade object scheme to be handed
+	 * back to the previous frame.
+	 * @param catNameDropdown
+	 * @param overallGradeScheme
+	 */
+	private void updateKwikGradeScheme(JComboBox catNameDropdown, OverallGrade overallGradeScheme, Double totalAssignValue) {
+		int categoryIndex = 0;
+		ArrayList<CourseCategory> currentStudentCourseCat = overallGradeScheme.getCourseCategoryList();
+
+		for (int courseCatIndex = 0; courseCatIndex < currentStudentCourseCat.size(); courseCatIndex++) {
+			if (currentStudentCourseCat.get(courseCatIndex).getName().equals(catNameDropdown.getSelectedItem())) {
+				categoryIndex = courseCatIndex;
+			}
+		}
+
+		overallGradeScheme.getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, 0, totalAssignValue));
+		overallGradeScheme.balanceAssignWeights();
+		overallGradeScheme.updateOverallGrade();
 	}
 }
