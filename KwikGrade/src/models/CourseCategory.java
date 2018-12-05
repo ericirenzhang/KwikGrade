@@ -27,7 +27,7 @@ public class CourseCategory implements Serializable {
 		int subCatSize = this.subCategoryList.size();
 		double gradeWeight = 0.0;
 		if(subCatSize != 0) {
-			gradeWeight = 1/subCatSize;
+			gradeWeight = 1.0/subCatSize;
 		}
 		for(int i = 0; i < subCatSize; i++) {
 			subCategoryList.get(i).setWeight(gradeWeight);

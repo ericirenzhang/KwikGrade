@@ -125,7 +125,8 @@ public class GradingSchemeGrid {
         rerenderGradeValues();
 
         // Add everything we just built into a JScrollPane.
-        JScrollPane scrollPane = new JScrollPane(parentPanel);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setViewportView(parentPanel);
         scrollPane.setBounds(75, 200, GRADING_SCHEME_WIDTH, GRADING_SCHEME_HEIGHT);
 
         return scrollPane;
@@ -451,6 +452,11 @@ public class GradingSchemeGrid {
                 }
             }
         }
+    }
+
+    public void setOverallGrade(OverallGrade overallGradeScheme) {
+        this.initialGradeScheme = overallGradeScheme;
+        this.modifiedGradeScheme = overallGradeScheme;
     }
 
 
