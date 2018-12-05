@@ -154,7 +154,7 @@ public class CreateFromNewFrame extends JDialog {
 		addTableRow(gradTableModel, gradCourseCategoryTable);
 
 		// Set up Category table columns
-		Object[] gradeSchemeTableTitle = {"Category Name", "Weight (e.g. 0.5)"};
+		Object[] gradeSchemeTableTitle = {"Category Name", "Weight in % (i.e. 50)"};
 		ugTableModel.setColumnIdentifiers(gradeSchemeTableTitle);
 		ugCourseCategoryTable.setModel(ugTableModel);
 		gradTableModel.setColumnIdentifiers(gradeSchemeTableTitle);
@@ -270,7 +270,7 @@ public class CreateFromNewFrame extends JDialog {
 				for(int ugIndex = 0; ugIndex < ugTableModelRows; ugIndex++) {
 					try {
 					String ugCategoryName = ugCourseCategoryTable.getValueAt(ugIndex, 0).toString();
-					double ugCategoryWeight = Double.parseDouble(String.valueOf(ugCourseCategoryTable.getValueAt(ugIndex, 1)));
+					double ugCategoryWeight = (Double.parseDouble(String.valueOf(ugCourseCategoryTable.getValueAt(ugIndex, 1)))/100);
 					ugOverallGrade.addCourseCategory(ugCategoryName, ugCategoryWeight);
 					}
 					//tried to implement logic for a blank table...does not work...need to rethink
@@ -285,7 +285,7 @@ public class CreateFromNewFrame extends JDialog {
 				for(int gradIndex = 0; gradIndex < gradTableModelRows; gradIndex++) {
 					try {
 					String gradCategoryName = gradCourseCategoryTable.getValueAt(gradIndex, 0).toString();
-					double gradCategoryWeight = Double.parseDouble(String.valueOf(gradCourseCategoryTable.getValueAt(gradIndex, 1)));
+					double gradCategoryWeight = (Double.parseDouble(String.valueOf(gradCourseCategoryTable.getValueAt(gradIndex, 1)))/100);
 					gradOverallGrade.addCourseCategory(gradCategoryName, gradCategoryWeight);
 					}
 					//tried to implement logic for a blank table...does not work...need to rethink
