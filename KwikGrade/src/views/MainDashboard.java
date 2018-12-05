@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.ListSelectionModel;
 
 public class MainDashboard extends JFrame {
 	private static final String SERIALIZED_FILE_NAME_ACTIVE = "serializedActiveCourseSaveData.ser";
@@ -80,6 +83,12 @@ public class MainDashboard extends JFrame {
 
 		// Jlist for dynamic display of courses
 		activeCourseDisplayList = new JList();
+		activeCourseDisplayList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		activeCourseDisplayList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent arg0) {
+				closedCourseDisplayList.clearSelection();
+			}
+		});
 		activeCourseScrollPane.setViewportView(activeCourseDisplayList);
 		activeCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
@@ -153,6 +162,8 @@ public class MainDashboard extends JFrame {
 				int closeIndex = activeCourseDisplayList.getSelectedIndex();
 				try {
 					kwikGrade.closeCourse(closeIndex);
+					FileManager.saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
+					FileManager.saveFile(kwikGrade.getClosedCourses(), SERIALIZED_FILE_NAME_CLOSED);
 				}
 				catch (Exception eClose) {
 					//exception for if an invalid course is selected
@@ -206,7 +217,6 @@ public class MainDashboard extends JFrame {
 		refreshCourseButton.setBounds(480, 425, 166, 32);
 		contentPane.add(refreshCourseButton);
 
-
 		// Double click on a course to open
 		activeCourseDisplayList.addMouseListener(new MouseAdapter(){
  		    @Override
@@ -216,6 +226,15 @@ public class MainDashboard extends JFrame {
  		        }
  		    }
  		});
+		
+		closedCourseDisplayList.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (arg0.getClickCount()==2) {
+					openCourseButton.doClick();
+				}
+			}
+		});
 	}
 
 	public void updateCourseDisplayModel() {

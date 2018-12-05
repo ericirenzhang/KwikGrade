@@ -63,6 +63,10 @@ public class CourseOverviewFrame extends JDialog {
 	 */
 	public CourseOverviewFrame(KwikGrade kwikGrade, Course managedCourse) {
 		this.managedCourse = managedCourse;
+		
+		//Sets course title for title bar
+		String newTitle = managedCourse.getCourseNum()+" "+managedCourse.getCourseTerm()+" "+managedCourse.getCourseTitle();
+		setTitle(newTitle);
 
 		setBounds(100, 100, 746, 586);
 		getContentPane().setLayout(new BorderLayout());
