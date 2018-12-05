@@ -141,10 +141,6 @@ public class CourseOverviewFrame extends JDialog {
 					studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
 					updateStatsModel(managedCourse, statsTableModel);
 					kwikStatsTable.setModel(statsTableModel);
-
-					if(manageStudentFrame.didSave()) {
-						FileManager.saveFile(kwikGrade.getActiveCourses(), MainDashboard.getActiveSaveFileName());
-					}
 				}
 
 			}
@@ -171,7 +167,6 @@ public class CourseOverviewFrame extends JDialog {
 				addGrade.setModal(true);
 				addGrade.setVisible(true);
 
-//				setManagedCourse(addGrade.getManagedCourse());
 				studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
 				updateStatsModel(managedCourse, statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
@@ -188,6 +183,8 @@ public class CourseOverviewFrame extends JDialog {
 				ManageCategoriesFrame manageCategoriesFrame = new ManageCategoriesFrame(managedCourse.getCourseUnderGradDefaultGradeScheme());
 				manageCategoriesFrame.setModal(true);
 				manageCategoriesFrame.setVisible(true);
+
+				studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
 				updateStatsModel(managedCourse, statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}

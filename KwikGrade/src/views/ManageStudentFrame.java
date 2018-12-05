@@ -1,5 +1,6 @@
 package views;
 
+import helpers.FileManager;
 import models.*;
 import views.components.GradingSchemeGrid;
 
@@ -10,56 +11,50 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class ManageStudentFrame extends JDialog {
-	private static int GRADING_SCHEME_ROW_COUNT = 5;
-	private static int GRADING_SCHEME_WIDTH = 900;
-	private static int GRADING_SCHEME_HEIGHT = 300;
-	private static int GRADING_SCHEME_COL_OFFSET = 2;
-
-	private static Color LIGHT_GRAY_COLOR = new Color(0xF0F0F0);
-	private static Color DARK_GRAY_COLOR = new Color(0xE0E0E0);
-	private static Color LIGHT_GREEN_COLOR = new Color(0x97FFBF);
-
 	private final JPanel contentPanel = new JPanel();
 	private JTextField fNameField;
 	private JTextField lNameField;
 	private JTextField buIdField;
 	private JTextField emailField;
-	private JTextField statusField;
 	private JTextField mInitialField;
 	private JLabel lNameLabel;
 	private JLabel buIdLabel;
 	private JLabel emailLabel;
 	private JLabel statusLabel;
 	private JLabel mInitialLabel;
-	private JButton saveButton;
-	private JButton backButton;
 
-	private Student newStudent;
 	private GradingSchemeGrid gradingSchemeGrid;
-
-	private boolean didSave;
+	private OverallGrade managedOverallGradeScheme;
+	private JScrollPane gradingSchemeScrollPane;
 
 	/**
 	 * Create the dialog.
 	 */
 	public ManageStudentFrame(Student managedStudent, Course managedCourse) {
-		OverallGrade overallGradeScheme;
-
 		//TODO: add if-else logic on which overall grade scheme to use. By default we will use the Undergraduate schema
-		overallGradeScheme = managedCourse.getCourseUnderGradDefaultGradeScheme();
+		managedOverallGradeScheme = managedStudent.getOverallGradeObject();
 
 		setBounds(100, 100, 1000, 600);
+
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		
-//		GridBagConstraints frameConstraints = new GridBagConstraints();
-		
+
+		GridBagConstraints frameConstraints = new GridBagConstraints();
+
+		// ===========================
+		// Student information/Fields
+		// ===========================
 		fNameField = new JTextField(managedStudent.getfName());
 		fNameField.setBounds(53, 60, 130, 26);
 		contentPanel.add(fNameField);
 		fNameField.setColumns(10);
+
+		mInitialField = new JTextField(managedStudent.getMiddleInitial());
+		mInitialField.setBounds(217, 60, 130, 26);
+		mInitialField.setColumns(10);
+		contentPanel.add(mInitialField);
 
 		lNameField = new JTextField(managedStudent.getlName());
 		lNameField.setBounds(382, 60, 130, 26);
@@ -76,75 +71,110 @@ public class ManageStudentFrame extends JDialog {
 		emailField.setColumns(10);
 		contentPanel.add(emailField);
 
-		// TODO: update this with a dropdown menu instead.
-		statusField = new JTextField();
-		statusField.setBounds(382, 124, 130, 26);
-		statusField.setColumns(10);
-		contentPanel.add(statusField);
-
-		JLabel lblFirstName = new JLabel("First Name");
-		lblFirstName.setBounds(53, 45, 98, 16);
+		JLabel lblFirstName = new JLabel("First Name (Required)");
+		lblFirstName.setBounds(53, 45, 130, 16);
 		contentPanel.add(lblFirstName);
 
-		lNameLabel = new JLabel("Last Name");
-		lNameLabel.setBounds(382, 45, 81, 16);
+		lNameLabel = new JLabel("Last Name (Required)");
+		lNameLabel.setBounds(382, 45, 130, 16);
 		contentPanel.add(lNameLabel);
 
-		buIdLabel = new JLabel("BU ID");
-		buIdLabel.setBounds(53, 109, 61, 16);
+		buIdLabel = new JLabel("BU ID (Required)");
+		buIdLabel.setBounds(53, 109, 130, 16);
 		contentPanel.add(buIdLabel);
 
-		emailLabel = new JLabel("Email");
-		emailLabel.setBounds(217, 109, 61, 16);
+		emailLabel = new JLabel("Email (Required)");
+		emailLabel.setBounds(217, 109, 130, 16);
 		contentPanel.add(emailLabel);
 
-		statusLabel = new JLabel("Status");
-		statusLabel.setBounds(382, 109, 61, 16);
+		statusLabel = new JLabel("Status (Required)");
+		statusLabel.setBounds(382, 109, 130, 16);
 		contentPanel.add(statusLabel);
 
-		mInitialField = new JTextField();
-		mInitialField.setBounds(217, 60, 130, 26);
-		mInitialField.setColumns(10);
-		contentPanel.add(mInitialField);
 
-		mInitialLabel = new JLabel("Middle Initial");
-		mInitialLabel.setBounds(217, 45, 98, 16);
+		mInitialLabel = new JLabel("Middle Initial (Optional)");
+		mInitialLabel.setBounds(217, 45, 130, 16);
 		contentPanel.add(mInitialLabel);
 
-		saveButton = new JButton("Save");
-		saveButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				//Student newStudent;
-				if(mInitialField.getText() != null)
-					newStudent = new Student(fNameField.getText(), mInitialField.getText(), lNameField.getText(), buIdField.getText(), emailField.getText());
-				else
-					newStudent = new Student(fNameField.getText(),"", lNameField.getText(), buIdField.getText(), emailField.getText());
+		JComboBox studentStatusDropdown = new JComboBox();
+		studentStatusDropdown.addItem("Undergraduate");
+		studentStatusDropdown.addItem("Graduate");
+		// Dropdown defaults to Undergraduate. If student is graduate, set the dropdown to Graduate instead.
+		if(managedStudent.getStatus().equals("Graduate")) {
+			studentStatusDropdown.setSelectedItem("Graduate");
+		}
 
-				managedCourse.addActiveStudents(newStudent);
-				didSave = true;
+		studentStatusDropdown.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (studentStatusDropdown.getSelectedItem().equals("Undergraduate")) {
+					managedOverallGradeScheme = managedCourse.getCourseUnderGradDefaultGradeScheme();
+				}
+				else {
+					managedOverallGradeScheme = managedCourse.getCourseGradDefaultGradeScheme();
+				}
+				// Rerenders a the grading scheme by removing/adding to the content panel.
+				gradingSchemeGrid = new GradingSchemeGrid(managedOverallGradeScheme);
+				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_STUDENT);
+				contentPanel.remove(gradingSchemeScrollPane);
+				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
+				contentPanel.add(gradingSchemeScrollPane);
+				contentPanel.revalidate();
+				contentPanel.repaint();
 			}
 		});
-		saveButton.setBounds(597, 85, 117, 29);
-		contentPanel.add(saveButton);
 
-		backButton = new JButton("Back");
-		backButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				 //new MainDashboard().setVisible(true); //This actually has to go back to Course Management page
-				dispose();
-			}
-		});
-		backButton.setBounds(597, 124, 117, 29);
-		contentPanel.add(backButton);
+		studentStatusDropdown.setBounds(382, 127, 130, 26);
+		contentPanel.add(studentStatusDropdown);
+
+		// Add panel to frame
+		frameConstraints.gridx = 0;
+		frameConstraints.gridy = 1;
+		frameConstraints.weighty = 1;
 
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-		JButton saveButton = new JButton("Save");
+		JButton saveButton = new JButton("Save and Add");
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO: add save functionality, currently just filler
+				// Create a new student from the TextFields.
+
+				//pulls data into variables to make code easier to read/follow, and to allow for a check of required fields
+				String fName = fNameField.getText();
+				String middleInitial;
+				String lName = lNameField.getText();
+				String buId = buIdField.getText();
+				String email = emailField.getText();
+				String gradUndergradStatus = (String) studentStatusDropdown.getSelectedItem();
+
+				if (fName.equals("")||lName.equals("")||buId.equals("")||email.equals("")||studentStatusDropdown.getSelectedIndex()==-1) {
+					JOptionPane.showMessageDialog(null, "Please make sure all required fields are filled!");
+					return;
+				}
+
+				//sets middle initial, if it is not specified
+				if (mInitialField.getText() == null) {
+					middleInitial = "";
+				}
+				else {
+					middleInitial = mInitialField.getText();
+				}
+
+				// Update this student object. Have to use setters because this is in an inner function call
+				OverallGrade gradeFromFields = gradingSchemeGrid.getOverallGradeFromFields();
+				managedStudent.setfName(fName);
+				managedStudent.setMiddleInitial(middleInitial);
+				managedStudent.setlName(lName);
+				managedStudent.setBuId(buId);
+				managedStudent.setEmail(email);
+				managedStudent.setStatus(gradUndergradStatus);
+				managedStudent.setOverallGrade(gradeFromFields);
+
+				// Save the changes.
+				FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
+				FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
+
 				dispose();
 			}
 		});
@@ -157,20 +187,15 @@ public class ManageStudentFrame extends JDialog {
 				dispose();
 			}
 		});
-
 		cancelButton.setActionCommand("Cancel");
 		buttonPane.add(cancelButton);
 
 		// ======================================
-		// Build Grading Scheme Grid
+		// Build Grading Scheme Grid Layout
 		// ======================================
-		gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
+		gradingSchemeGrid = new GradingSchemeGrid(managedOverallGradeScheme);
 		gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_STUDENT);
-		JScrollPane gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
+		gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
 		contentPanel.add(gradingSchemeScrollPane);
-	}
-
-	public boolean didSave() {
-		return this.didSave;
 	}
 }

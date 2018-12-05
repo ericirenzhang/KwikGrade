@@ -35,6 +35,7 @@ public class GradingSchemeGrid {
     private static int gradingSchemeRowCount;
     private static String[] firstColumnText;
     private static String[] secondColumnText;
+    private boolean hasFinishedRendering;
 
     private OverallGrade initialGradeScheme, modifiedGradeScheme;
     private GradingSchemeType gradingSchemeType;
@@ -90,6 +91,7 @@ public class GradingSchemeGrid {
      * @return JScrollPane containing the entire grading scheme table
      */
     public JScrollPane buildGradingSchemeGrid() {
+        this.hasFinishedRendering = false;
         parentPanel.setBackground(Color.WHITE);
 
         // Append initial header/title columns.
@@ -122,6 +124,8 @@ public class GradingSchemeGrid {
             }
         }
 
+        this.hasFinishedRendering = true;
+
         rerenderGradeValues();
 
         // Add everything we just built into a JScrollPane.
@@ -148,17 +152,19 @@ public class GradingSchemeGrid {
         for(int rowIndex = 0; rowIndex < gradingSchemeRowCount; rowIndex++) {
             JPanel currPanel = schemeGrid.get(rowIndex).get(lastColumnIndex);
             JTextField currTextField = new JTextField();
-            currTextField.addFocusListener(new FocusListener() {
-                @Override
-                public void focusGained(FocusEvent e) {
-
-                }
-
-                @Override
-                public void focusLost(FocusEvent e) {
-                    rerenderGradeValues();
-                }
+            currTextField.getDocument().addDocumentListener(new DocumentListener() {
+                 public void changedUpdate(DocumentEvent e) {
+                 }
+                 public void removeUpdate(DocumentEvent e) {
+                     if(!currTextField.getText().equals("")) {
+                         rerenderGradeValues();
+                     }                 }
+                 public void insertUpdate(DocumentEvent e) {
+                     if(!currTextField.getText().equals("")) {
+                         rerenderGradeValues();
+                     }                 }
             });
+
 
             switch(rowIndex) {
                 case 0:
@@ -207,16 +213,18 @@ public class GradingSchemeGrid {
         for(int rowIndex = 0; rowIndex < gradingSchemeRowCount; rowIndex++) {
             JPanel currPanel = schemeGrid.get(rowIndex).get(lastColumnIndex);
             JTextField currTextField = new JTextField();
-            currTextField.addFocusListener(new FocusListener() {
-                @Override
-                public void focusGained(FocusEvent e) {
-
+            currTextField.getDocument().addDocumentListener(new DocumentListener() {
+                public void changedUpdate(DocumentEvent e) {
                 }
-
-                @Override
-                public void focusLost(FocusEvent e) {
-                    rerenderGradeValues();
+                public void removeUpdate(DocumentEvent e) {
+                    if(!currTextField.getText().equals("")) {
+                        rerenderGradeValues();
+                    }
                 }
+                public void insertUpdate(DocumentEvent e) {
+                    if(!currTextField.getText().equals("")) {
+                        rerenderGradeValues();
+                    }                }
             });
 
             switch(rowIndex) {
@@ -394,6 +402,10 @@ public class GradingSchemeGrid {
      * When the user clicks away from the JTextField, we need to update all the appropriate JLabels.
      */
     public void rerenderGradeValues() {
+        // TODO: refactor this boolean, hacky fix for now in order to use a DocumentListener
+        if(!this.hasFinishedRendering) {
+            return;
+        }
         this.modifiedGradeScheme = getOverallGradeFromFields();
 
         // TODO: add check to avoid doing this in Manage Categories because Manage Categories only has two rows
