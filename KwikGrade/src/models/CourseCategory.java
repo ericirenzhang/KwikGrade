@@ -72,4 +72,8 @@ public class CourseCategory implements Serializable {
 	public void setWeight(double weight){
 		this.weight = weight;
 	}
+	public void setSubCategoryList(ArrayList<SubCategory> subCategoryList) {
+		this.subCategoryList = subCategoryList;
+		this.updateCategoryFinalWeightedScore();
+	}
 }

@@ -10,7 +10,6 @@ public class Student implements Serializable {
 	private String email;
 	protected OverallGrade overallGrade;
 	private String status;
-	// TODO: add OverallGrade objects once implemented
 	// TODO: add comments string as attribute
 	
 	public Student(String fName, String middleInitial, String lName, String buId, String email) {

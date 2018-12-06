@@ -7,6 +7,7 @@ import views.components.GradingSchemeGrid;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -82,17 +83,11 @@ public class ManageCategoriesFrame extends JDialog {
 					return;
 				}
 
-				// TODO: Will need to iterate through all students and give them the new updated OverallGrade schema
-//				if (gradUndergradStatus.equals("Undergraduate")) {
-//					studentOverallGrade = gradingSchemeGrid.getOverallGradeFromFields();
-//					newStudent = new UndergraduateStudent(fName, middleInitial, lName, buId, email, gradUndergradStatus, studentOverallGrade);
-//				}
-//				else {
-//					studentOverallGrade = gradingSchemeGrid.getOverallGradeFromFields();
-//					newStudent = new GraduateStudent(fName, middleInitial, lName, buId, email, gradUndergradStatus, studentOverallGrade);
-//				}
-//				// Add the student to the course.
-//				managedCourse.addActiveStudents(newStudent);
+				OverallGrade overallGradeFromFields;
+				overallGradeFromFields = gradingSchemeGrid.getOverallGradeFromFields();
+
+				// Go through all Students in Course to set their weightings based on TextField inputs.
+				updateStudentAndDefaultOverallGrades(gradUndergradStatus, overallGradeFromFields, managedCourse);
 
 				// Save the changes.
 				FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
@@ -119,6 +114,63 @@ public class ManageCategoriesFrame extends JDialog {
 		gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
 		gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
 		contentPanel.add(gradingSchemeScrollPane);
+	}
+
+	/**
+	 * Iterates through all Students in a Course and updates:
+	 * 	- Each student's OverallGrade object with the new weightings from the TextFields.
+	 * 	- Default ugrad and grad OverallGrade schemes based on what the user wanted to update.
+	 * @param gradUndergradStatus
+	 * @param overallGradeFromFields
+	 * @param managedCourse
+	 */
+	private void updateStudentAndDefaultOverallGrades(String gradUndergradStatus, OverallGrade overallGradeFromFields, Course managedCourse) {
+		// For all students in the class, update their OverallGrade schema with the weighting from this frame
+		ArrayList<Student> students = managedCourse.getActiveStudents();
+		OverallGrade studentOverallGrade = new OverallGrade();
+		for(int studentIndex = 0; studentIndex < students.size(); studentIndex++) {
+			Student currStudent = students.get(studentIndex);
+
+			// Only update the weighting of relevant status students (i.e. if Undergrad selected, only update weightings for Undergrad students).
+			if(currStudent.getStatus().equals(gradUndergradStatus)) {
+				studentOverallGrade = currStudent.getOverallGradeObject();
+
+				// Iterate through all categories and update weights.
+				ArrayList<CourseCategory> studentCourseCategoryList = studentOverallGrade.getCourseCategoryList();
+				for(int courseIndex = 0; courseIndex < studentCourseCategoryList.size(); courseIndex++) {
+					CourseCategory currCategory = studentCourseCategoryList.get(courseIndex);
+
+					// TODO: index will be the same for now but after "Add Category" button, this may need to be changed
+					double newCategoryWeight = overallGradeFromFields.getCourseCategoryList().get(courseIndex).getWeight();
+					currCategory.setWeight(newCategoryWeight);
+
+					// Iterate through all SubCategories and update weights.
+					ArrayList<SubCategory> studentSubCategoryList = currCategory.getSubCategoryList();
+					for(int subCategoryIndex = 0; subCategoryIndex < studentSubCategoryList.size(); subCategoryIndex++) {
+						SubCategory currSubCategory = studentSubCategoryList.get(subCategoryIndex);
+
+						// TODO: index will be the same for now but after "Add Category" button, this may need to be changed? Maybe not cause it's SubCategory
+						SubCategory subCategoryFromFields = overallGradeFromFields.getCourseCategoryList().get(courseIndex).getSubCategoryList().get(subCategoryIndex);
+						currSubCategory.setWeight(subCategoryFromFields.getWeight());
+					}
+					currCategory.setSubCategoryList(studentSubCategoryList);
+				}
+				studentOverallGrade.setCategoryList(studentCourseCategoryList);
+				currStudent.setOverallGrade(studentOverallGrade);
+				// Because Student list of ActiveStudents is casted, we need to re-assign the status.
+				currStudent.setStatus(gradUndergradStatus);
+			}
+		}
+		// Update the Students weightings.
+		managedCourse.setActiveStudents(students);
+
+		// Update the default schema as well
+		if (gradUndergradStatus.equals("Undergraduate")) {
+			managedCourse.setCourseUnderGradDefaultGradeScheme(studentOverallGrade);
+		}
+		else {
+			managedCourse.setCourseGradDefaultGradeScheme(studentOverallGrade);
+		}
 	}
 
 }

@@ -129,7 +129,7 @@ public class CourseOverviewFrame extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				//checks to see if you actually selected anything from the table
 				if(studentDisplayTable.getSelectedRow() < 0) {
-					JOptionPane.showMessageDialog(null, "No selection");
+					JOptionPane.showMessageDialog(null, "No student selected!");
 					return;
 				}
 				else {

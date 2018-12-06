@@ -120,5 +120,10 @@ public class OverallGrade implements Serializable {
    public void addCategoryList(CourseCategory categoryList) {
 		this.categoryList.add(categoryList);
 	}
+
+	public void setCategoryList(ArrayList<CourseCategory> categoryList) {
+		this.categoryList = categoryList;
+		this.updateOverallGrade();
+	}
 }
 
