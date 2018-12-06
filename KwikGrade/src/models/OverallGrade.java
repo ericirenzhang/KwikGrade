@@ -72,11 +72,24 @@ public class OverallGrade implements Serializable {
 	public static OverallGrade copyOverallGrade(OverallGrade overallGradeObj) {
 		double overallGradeNew = overallGradeObj.getOverallGrade();
 		ArrayList<CourseCategory> newCategoryList = new ArrayList<CourseCategory>();
-		
+
+		// Clone the category.
 		for(int i = 0; i < overallGradeObj.getCourseCategoryList().size(); i++) {
 			String newCategoryName = overallGradeObj.getCourseCategoryList().get(i).getName();
 			double newCategoryWeight = overallGradeObj.getCourseCategoryList().get(i).getWeight();
-			newCategoryList.add(new CourseCategory(newCategoryName, newCategoryWeight, new ArrayList<SubCategory>() ));
+			CourseCategory clonedCategory = new CourseCategory(newCategoryName, newCategoryWeight, new ArrayList<SubCategory>());
+
+			// Clone the subcategories
+			for(int j = 0; j < overallGradeObj.getCourseCategoryList().get(i).getSubCategoryList().size(); j++) {
+				SubCategory originalSubCategory = overallGradeObj.getCourseCategoryList().get(i).getSubCategoryList().get(j);
+				String newSubCategoryName = originalSubCategory.getName();
+				double newSubCategoryWeight = originalSubCategory.getWeight();
+				double newSubCategoryPointsGained = originalSubCategory.getPointsGained();
+				double newSubCategoryTotalPoints = originalSubCategory.getTotalPoints();
+				SubCategory clonedSubCategory = new SubCategory(newSubCategoryName, newSubCategoryWeight, newSubCategoryPointsGained, newSubCategoryTotalPoints);
+				clonedCategory.addSubCategory(clonedSubCategory);
+			}
+			newCategoryList.add(clonedCategory);
 		}
 		OverallGrade newOverallGrade = new OverallGrade(overallGradeNew, newCategoryList);
 		return newOverallGrade;
@@ -106,6 +119,11 @@ public class OverallGrade implements Serializable {
     
    public void addCategoryList(CourseCategory categoryList) {
 		this.categoryList.add(categoryList);
+	}
+
+	public void setCategoryList(ArrayList<CourseCategory> categoryList) {
+		this.categoryList = categoryList;
+		this.updateOverallGrade();
 	}
 }
 
