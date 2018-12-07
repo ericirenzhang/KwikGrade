@@ -276,7 +276,7 @@ public class CreateFromNewFrame extends JDialog {
 					//tried to implement logic for a blank table...does not work...need to rethink
 					//TODO: Rethink logic for catching blank cells in a table
 					catch (Exception ugOverallGradeCreate) {
-						JOptionPane.showMessageDialog(null, "Make sure all Undergraduate Grading Scheme tables are filled!");
+						JOptionPane.showMessageDialog(null, "Make sure all Grading Scheme values are filled properly!");
 						return;
 					}
 				}
@@ -291,7 +291,7 @@ public class CreateFromNewFrame extends JDialog {
 					//tried to implement logic for a blank table...does not work...need to rethink
 					//TODO: Rethink logic for catching blank cells in a table
 					catch (Exception gradOverallGradeCreate) {
-						JOptionPane.showMessageDialog(null, "Make sure all Graduate Grading Scheme tables are filled!");
+						JOptionPane.showMessageDialog(null, "Make sure all Grading Scheme values are filled properly!");
 						return;
 					}
 				}
