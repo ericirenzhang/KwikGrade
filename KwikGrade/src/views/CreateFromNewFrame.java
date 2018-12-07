@@ -46,6 +46,43 @@ public class CreateFromNewFrame extends JDialog {
 	// initializes the overallgrade objects for undergrads and graduates
 	private OverallGrade ugOverallGrade = new OverallGrade();
 	private OverallGrade gradOverallGrade = new OverallGrade();
+	
+	/**
+	 * Checks that all values where the user should have entered doubles are actually doubles
+	 * @param JTable
+	 * @return boolean
+	 */
+	public boolean checkForDouble(JTable gradeSchemeTable) {
+		for(int tableIndex = 0; tableIndex < gradeSchemeTable.getRowCount(); tableIndex++) {
+			try {
+				double catWeight = (Double.parseDouble(String.valueOf(gradeSchemeTable.getValueAt(tableIndex, 1)))/100);
+			}
+			catch (Exception overallGradeCreate) {
+				JOptionPane.showMessageDialog(null, "Make sure all Grading Scheme values are filled properly!");
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Checks that all grade values add up to 100
+	 * @param JTable
+	 * @return boolean
+	 */
+	public boolean checkAddToHundred(JTable gradeSchemeTable) {
+		double catWeight = 0;
+		for(int tableIndex = 0; tableIndex < gradeSchemeTable.getRowCount(); tableIndex++) {
+			catWeight = catWeight + (Double.parseDouble(String.valueOf(gradeSchemeTable.getValueAt(tableIndex, 1))));
+		}
+		if (catWeight == 100) {
+			return true;
+		}
+		else {
+			JOptionPane.showMessageDialog(null, "Make sure your category weights add up to 100!");
+			return false;
+		}
+	}
 
 	/**
 	 * Create the dialog.
@@ -266,7 +303,18 @@ public class CreateFromNewFrame extends JDialog {
 					return;
 				}
 				
-				//Parses through and grabs the name and weight 
+				//checks to make sure that all the values for a percentage are actual numbers
+				//parameterized both tables, into one function...only for you Sean ;)
+				if (checkForDouble(ugCourseCategoryTable) == false || checkForDouble(gradCourseCategoryTable) == false) {
+					return;
+				}
+				
+				//check to make sure weights for table add up to 100
+				if (checkAddToHundred(ugCourseCategoryTable) == false || checkAddToHundred(gradCourseCategoryTable) == false) {
+					return;
+				}
+				
+				//Parses through and grabs the name and weight and saves them as course category items 
 				for(int ugIndex = 0; ugIndex < ugTableModelRows; ugIndex++) {
 					try {
 					String ugCategoryName = ugCourseCategoryTable.getValueAt(ugIndex, 0).toString();
