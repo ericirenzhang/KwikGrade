@@ -393,20 +393,21 @@ public class AddGradeFrame extends JDialog {
 
 	/**
 	 * Given the dropdown object and the KwikGrade OverallGrade object, modifies the OverallGrade object scheme to be handed
-	 * back to the previous frame.
+	 * back to the previous frame. Used to update the default ugrad/grad schemes of the KwikGrade object.
 	 * @param catNameDropdown
 	 * @param overallGradeScheme
 	 */
 	private void updateKwikGradeScheme(JComboBox catNameDropdown, OverallGrade overallGradeScheme, Double totalAssignValue) {
+		// Find the category index to add the SubCategory to.
 		int categoryIndex = 0;
 		ArrayList<CourseCategory> currentStudentCourseCat = overallGradeScheme.getCourseCategoryList();
-
 		for (int courseCatIndex = 0; courseCatIndex < currentStudentCourseCat.size(); courseCatIndex++) {
 			if (currentStudentCourseCat.get(courseCatIndex).getName().equals(catNameDropdown.getSelectedItem())) {
 				categoryIndex = courseCatIndex;
 			}
 		}
 
+		// Add a blank SubCategory.
 		overallGradeScheme.getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, 0, totalAssignValue));
 		overallGradeScheme.balanceAssignWeights();
 		overallGradeScheme.updateOverallGrade();

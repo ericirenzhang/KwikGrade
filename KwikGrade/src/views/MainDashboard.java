@@ -124,7 +124,7 @@ public class MainDashboard extends JFrame {
 					courseOverview.setVisible(true);
 				}
 				catch (Exception eManage) {
-					JOptionPane.showMessageDialog(null, "Something went wrong with opening this course. Please contact the engineers!");
+					JOptionPane.showMessageDialog(null, "No course selected!");
 				}
 
 			}
@@ -167,7 +167,7 @@ public class MainDashboard extends JFrame {
 				}
 				catch (Exception eClose) {
 					//exception for if an invalid course is selected
-					JOptionPane.showMessageDialog(null, "Something went wrong with closing this course, please contact the engineers!");
+					JOptionPane.showMessageDialog(null, "No course selected!");
 				}
 				updateCourseDisplayModel();
 			}
@@ -184,7 +184,7 @@ public class MainDashboard extends JFrame {
 					kwikGrade.deleteCourse(deleteIndex);
 				}
 				catch (Exception eDelete) {
-					JOptionPane.showMessageDialog(null, "Something went wrong with deleting this course, please contact the engineers!");
+					JOptionPane.showMessageDialog(null, "No course selected!");
 				}
 				FileManager.saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
 				updateCourseDisplayModel();
