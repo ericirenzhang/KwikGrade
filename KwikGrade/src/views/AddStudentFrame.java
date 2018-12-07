@@ -10,6 +10,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -27,6 +29,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class AddStudentFrame extends JDialog {
 	private final JPanel contentPanel = new JPanel();
@@ -46,6 +50,11 @@ public class AddStudentFrame extends JDialog {
 	private OverallGrade studentOverallGrade;
 	private OverallGrade overallGradeScheme;
 	private GradingSchemeGrid gradingSchemeGrid;
+	//private static final String EMAIL_PATTERN = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$";
+	public static final String VALID_EMAIL_ADDRESS_REGEX = 
+			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+			        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+	Pattern pattern = Pattern.compile(VALID_EMAIL_ADDRESS_REGEX);
 
 	/**
 	 * Create the dialog.
@@ -63,11 +72,25 @@ public class AddStudentFrame extends JDialog {
 		GridBagConstraints frameConstraints = new GridBagConstraints();
 
 		fNameField = new JTextField();
+		fNameField.addKeyListener(new KeyAdapter() {
+	        public void keyTyped(KeyEvent evt) {
+	         if(!(Character.isLetter(evt.getKeyChar()))){
+	                evt.consume();
+	            }
+	        }
+	    });
 		fNameField.setBounds(53, 60, 130, 26);
 		contentPanel.add(fNameField);
 		fNameField.setColumns(10);
 
 		lNameField = new JTextField();
+		lNameField.addKeyListener(new KeyAdapter() {
+	        public void keyTyped(KeyEvent evt) {
+	         if(!(Character.isLetter(evt.getKeyChar()))){
+	                evt.consume();
+	            }
+	        }
+	    });		
 		lNameField.setBounds(382, 60, 130, 26);
 		lNameField.setColumns(10);
 		contentPanel.add(lNameField);
@@ -103,6 +126,13 @@ public class AddStudentFrame extends JDialog {
 		contentPanel.add(statusLabel);
 
 		mInitialField = new JTextField();
+		mInitialField.addKeyListener(new KeyAdapter() {
+	        public void keyTyped(KeyEvent evt) {
+	         if(!(Character.isLetter(evt.getKeyChar()))){
+	                evt.consume();
+	            }
+	        }
+	    });	
 		mInitialField.setBounds(217, 60, 130, 26);
 		mInitialField.setColumns(10);
 		contentPanel.add(mInitialField);
@@ -157,7 +187,15 @@ public class AddStudentFrame extends JDialog {
 				String lName = lNameField.getText();
 				String buId = buIdField.getText();
 				String email = emailField.getText();
-				String gradUndergradStatus = (String) studentStatusDropdown.getSelectedItem();
+				Matcher matcher = pattern.matcher(email);
+		        System.out.println("EMAIL: "+buId+" "+matcher.matches());
+				if (!matcher.matches()) {
+					JOptionPane.showMessageDialog(null, "Please enter valid email");
+					emailField.setText("");
+				}
+				else {
+				String gradUndergrad = (String) studentStatusDropdown.getSelectedItem();
+
 				
 				if (fName.equals("")||lName.equals("")||buId.equals("")||email.equals("")||studentStatusDropdown.getSelectedIndex()==-1) {
 					JOptionPane.showMessageDialog(null, "Please make sure all required fields are filled!");
@@ -188,6 +226,7 @@ public class AddStudentFrame extends JDialog {
 				FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
 				FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
 				dispose();
+				}
 			}
 		});
 		buttonPane.add(saveButton);
