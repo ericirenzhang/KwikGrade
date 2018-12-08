@@ -39,11 +39,14 @@ public class AddStudentFrame extends JDialog {
 	private JTextField buIdField;
 	private JTextField emailField;
 	private JTextField mInitialField;
+	private JTextArea commentTextArea;
+	private JLabel fNameLabel;
 	private JLabel lNameLabel;
 	private JLabel buIdLabel;
 	private JLabel emailLabel;
 	private JLabel statusLabel;
 	private JLabel mInitialLabel;
+	private JLabel commentsLabel;
 	private JScrollPane gradingSchemeScrollPane;
 
 	private Student newStudent;
@@ -82,6 +85,18 @@ public class AddStudentFrame extends JDialog {
 		fNameField.setBounds(53, 60, 130, 26);
 		contentPanel.add(fNameField);
 		fNameField.setColumns(10);
+		
+		mInitialField = new JTextField();
+		mInitialField.addKeyListener(new KeyAdapter() {
+	        public void keyTyped(KeyEvent evt) {
+	         if(!(Character.isLetter(evt.getKeyChar()))){
+	                evt.consume();
+	            }
+	        }
+	    });	
+		mInitialField.setBounds(217, 60, 130, 26);
+		mInitialField.setColumns(10);
+		contentPanel.add(mInitialField);
 
 		lNameField = new JTextField();
 		lNameField.addKeyListener(new KeyAdapter() {
@@ -104,10 +119,28 @@ public class AddStudentFrame extends JDialog {
 		emailField.setBounds(217, 124, 130, 26);
 		emailField.setColumns(10);
 		contentPanel.add(emailField);
+		
+		commentTextArea = new JTextArea();
+		//added key listener for tab so user can tab through
+		commentTextArea.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                    if (e.getModifiers() > 0) {
+                    	commentTextArea.transferFocusBackward();
+                    } else {
+                    	commentTextArea.transferFocus();
+                    }
+                    e.consume();
+				}
+			}
+		});
+		commentTextArea.setBounds(569, 61, 218, 94);
+		contentPanel.add(commentTextArea);
 
-		JLabel lblFirstName = new JLabel("First Name (Required)");
-		lblFirstName.setBounds(53, 45, 130, 16);
-		contentPanel.add(lblFirstName);
+		fNameLabel = new JLabel("First Name (Required)");
+		fNameLabel.setBounds(53, 45, 130, 16);
+		contentPanel.add(fNameLabel);
 
 		lNameLabel = new JLabel("Last Name (Required)");
 		lNameLabel.setBounds(382, 45, 130, 16);
@@ -125,21 +158,13 @@ public class AddStudentFrame extends JDialog {
 		statusLabel.setBounds(382, 109, 130, 16);
 		contentPanel.add(statusLabel);
 
-		mInitialField = new JTextField();
-		mInitialField.addKeyListener(new KeyAdapter() {
-	        public void keyTyped(KeyEvent evt) {
-	         if(!(Character.isLetter(evt.getKeyChar()))){
-	                evt.consume();
-	            }
-	        }
-	    });	
-		mInitialField.setBounds(217, 60, 130, 26);
-		mInitialField.setColumns(10);
-		contentPanel.add(mInitialField);
-
 		mInitialLabel = new JLabel("Middle Initial (Optional)");
 		mInitialLabel.setBounds(217, 45, 130, 16);
 		contentPanel.add(mInitialLabel);
+		
+		commentsLabel = new JLabel("Notes:");
+		commentsLabel.setBounds(569, 46, 46, 14);
+		contentPanel.add(commentsLabel);
 		
 		JComboBox studentStatusDropdown = new JComboBox();
 		studentStatusDropdown.addItem("Undergraduate");
@@ -166,7 +191,7 @@ public class AddStudentFrame extends JDialog {
 
 		studentStatusDropdown.setBounds(382, 127, 130, 26);
 		contentPanel.add(studentStatusDropdown);
-
+		
 		// Add panel to frame
 		frameConstraints.gridx = 0;
 		frameConstraints.gridy = 1;
@@ -187,6 +212,7 @@ public class AddStudentFrame extends JDialog {
 				String lName = lNameField.getText();
 				String buId = buIdField.getText();
 				String email = emailField.getText();
+				String comment;
 				Matcher matcher = pattern.matcher(email);
 		        System.out.println("EMAIL: "+buId+" "+matcher.matches());
 				if (!matcher.matches()) {
@@ -209,15 +235,23 @@ public class AddStudentFrame extends JDialog {
 				else {
 					middleInitial = mInitialField.getText();
 				}
+				
+				//sets comment field, if it is not specified
+				if (commentTextArea.getText() == null) {
+					comment = "";
+				}
+				else {
+					comment = commentTextArea.getText();
+				}
 								
 				// Creates undergraduate or graduate students, and creates copies of default grading schemes.
-				if (gradUndergradStatus.equals("Undergraduate")) {
+				if (gradUndergrad.equals("Undergraduate")) {
 					studentOverallGrade = gradingSchemeGrid.getOverallGradeFromFields();
-					newStudent = new UndergraduateStudent(fName, middleInitial, lName, buId, email, gradUndergradStatus, studentOverallGrade);
+					newStudent = new UndergraduateStudent(fName, middleInitial, lName, buId, email, gradUndergrad, studentOverallGrade, comment);
 				}
 				else {
 					studentOverallGrade = gradingSchemeGrid.getOverallGradeFromFields();
-					newStudent = new GraduateStudent(fName, middleInitial, lName, buId, email, gradUndergradStatus, studentOverallGrade);
+					newStudent = new GraduateStudent(fName, middleInitial, lName, buId, email, gradUndergrad, studentOverallGrade, comment);
 				}
 				// Add the student to the course.
 				managedCourse.addActiveStudents(newStudent);

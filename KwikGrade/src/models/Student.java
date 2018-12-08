@@ -10,7 +10,7 @@ public class Student implements Serializable {
 	private String email;
 	protected OverallGrade overallGrade;
 	private String status;
-	// TODO: add comments string as attribute
+	private String comment;
 	
 	public Student(String fName, String middleInitial, String lName, String buId, String email) {
 		this.fName = fName;
@@ -20,6 +20,7 @@ public class Student implements Serializable {
 		this.email = email;
 		overallGrade = new OverallGrade();
 		this.status = "";
+		this.comment = "";
 	}
 
 	// ========================================
@@ -54,13 +55,18 @@ public class Student implements Serializable {
 		return String.format("%s %s. %s", this.fName, this.middleInitial, this.lName);
 	}
 	
+	public String getComment() {
+		return this.comment;
+	}
+	
 	public OverallGrade getOverallGrade() {
 		return this.overallGrade;
 	}
-
+	
 	public OverallGrade getOverallGradeObject() {
 		return this.overallGrade;
 	}
+	
 	// ========================================
 	// Setters
 	// ========================================
@@ -90,6 +96,10 @@ public class Student implements Serializable {
 
 	public void setOverallGrade(OverallGrade overallGrade) {
 		this.overallGrade = overallGrade;
+	}
+	
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 
 }
