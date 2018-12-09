@@ -187,10 +187,10 @@ public class ManageCategoriesFrame extends JDialog {
 			if(currStudent.getStatus().equals(gradUndergradStatus)) {
 				studentOverallGrade = currStudent.getOverallGradeObject();
 
-				// Iterate through all categories and update weights.
 				ArrayList<CourseCategory> studentCourseCategoryList = studentOverallGrade.getCourseCategoryList();
 				ArrayList<CourseCategory> courseCategoriesFromField = overallGradeFromFields.getCourseCategoryList();
-				// If the number of CourseCategory fields are less, then that means items were deleted.
+
+				// If the number of CourseCategory fields are less than a Student's, then that means Categories were deleted.
 				if(courseCategoriesFromField.size() < studentCourseCategoryList.size()) {
 					for (int courseIndex = 0; courseIndex < studentCourseCategoryList.size(); courseIndex++) {
 						CourseCategory currCategory = studentCourseCategoryList.get(courseIndex);
@@ -200,16 +200,16 @@ public class ManageCategoriesFrame extends JDialog {
 					}
 				}
 
+				// By this point, if a Category was deleted, the Student should have matching indices with overallGradeFromFields.
+				// Iterate through all categories and update weights in the Student.
 				for(int courseIndex = 0; courseIndex < overallGradeFromFields.getCourseCategoryList().size(); courseIndex++) {
-					// Add new Course Categories
+					// If the number of CourseCategory fields are greater than a Student's, then that means Categories were added.
 					if(courseIndex > studentCourseCategoryList.size() - 1) {
 						CourseCategory currCategory = overallGradeFromFields.getCourseCategoryList().get(courseIndex);
 						studentOverallGrade.addCourseCategory(currCategory);
 					} else {
 						// Otherwise Update Course Categories
 						CourseCategory currCategory = studentCourseCategoryList.get(courseIndex);
-
-						// TODO: [known bug] If user deletes ALL categories, this crashes.
 						double newCategoryWeight = overallGradeFromFields.getCourseCategoryList().get(courseIndex).getWeight();
 						currCategory.setWeight(newCategoryWeight);
 
@@ -226,6 +226,7 @@ public class ManageCategoriesFrame extends JDialog {
 				}
 				studentOverallGrade.setCategoryList(studentCourseCategoryList);
 				currStudent.setOverallGrade(studentOverallGrade);
+
 				// Because Student list of ActiveStudents is casted, we need to re-assign the status.
 				currStudent.setStatus(gradUndergradStatus);
 			}
@@ -233,10 +234,9 @@ public class ManageCategoriesFrame extends JDialog {
 		// Update the Students weightings.
 		managedCourse.setActiveStudents(students);
 
+		// Create a clone of the category with 0 points for all SubCategory items to assign back to the default schema
 		double overallGradeNew = studentOverallGrade.getOverallGrade();
 		ArrayList<CourseCategory> newCategoryList = new ArrayList<CourseCategory>();
-
-		// Clone the category.
 		for(int i = 0; i < studentOverallGrade.getCourseCategoryList().size(); i++) {
 			String newCategoryName = studentOverallGrade.getCourseCategoryList().get(i).getName();
 			double newCategoryWeight = studentOverallGrade.getCourseCategoryList().get(i).getWeight();
@@ -255,7 +255,6 @@ public class ManageCategoriesFrame extends JDialog {
 		}
 		OverallGrade clonedOverallGrade = new OverallGrade(overallGradeNew, newCategoryList);
 
-		// Update the default schema as well
 		if (gradUndergradStatus.equals("Undergraduate")) {
 			managedCourse.setCourseUnderGradDefaultGradeScheme(clonedOverallGrade);
 		}
@@ -264,6 +263,12 @@ public class ManageCategoriesFrame extends JDialog {
 		}
 	}
 
+	/**
+	 * Given a courseCategory, check if it's in courseCategories by checking on the name.
+	 * @param courseCategory
+	 * @param courseCategories
+	 * @return
+	 */
 	public boolean isCategoryInCategoryList(CourseCategory courseCategory, ArrayList<CourseCategory> courseCategories) {
 		for(int i = 0; i < courseCategories.size(); i++) {
 			if(courseCategory.getName().equals(courseCategories.get(i).getName())) {
