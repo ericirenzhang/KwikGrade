@@ -116,8 +116,8 @@ public class CourseOverviewFrame extends JDialog {
 				addStudent.setVisible(true);
 
 				// Update our models for the current frame
-				studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
-				updateStatsModel(managedCourse, statsTableModel);
+				studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
+				updateStatsModel(getManagedCourse(), statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}
 		});
@@ -138,8 +138,8 @@ public class CourseOverviewFrame extends JDialog {
 					manageStudentFrame.setModal(true);
 					manageStudentFrame.setVisible(true);
 
-					studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
-					updateStatsModel(managedCourse, statsTableModel);
+					studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
+					updateStatsModel(getManagedCourse(), statsTableModel);
 					kwikStatsTable.setModel(statsTableModel);
 				}
 
@@ -167,8 +167,8 @@ public class CourseOverviewFrame extends JDialog {
 				addGrade.setModal(true);
 				addGrade.setVisible(true);
 
-				studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
-				updateStatsModel(managedCourse, statsTableModel);
+				studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
+				updateStatsModel(getManagedCourse(), statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}
 		});
@@ -179,12 +179,12 @@ public class CourseOverviewFrame extends JDialog {
 		JButton manageCategoryButton = new JButton("Manage Categories");
 		manageCategoryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ManageCategoriesFrame manageCategoriesFrame = new ManageCategoriesFrame(managedCourse);
+				ManageCategoriesFrame manageCategoriesFrame = new ManageCategoriesFrame(getManagedCourse());
 				manageCategoriesFrame.setModal(true);
 				manageCategoriesFrame.setVisible(true);
 
-				studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
-				updateStatsModel(managedCourse, statsTableModel);
+				studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
+				updateStatsModel(getManagedCourse(), statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}
 		});

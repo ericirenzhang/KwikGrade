@@ -189,23 +189,40 @@ public class ManageCategoriesFrame extends JDialog {
 
 				// Iterate through all categories and update weights.
 				ArrayList<CourseCategory> studentCourseCategoryList = studentOverallGrade.getCourseCategoryList();
-				for(int courseIndex = 0; courseIndex < studentCourseCategoryList.size(); courseIndex++) {
-					CourseCategory currCategory = studentCourseCategoryList.get(courseIndex);
-
-					// TODO: index will be the same for now but after "Add Category" button, this may need to be changed
-					double newCategoryWeight = overallGradeFromFields.getCourseCategoryList().get(courseIndex).getWeight();
-					currCategory.setWeight(newCategoryWeight);
-
-					// Iterate through all SubCategories and update weights.
-					ArrayList<SubCategory> studentSubCategoryList = currCategory.getSubCategoryList();
-					for(int subCategoryIndex = 0; subCategoryIndex < studentSubCategoryList.size(); subCategoryIndex++) {
-						SubCategory currSubCategory = studentSubCategoryList.get(subCategoryIndex);
-
-						// TODO: index will be the same for now but after "Add Category" button, this may need to be changed? Maybe not cause it's SubCategory
-						SubCategory subCategoryFromFields = overallGradeFromFields.getCourseCategoryList().get(courseIndex).getSubCategoryList().get(subCategoryIndex);
-						currSubCategory.setWeight(subCategoryFromFields.getWeight());
+				ArrayList<CourseCategory> courseCategoriesFromField = overallGradeFromFields.getCourseCategoryList();
+				// If the number of CourseCategory fields are less, then that means items were deleted.
+				if(courseCategoriesFromField.size() < studentCourseCategoryList.size()) {
+					for (int courseIndex = 0; courseIndex < studentCourseCategoryList.size(); courseIndex++) {
+						CourseCategory currCategory = studentCourseCategoryList.get(courseIndex);
+						if(!isCategoryInCategoryList(currCategory, courseCategoriesFromField)) {
+							studentOverallGrade.deleteCategory(currCategory.getName());
+						}
 					}
-					currCategory.setSubCategoryList(studentSubCategoryList);
+				}
+
+				for(int courseIndex = 0; courseIndex < overallGradeFromFields.getCourseCategoryList().size(); courseIndex++) {
+					// Add new Course Categories
+					if(courseIndex > studentCourseCategoryList.size() - 1) {
+						CourseCategory currCategory = overallGradeFromFields.getCourseCategoryList().get(courseIndex);
+						studentOverallGrade.addCourseCategory(currCategory);
+					} else {
+						// Otherwise Update Course Categories
+						CourseCategory currCategory = studentCourseCategoryList.get(courseIndex);
+
+						// TODO: [known bug] If user deletes ALL categories, this crashes.
+						double newCategoryWeight = overallGradeFromFields.getCourseCategoryList().get(courseIndex).getWeight();
+						currCategory.setWeight(newCategoryWeight);
+
+						// Iterate through all SubCategories and update weights.
+						ArrayList<SubCategory> studentSubCategoryList = currCategory.getSubCategoryList();
+						for(int subCategoryIndex = 0; subCategoryIndex < studentSubCategoryList.size(); subCategoryIndex++) {
+							SubCategory currSubCategory = studentSubCategoryList.get(subCategoryIndex);
+
+							SubCategory subCategoryFromFields = overallGradeFromFields.getCourseCategoryList().get(courseIndex).getSubCategoryList().get(subCategoryIndex);
+							currSubCategory.setWeight(subCategoryFromFields.getWeight());
+						}
+						currCategory.setSubCategoryList(studentSubCategoryList);
+					}
 				}
 				studentOverallGrade.setCategoryList(studentCourseCategoryList);
 				currStudent.setOverallGrade(studentOverallGrade);
@@ -216,12 +233,43 @@ public class ManageCategoriesFrame extends JDialog {
 		// Update the Students weightings.
 		managedCourse.setActiveStudents(students);
 
+		double overallGradeNew = studentOverallGrade.getOverallGrade();
+		ArrayList<CourseCategory> newCategoryList = new ArrayList<CourseCategory>();
+
+		// Clone the category.
+		for(int i = 0; i < studentOverallGrade.getCourseCategoryList().size(); i++) {
+			String newCategoryName = studentOverallGrade.getCourseCategoryList().get(i).getName();
+			double newCategoryWeight = studentOverallGrade.getCourseCategoryList().get(i).getWeight();
+			CourseCategory clonedCategory = new CourseCategory(newCategoryName, newCategoryWeight, new ArrayList<SubCategory>());
+
+			// Clone the subcategories
+			for(int j = 0; j < studentOverallGrade.getCourseCategoryList().get(i).getSubCategoryList().size(); j++) {
+				SubCategory originalSubCategory = studentOverallGrade.getCourseCategoryList().get(i).getSubCategoryList().get(j);
+				String newSubCategoryName = originalSubCategory.getName();
+				double newSubCategoryWeight = originalSubCategory.getWeight();
+				double newSubCategoryTotalPoints = originalSubCategory.getTotalPoints();
+				SubCategory clonedSubCategory = new SubCategory(newSubCategoryName, newSubCategoryWeight, 0, newSubCategoryTotalPoints);
+				clonedCategory.addSubCategory(clonedSubCategory);
+			}
+			newCategoryList.add(clonedCategory);
+		}
+		OverallGrade clonedOverallGrade = new OverallGrade(overallGradeNew, newCategoryList);
+
 		// Update the default schema as well
 		if (gradUndergradStatus.equals("Undergraduate")) {
-			managedCourse.setCourseUnderGradDefaultGradeScheme(studentOverallGrade);
+			managedCourse.setCourseUnderGradDefaultGradeScheme(clonedOverallGrade);
 		}
 		else {
-			managedCourse.setCourseGradDefaultGradeScheme(studentOverallGrade);
+			managedCourse.setCourseGradDefaultGradeScheme(clonedOverallGrade);
 		}
+	}
+
+	public boolean isCategoryInCategoryList(CourseCategory courseCategory, ArrayList<CourseCategory> courseCategories) {
+		for(int i = 0; i < courseCategories.size(); i++) {
+			if(courseCategory.getName().equals(courseCategories.get(i).getName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
