@@ -69,6 +69,7 @@ public class GradingSchemeGrid {
                 gradingSchemeRowCount = 2;
                 firstColumnText = new String[]{"", ""};
                 secondColumnText = new String[]{"", ""};
+                // cut the grading scheme grid in half to even out the heights of JPanels
                 GRADING_SCHEME_HEIGHT = 150;
                 break;
             default:

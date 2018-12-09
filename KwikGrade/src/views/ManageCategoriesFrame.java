@@ -19,6 +19,10 @@ public class ManageCategoriesFrame extends JDialog {
 	private GradingSchemeGrid gradingSchemeGrid;
 	private OverallGrade overallGradeScheme;
 
+	public OverallGrade getOverallGradeScheme() {
+		return this.overallGradeScheme;
+	}
+
 	/**
 	 * Create the dialog.
 	 */
@@ -58,7 +62,7 @@ public class ManageCategoriesFrame extends JDialog {
 			}
 		});
 
-		studentStatusDropdown.setBounds(382, 127, 130, 26);
+		studentStatusDropdown.setBounds(52, 103, 148, 26);
 		contentPanel.add(studentStatusDropdown);
 
 		// Add panel to frame
@@ -114,6 +118,39 @@ public class ManageCategoriesFrame extends JDialog {
 		gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
 		gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
 		contentPanel.add(gradingSchemeScrollPane);
+		
+		JLabel titleLabel = new JLabel("Manage Categories");
+		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		titleLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
+		titleLabel.setBounds(42, 31, 212, 33);
+		contentPanel.add(titleLabel);
+		
+		JLabel selectStudentLabel = new JLabel("Select the student scheme that you'd like to modify:");
+		selectStudentLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		selectStudentLabel.setBounds(42, 76, 348, 16);
+		contentPanel.add(selectStudentLabel);
+		
+		JButton addCategoryButton = new JButton("Add a new Category");
+		addCategoryButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AddCategoryFrame addCategory = new AddCategoryFrame(getOverallGradeScheme());
+				addCategory.setModal(true);
+				addCategory.setVisible(true);
+			}
+		});
+		addCategoryButton.setBounds(801, 41, 179, 29);
+		contentPanel.add(addCategoryButton);
+		
+		JButton btnDeleteCategory = new JButton("Delete a Category");
+		btnDeleteCategory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DeleteCategoryFrame deleteCategory = new DeleteCategoryFrame(getOverallGradeScheme());
+				deleteCategory.setModal(true);
+				deleteCategory.setVisible(true);
+			}
+		});
+		btnDeleteCategory.setBounds(801, 71, 179, 29);
+		contentPanel.add(btnDeleteCategory);
 	}
 
 	/**
@@ -172,5 +209,4 @@ public class ManageCategoriesFrame extends JDialog {
 			managedCourse.setCourseGradDefaultGradeScheme(studentOverallGrade);
 		}
 	}
-
 }
