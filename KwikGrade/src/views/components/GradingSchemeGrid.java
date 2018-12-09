@@ -21,7 +21,7 @@ public class GradingSchemeGrid {
     }
 
     private static int GRADING_SCHEME_WIDTH = 900;
-    private static int GRADING_SCHEME_HEIGHT = 300;
+    private int GRADING_SCHEME_HEIGHT;
     private static Color LIGHT_GRAY_COLOR = new Color(0xF0F0F0);
     private static Color DARK_GRAY_COLOR = new Color(0xE0E0E0);
     private static Color BORDER_COLOR = new Color(0xD1D0D1);
@@ -51,7 +51,7 @@ public class GradingSchemeGrid {
 
     public void configureGradingSchemeGrid(GradingSchemeType gradingSchemeType) {
         this.gradingSchemeType = gradingSchemeType;
-        String finalGrade = Double.toString(this.modifiedGradeScheme.getOverallGrade());
+        String finalGrade = String.format("%.2f%%", this.modifiedGradeScheme.getOverallGrade());
 
         switch(gradingSchemeType) {
             case ADD_STUDENT:
@@ -59,16 +59,20 @@ public class GradingSchemeGrid {
                 // TODO: this Points Gained may need to dynamically change based on the switch we will add
                 firstColumnText = new String[]{"", "", "Final Raw Score", "Points Gained on Item", "Total Points on Item"};
                 secondColumnText = new String[]{"Final Grade", "", finalGrade, "", ""};
+                GRADING_SCHEME_HEIGHT = 300;
                 break;
             case MANAGE_STUDENT:
                 gradingSchemeRowCount = 5;
                 firstColumnText = new String[]{"", "", "Final Raw Score", "Points Gained on Item", "Total Points on Item"};
                 secondColumnText = new String[]{"Final Grade", "", finalGrade, "", ""};
+                GRADING_SCHEME_HEIGHT = 300;
                 break;
             case MANAGE_CATEGORIES:
                 gradingSchemeRowCount = 2;
                 firstColumnText = new String[]{"", ""};
-                secondColumnText = new String[]{"Final Grade", ""};
+                secondColumnText = new String[]{"", ""};
+                // cut the grading scheme grid in half to even out the heights of JPanels
+                GRADING_SCHEME_HEIGHT = 150;
                 break;
             default:
                 break;
@@ -95,8 +99,8 @@ public class GradingSchemeGrid {
         parentPanel.setBackground(Color.WHITE);
 
         // Append initial header/title columns.
-        appendTextColumn(firstColumnText);
-        appendTextColumn(secondColumnText);
+        appendTextColumn(firstColumnText, 12);
+        appendTextColumn(secondColumnText, 16);
 
         // Define GridLayout.
         parentPanel.setLayout(new GridLayout(schemeGrid.size(), schemeGrid.get(0).size()));
@@ -107,15 +111,6 @@ public class GradingSchemeGrid {
             CourseCategory currCategory = modifiedGradeScheme.getCourseCategoryList().get(categoryIndex);
 
             appendCategoryColumn(currCategory);
-
-            // TODO: delete this once we're able to have SubCategories and test this
-//            if(this.gradingSchemeType == GradingSchemeType.ADD_STUDENT) {
-//                SubCategory tmpSubCategory = new SubCategory(currCategory.getName() + "1", 0.5, 40.0, 50.0);
-//                currCategory.addSubCategory(tmpSubCategory);
-//                tmpSubCategory = new SubCategory(currCategory.getName() + "2", 0.5, 40.0, 50.0);
-//                currCategory.addSubCategory(tmpSubCategory);
-//            }
-
 
             for (int subCategoryIndex = 0; subCategoryIndex < currCategory.getSubCategoryList().size(); subCategoryIndex++) {
                 SubCategory currSubCategory = currCategory.getSubCategoryList().get(subCategoryIndex);
@@ -146,11 +141,9 @@ public class GradingSchemeGrid {
     public void appendSubCategoryColumn(SubCategory currSubCategory) {
         int lastColumnIndex = buildBlankColumn();
 
-        String subCategoryWeightPercentage = String.format("%.2f", 100 * currSubCategory.getWeight());
-        String subCategoryNonWeightedPercentage = String.format("%.2f", 100 * currSubCategory.getRawFinalScore());
-
         for(int rowIndex = 0; rowIndex < gradingSchemeRowCount; rowIndex++) {
             JPanel currPanel = schemeGrid.get(rowIndex).get(lastColumnIndex);
+
             JTextField currTextField = new JTextField();
             currTextField.getDocument().addDocumentListener(new DocumentListener() {
                  public void changedUpdate(DocumentEvent e) {
@@ -171,25 +164,41 @@ public class GradingSchemeGrid {
                     break;
                 case 1:
                     currPanel.setLayout(new BorderLayout(0,0));
-                    currPanel.add(new JLabel(currSubCategory.getName() + " (Weight)"), BorderLayout.NORTH);
+                    // Set weight label
+                    JLabel weightLabel = new JLabel(currSubCategory.getName() + " (Weight)");
+                    Font font = weightLabel.getFont();
+                    Font boldFont = new Font(font.getFontName(), Font.PLAIN, 12);
+                    weightLabel.setFont(boldFont);
+                    currPanel.add(weightLabel, BorderLayout.NORTH);
+
+                    // Set weight text field
+                    currPanel.add(weightLabel, BorderLayout.NORTH);
+                    String subCategoryWeightPercentage = String.format("%.2f", 100 * currSubCategory.getWeight());
                     currTextField.setText(subCategoryWeightPercentage);
                     currTextField.setPreferredSize(new Dimension(100, 30));
                     currPanel.add(currTextField, BorderLayout.WEST);
                     currPanel.add(new JLabel("%"), BorderLayout.CENTER);
                     break;
                 case 2:
-                    currPanel.add(new JLabel(subCategoryNonWeightedPercentage));
+                    String subCategoryScorePercentage = String.format("%.2f%%", 100 * currSubCategory.getRawFinalScore());
+                    JLabel subCategoryWeightLabel = new JLabel(subCategoryScorePercentage);
+                    font = subCategoryWeightLabel.getFont();
+                    boldFont = new Font(font.getFontName(), Font.BOLD, 12);
+                    subCategoryWeightLabel.setFont(boldFont);
+                    currPanel.add(subCategoryWeightLabel);
                     break;
                 case 3:
+                    String pointsGained = String.format("%.2f", currSubCategory.getPointsGained());
                     currPanel.setLayout(new BorderLayout(0,0));
-                    currTextField.setText(Double.toString(currSubCategory.getPointsGained()));
+                    currTextField.setText(pointsGained);
                     currTextField.setPreferredSize(new Dimension(100, 30));
                     currPanel.add(currTextField, BorderLayout.WEST);
                     currPanel.add(new JLabel("pts"), BorderLayout.CENTER);
                     break;
                 case 4:
+                    String totalPoints = String.format("%.2f", currSubCategory.getTotalPoints());
                     currPanel.setLayout(new BorderLayout(0,0));
-                    currTextField.setText(Double.toString(currSubCategory.getTotalPoints()));
+                    currTextField.setText(totalPoints);
                     currTextField.setPreferredSize(new Dimension(100, 30));
                     currPanel.add(currTextField, BorderLayout.WEST);
                     currPanel.add(new JLabel("pts"), BorderLayout.CENTER);
@@ -213,10 +222,9 @@ public class GradingSchemeGrid {
         // Since we're appending a column, we can get the column index we want to add to by simply getting the last column.
         int lastColumnIndex = buildBlankColumn();
 
-        String categoryWeightPercentage = String.format("%.2f", 100 * currCategory.getWeight());
-
         for(int rowIndex = 0; rowIndex < gradingSchemeRowCount; rowIndex++) {
             JPanel currPanel = schemeGrid.get(rowIndex).get(lastColumnIndex);
+
             JTextField currTextField = new JTextField();
             currTextField.getDocument().addDocumentListener(new DocumentListener() {
                 public void changedUpdate(DocumentEvent e) {
@@ -234,8 +242,17 @@ public class GradingSchemeGrid {
 
             switch(rowIndex) {
                 case 0:
+                    String categoryWeightPercentage = String.format("%.2f", 100 * currCategory.getWeight());
                     currPanel.setLayout(new BorderLayout(0,0));
-                    currPanel.add(new JLabel(currCategory.getName() + " (Weight)"), BorderLayout.NORTH);
+
+                    // Set weight label
+                    JLabel weightLabel = new JLabel(currCategory.getName() + " (Weight)");
+                    Font font = weightLabel.getFont();
+                    Font boldFont = new Font(font.getFontName(), Font.BOLD, 14);
+                    weightLabel.setFont(boldFont);
+                    currPanel.add(weightLabel, BorderLayout.NORTH);
+
+                    // set weight text field
                     currTextField.setText(categoryWeightPercentage);
                     currTextField.setPreferredSize(new Dimension(100, 30));
                     currPanel.add(currTextField, BorderLayout.WEST);
@@ -243,7 +260,12 @@ public class GradingSchemeGrid {
                 case 1:
                     break;
                 case 2:
-                    currPanel.add(new JLabel(Double.toString(currCategory.getCategoryFinalWeightedScore())));
+                    String finalScore = String.format("%.2f%%", currCategory.getCategoryFinalWeightedScore());
+                    JLabel categoryWeightLabel = new JLabel(finalScore);
+                    font = categoryWeightLabel.getFont();
+                    boldFont = new Font(font.getFontName(), Font.BOLD, 14);
+                    categoryWeightLabel.setFont(boldFont);
+                    currPanel.add(categoryWeightLabel);
                     break;
                 case 3:
                     break;
@@ -262,17 +284,17 @@ public class GradingSchemeGrid {
      * Given rowTexts of text we want to put at each row, generates a new column filled with text at each row.
      * @param rowTexts
      */
-    public void appendTextColumn(String[] rowTexts) {
+    public void appendTextColumn(String[] rowTexts, int fontSize) {
         int lastColumnIndex = buildBlankColumn();
 
         // Style and add the text for each JPanel.
-        for(int i = 0; i < schemeGrid.size(); i++) {
+        for(int i = 0; i < gradingSchemeRowCount; i++) {
             JPanel currPanel = schemeGrid.get(i).get(lastColumnIndex);
 
             String currText = rowTexts[i];
             JLabel textLabel = new JLabel(currText);
             Font font = textLabel.getFont();
-            Font boldFont = new Font(font.getFontName(), Font.BOLD, 12);
+            Font boldFont = new Font(font.getFontName(), Font.BOLD, fontSize);
             textLabel.setFont(boldFont);
             currPanel.add(textLabel);
         }
@@ -428,7 +450,8 @@ public class GradingSchemeGrid {
             for (Component c : currPanel.getComponents()) {
                 if (c instanceof JLabel) {
                     // Row 2 is the category final score, update it
-                    ((JLabel) c).setText(Double.toString(this.modifiedGradeScheme.getOverallGrade()));
+                    String courseFinalScore = String.format("%.2f%%", this.modifiedGradeScheme.getOverallGrade());
+                    ((JLabel) c).setText(courseFinalScore);
                 }
             }
         }
@@ -443,7 +466,6 @@ public class GradingSchemeGrid {
                 CourseCategory currCategory = courseCategoryColMapping.get(currPanel);
 
                 CourseCategory categoryToUpdateWith = findMatchingCategory(currCategory);
-                double categoryFinalWeightedScore = categoryToUpdateWith.getCategoryFinalWeightedScore();
 
                 // for each row
                 for (int rowIndex = 0; rowIndex < gradingSchemeRowCount; rowIndex++) {
@@ -453,7 +475,8 @@ public class GradingSchemeGrid {
                         if (c instanceof JLabel) {
                             if(rowIndex == 2) {
                                 // Row 2 is the category final score, update it
-                                ((JLabel) c).setText(Double.toString(categoryFinalWeightedScore));
+                                String categoryFinalWeightedScore = String.format("%.2f%%", categoryToUpdateWith.getCategoryFinalWeightedScore());
+                                ((JLabel) c).setText(categoryFinalWeightedScore);
                             }
                         }
                     }
@@ -470,9 +493,10 @@ public class GradingSchemeGrid {
                         // Get JLabel with value.
                         for (Component c : rowPanel.getComponents()) {
                             if (c instanceof JLabel) {
-                                double subCategoryFinalWeightedScore = currSubCategory.getRawFinalScore();
                                 if(rowIndex == 2) {
-                                    ((JLabel) c).setText(Double.toString(subCategoryFinalWeightedScore));
+                                    // Row 2 is the category final score, update it
+                                    String subCategoryFinalWeightedScore = String.format("%.2f%%", currSubCategory.getRawFinalScore());
+                                    ((JLabel) c).setText(subCategoryFinalWeightedScore);
                                 }
                             }
                         }
@@ -481,11 +505,4 @@ public class GradingSchemeGrid {
             }
         }
     }
-
-    public void setOverallGrade(OverallGrade overallGradeScheme) {
-        this.initialGradeScheme = overallGradeScheme;
-        this.modifiedGradeScheme = overallGradeScheme;
-    }
-
-
 }

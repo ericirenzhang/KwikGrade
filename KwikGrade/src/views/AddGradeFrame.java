@@ -390,6 +390,7 @@ public class AddGradeFrame extends JDialog {
 							studentOverallGrade.balanceAssignWeights();
 							studentOverallGrade.updateOverallGrade();
 						}
+						managedCourse.setActiveStudents(studentList);
 
 						// Updates the KwikGrade object's copy of the OverallGrade so it also has the updated scheme to be used for other frames.
 						if (gradeSchemeDropdown.getSelectedIndex() == 1) {
@@ -402,7 +403,6 @@ public class AddGradeFrame extends JDialog {
 							updateKwikGradeScheme(catNameDropdown, ugOverallGrade, totalAssignValue);
 							updateKwikGradeScheme(catNameDropdown, gradOverallGrade, totalAssignValue);
 						}
-						managedCourse.setActiveStudents(studentList);
 						FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
 						FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
 						
