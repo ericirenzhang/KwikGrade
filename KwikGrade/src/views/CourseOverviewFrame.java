@@ -92,7 +92,7 @@ public class CourseOverviewFrame extends JDialog {
 
 		// Add KwikStats Table
 		JScrollPane kwikStatsTableScrollPane = new JScrollPane();
-		kwikStatsTableScrollPane.setBounds(565, 315, 155, 221);
+		kwikStatsTableScrollPane.setBounds(565, 366, 155, 170);
 		contentPanel.add(kwikStatsTableScrollPane);
 		kwikStatsTable = new JTable();
 		kwikStatsTable.setGridColor(Color.BLACK); // set lines to black for Mac
@@ -124,6 +124,27 @@ public class CourseOverviewFrame extends JDialog {
 		addStudentButton.setBounds(565, 11, 155, 40);
 		contentPanel.add(addStudentButton);
 		
+		JButton dropStudentButton = new JButton("Drop Student");
+		dropStudentButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(studentDisplayTable.getSelectedRow() < 0) {
+					JOptionPane.showMessageDialog(null, "No student selected!");
+					return;
+				}
+				else {
+					Student studentToDrop = managedCourse.getActiveStudents().get(studentDisplayTable.getSelectedRow());
+					managedCourse.removeStudent(studentToDrop);
+					studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
+					updateStatsModel(managedCourse, statsTableModel);
+					kwikStatsTable.setModel(statsTableModel);
+					FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
+					FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
+				}
+			}
+		});
+		dropStudentButton.setBounds(565, 60, 155, 40);
+		contentPanel.add(dropStudentButton);
+		
 		JButton manageStudentButton = new JButton("Manage Student");
 		manageStudentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -145,8 +166,19 @@ public class CourseOverviewFrame extends JDialog {
 
 			}
 		});
-		manageStudentButton.setBounds(565, 62, 155, 40);
+		manageStudentButton.setBounds(565, 111, 155, 40);
 		contentPanel.add(manageStudentButton);
+		
+		JButton inactiveStudentsButton = new JButton("Inactive Students");
+		inactiveStudentsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ViewDroppedStudents viewDroppedStudents = new ViewDroppedStudents(getManagedCourse().getInactiveStudents());
+				viewDroppedStudents.setModal(true);
+				viewDroppedStudents.setVisible(true);
+			}
+		});
+		inactiveStudentsButton.setBounds(565, 162, 155, 40);
+		contentPanel.add(inactiveStudentsButton);
 		
 		// Double click on a student to manage
 		studentDisplayTable.addMouseListener(new MouseAdapter() {
@@ -173,7 +205,7 @@ public class CourseOverviewFrame extends JDialog {
 			}
 		});
 
-		addGradeButton.setBounds(565, 110, 155, 40);
+		addGradeButton.setBounds(565, 213, 155, 40);
 		contentPanel.add(addGradeButton);
 		
 		JButton manageCategoryButton = new JButton("Manage Categories");
@@ -188,7 +220,7 @@ public class CourseOverviewFrame extends JDialog {
 				kwikStatsTable.setModel(statsTableModel);
 			}
 		});
-		manageCategoryButton.setBounds(565, 161, 155, 40);
+		manageCategoryButton.setBounds(565, 264, 155, 40);
 		contentPanel.add(manageCategoryButton);
 		
 		JButton saveCloseButton = new JButton("Save and Close");
@@ -200,7 +232,7 @@ public class CourseOverviewFrame extends JDialog {
 				dispose();
 			}
 		});
-		saveCloseButton.setBounds(565, 212, 155, 40);
+		saveCloseButton.setBounds(565, 315, 155, 40);
 		contentPanel.add(saveCloseButton);
 	}
 }

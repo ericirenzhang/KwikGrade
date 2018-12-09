@@ -51,7 +51,8 @@ public class Course implements Serializable {
 	public void addStudent(Student studentToAdd) {
 		activeStudents.add(studentToAdd);
 	}
-
+	
+	//removes a student from active list, makes them an inactive student
 	public void removeStudent(Student studentToRemove) {
 		if(this.activeStudents.contains(studentToRemove)){
 			this.activeStudents.remove(studentToRemove);
