@@ -77,9 +77,6 @@ public class ManageCategoriesFrame extends JDialog {
 		JButton saveButton = new JButton("Save and Add");
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Create a new student from the TextFields.
-
-				//pulls data into variables to make code easier to read/follow, and to allow for a check of required fields
 				String gradUndergradStatus = (String) studentStatusDropdown.getSelectedItem();
 
 				if (studentStatusDropdown.getSelectedIndex() == -1) {
@@ -136,6 +133,15 @@ public class ManageCategoriesFrame extends JDialog {
 				AddCategoryFrame addCategory = new AddCategoryFrame(getOverallGradeScheme());
 				addCategory.setModal(true);
 				addCategory.setVisible(true);
+
+				// Rerenders a the grading scheme by removing/adding to the content panel.
+				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
+				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
+				contentPanel.remove(gradingSchemeScrollPane);
+				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
+				contentPanel.add(gradingSchemeScrollPane);
+				contentPanel.revalidate();
+				contentPanel.repaint();
 			}
 		});
 		addCategoryButton.setBounds(801, 41, 179, 29);
@@ -147,6 +153,15 @@ public class ManageCategoriesFrame extends JDialog {
 				DeleteCategoryFrame deleteCategory = new DeleteCategoryFrame(getOverallGradeScheme());
 				deleteCategory.setModal(true);
 				deleteCategory.setVisible(true);
+
+				// Rerenders a the grading scheme by removing/adding to the content panel.
+				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
+				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
+				contentPanel.remove(gradingSchemeScrollPane);
+				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
+				contentPanel.add(gradingSchemeScrollPane);
+				contentPanel.revalidate();
+				contentPanel.repaint();
 			}
 		});
 		btnDeleteCategory.setBounds(801, 71, 179, 29);

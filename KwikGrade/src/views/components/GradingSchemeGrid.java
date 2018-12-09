@@ -21,7 +21,7 @@ public class GradingSchemeGrid {
     }
 
     private static int GRADING_SCHEME_WIDTH = 900;
-    private static int GRADING_SCHEME_HEIGHT = 300;
+    private int GRADING_SCHEME_HEIGHT;
     private static Color LIGHT_GRAY_COLOR = new Color(0xF0F0F0);
     private static Color DARK_GRAY_COLOR = new Color(0xE0E0E0);
     private static Color BORDER_COLOR = new Color(0xD1D0D1);
@@ -59,11 +59,13 @@ public class GradingSchemeGrid {
                 // TODO: this Points Gained may need to dynamically change based on the switch we will add
                 firstColumnText = new String[]{"", "", "Final Raw Score", "Points Gained on Item", "Total Points on Item"};
                 secondColumnText = new String[]{"Final Grade", "", finalGrade, "", ""};
+                GRADING_SCHEME_HEIGHT = 300;
                 break;
             case MANAGE_STUDENT:
                 gradingSchemeRowCount = 5;
                 firstColumnText = new String[]{"", "", "Final Raw Score", "Points Gained on Item", "Total Points on Item"};
                 secondColumnText = new String[]{"Final Grade", "", finalGrade, "", ""};
+                GRADING_SCHEME_HEIGHT = 300;
                 break;
             case MANAGE_CATEGORIES:
                 gradingSchemeRowCount = 2;

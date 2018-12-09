@@ -1,5 +1,6 @@
 package views;
 
+import models.CourseCategory;
 import models.OverallGrade;
 
 import javax.swing.*;
@@ -7,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class DeleteCategoryFrame extends JDialog {
     private final JPanel contentPanel = new JPanel();
@@ -30,11 +32,18 @@ public class DeleteCategoryFrame extends JDialog {
         titleLabel.setFont(new Font("Lucida Grande", Font.BOLD, 16));
         titleLabel.setBounds(196, 39, 181, 26);
         contentPanel.add(titleLabel);
-        
-        JComboBox categoryNameDropdown = new JComboBox();
-        categoryNameDropdown.setBounds(276, 97, 160, 27);
-        contentPanel.add(categoryNameDropdown);
 
+        ArrayList<String> courseCategoryNames = new ArrayList<>();
+        ArrayList<CourseCategory> courseCategories = overallGrade.getCourseCategoryList();
+        for (CourseCategory courseCategory : courseCategories) {
+            courseCategoryNames.add(courseCategory.getName());
+        }
+
+        JComboBox categoryNameDropdown = new JComboBox(courseCategoryNames.toArray());
+        categoryNameDropdown.setBounds(276, 97, 160, 27);
+
+
+        contentPanel.add(categoryNameDropdown);
         // Set action buttons
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -43,7 +52,9 @@ public class DeleteCategoryFrame extends JDialog {
         JButton okButton = new JButton("Save and Close");
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
+                String categoryName = categoryNameDropdown.getSelectedItem().toString();
+                overallGrade.deleteCategory(categoryName);
+                dispose();
             }
         });
 
