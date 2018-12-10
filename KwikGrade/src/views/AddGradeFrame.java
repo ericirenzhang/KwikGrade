@@ -3,7 +3,7 @@ package views;
 import java.awt.BorderLayout;
 
 import java.awt.Button;
-
+import java.awt.Color;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
@@ -52,6 +52,9 @@ public class AddGradeFrame extends JDialog {
 	private OverallGrade gradOverallGrade;
 	private boolean pointsGained;
 	
+	private static Color LIGHT_GREEN_COLOR = new Color(0x97FFBF);
+	private static Color LIGHT_RED_COLOR = new Color(0xFFA3A3);
+	
 	private String assignName;
 	
 	//list of all students
@@ -65,7 +68,10 @@ public class AddGradeFrame extends JDialog {
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JTextField assignValueText;
 
-	//iterates through and creates a tablemodel of all students
+	/**
+	 * iterates through and creates a tablemodel of all students
+	 * @param Students
+	 */
 	public DefaultTableModel displayAllStudents(ArrayList<Student> Students) {
 		addGradeTableModel = new DefaultTableModel();
 		Object[] title = {"Name", "Points"};
@@ -76,7 +82,11 @@ public class AddGradeFrame extends JDialog {
 		return addGradeTableModel;
 	}
 	
-	//dynamiclly displays graduate or undergraduate students
+	/**
+	 * creates a tablemodel that displays either only undergrad or only grad students
+	 * @param Students
+	 * @param undergrad
+	 */
 	public DefaultTableModel dispGradUGStudents(ArrayList<Student> Students, boolean undergrad) {
 		String statusFlag;
 		if(undergrad == true){
@@ -97,7 +107,10 @@ public class AddGradeFrame extends JDialog {
 		return addGradeTableModel;
 	}
 	
-	//creates a pointer array that tells you, where each undergrad and grad student is located in the course's enrolled students
+	/**
+	 * creates a pointer array that tells you, where each undergrad and grad student is located in the course's enrolled students
+	 * @param course
+	 */
 	public void createPointerArray(Course course) {
 		for(int i = 0; i < course.getActiveStudents().size(); i++) {
 			if(course.getActiveStudents().get(i).getStatus().equals("Graduate")) {
@@ -109,7 +122,11 @@ public class AddGradeFrame extends JDialog {
 		}
 	}
 	
-	//resets the dropdown menu to update the display of categories within a course
+	/**
+	 * resets the dropdown menu to update the display of categories within a course
+	 * @param course
+	 * @param undergrad
+	 */
 	public DefaultComboBoxModel catNameDropdownUpdater(Course course, boolean undergrad) {
 		catNameDropdownModel = new DefaultComboBoxModel();
 		if(undergrad == true) {
@@ -126,7 +143,10 @@ public class AddGradeFrame extends JDialog {
 		}
 	}
 	
-	//determines if both the UG and Grad OverallGrades (Grading Schemes) have common categories
+	/**
+	 * determines if both the UG and Grad OverallGrades (Grading Schemes) have common categories
+	 * @param course
+	 */
 	public DefaultComboBoxModel commonCourseCategories(Course course) {
 		catNameDropdownModel = new DefaultComboBoxModel();
 		ArrayList<String> ugOverallGradeNames = new ArrayList<String>();
@@ -144,7 +164,13 @@ public class AddGradeFrame extends JDialog {
 		return catNameDropdownModel;
 	}
 	
-	//determines whether the records are points gained, or lost
+	/**
+	 * determines whether the records are points gained, or lost
+	 * @param pointsGainedOrLost
+	 * @param totalAssignPoints
+	 * @param pointsGained
+	 * 
+	 */
 	public double togglePoints(double pointsGainedOrLost, double totalAssignPoints, boolean pointsGained) {
 		// if isPointsLost is true, it means user uploads points lost
 		if(pointsGained == false) {
@@ -214,9 +240,19 @@ public class AddGradeFrame extends JDialog {
 		});
 		
 		JRadioButton ptsEarnedRadio = new JRadioButton("Points Gained");
+		ptsEarnedRadio.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				studentGradeTable.setBackground(LIGHT_GREEN_COLOR);
+			}
+		});
 		buttonGroup.add(ptsEarnedRadio);
 		
 		JRadioButton ptsLostRadio = new JRadioButton("Points Lost");
+		ptsLostRadio.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				studentGradeTable.setBackground(LIGHT_RED_COLOR);
+			}
+		});
 		buttonGroup.add(ptsLostRadio);
 		
 		JLabel ptsGainedLostLabel = new JLabel("Points Tracking Method");
@@ -235,35 +271,33 @@ public class AddGradeFrame extends JDialog {
 				.addGroup(gl_contentPanel.createSequentialGroup()
 					.addGap(32)
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_contentPanel.createSequentialGroup()
-							.addComponent(gradeSchemeLabel, GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
-							.addContainerGap())
+						.addComponent(gradeSchemeLabel, GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
 						.addGroup(gl_contentPanel.createSequentialGroup()
 							.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
-								.addComponent(assignValueLabel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
-								.addComponent(assignNameLabel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
-								.addComponent(lblCategoryName, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
-								.addComponent(ptsLostRadio)
-								.addComponent(ptsEarnedRadio)
-								.addComponent(ptsGainedLostLabel, GroupLayout.PREFERRED_SIZE, 197, GroupLayout.PREFERRED_SIZE)
-								.addComponent(catNameDropdown, GroupLayout.PREFERRED_SIZE, 161, GroupLayout.PREFERRED_SIZE)
-								.addComponent(assignNameText, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)
-								.addComponent(assignValueText, GroupLayout.PREFERRED_SIZE, 167, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_contentPanel.createParallelGroup(Alignment.LEADING)
+									.addComponent(assignValueLabel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+									.addComponent(assignNameLabel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+									.addComponent(lblCategoryName, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+									.addComponent(ptsLostRadio)
+									.addComponent(ptsEarnedRadio)
+									.addComponent(ptsGainedLostLabel, GroupLayout.PREFERRED_SIZE, 197, GroupLayout.PREFERRED_SIZE)
+									.addComponent(catNameDropdown, GroupLayout.PREFERRED_SIZE, 161, GroupLayout.PREFERRED_SIZE)
+									.addComponent(assignNameText, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)
+									.addComponent(assignValueText, GroupLayout.PREFERRED_SIZE, 167, GroupLayout.PREFERRED_SIZE))
+								.addGroup(gl_contentPanel.createSequentialGroup()
+									.addComponent(gradeSchemeDropdown, GroupLayout.PREFERRED_SIZE, 163, GroupLayout.PREFERRED_SIZE)
+									.addGap(60)))
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 280, GroupLayout.PREFERRED_SIZE)
-							.addGap(103))
-						.addGroup(gl_contentPanel.createSequentialGroup()
-							.addComponent(gradeSchemeDropdown, GroupLayout.PREFERRED_SIZE, 163, GroupLayout.PREFERRED_SIZE)
-							.addContainerGap())))
+							.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 373, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap())
 		);
 		gl_contentPanel.setVerticalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_contentPanel.createSequentialGroup()
-					.addComponent(gradeSchemeLabel, GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
-					.addGap(0)
+					.addComponent(gradeSchemeLabel, GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
+					.addGap(6)
 					.addGroup(gl_contentPanel.createParallelGroup(Alignment.TRAILING)
 						.addGroup(gl_contentPanel.createSequentialGroup()
-							.addGap(6)
 							.addComponent(gradeSchemeDropdown, GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
 							.addGap(18)
 							.addComponent(lblCategoryName, GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
@@ -276,18 +310,19 @@ public class AddGradeFrame extends JDialog {
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(assignValueLabel, GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
 							.addGap(1)
-							.addComponent(assignValueText, GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+							.addComponent(assignValueText, GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(ptsGainedLostLabel, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(ptsEarnedRadio)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(ptsLostRadio))
-						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 329, GroupLayout.PREFERRED_SIZE))
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 
 		studentGradeTable = new JTable();
+		studentGradeTable.setFont(new Font("Tahoma", Font.BOLD, 14));
 		scrollPane.setViewportView(studentGradeTable);
 		contentPanel.setLayout(gl_contentPanel);
 		studentGradeTable.setModel(displayAllStudents(managedCourse.getActiveStudents()));
@@ -355,6 +390,7 @@ public class AddGradeFrame extends JDialog {
 							studentOverallGrade.balanceAssignWeights();
 							studentOverallGrade.updateOverallGrade();
 						}
+						managedCourse.setActiveStudents(studentList);
 
 						// Updates the KwikGrade object's copy of the OverallGrade so it also has the updated scheme to be used for other frames.
 						if (gradeSchemeDropdown.getSelectedIndex() == 1) {
@@ -367,7 +403,6 @@ public class AddGradeFrame extends JDialog {
 							updateKwikGradeScheme(catNameDropdown, ugOverallGrade, totalAssignValue);
 							updateKwikGradeScheme(catNameDropdown, gradOverallGrade, totalAssignValue);
 						}
-						managedCourse.setActiveStudents(studentList);
 						FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
 						FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
 						

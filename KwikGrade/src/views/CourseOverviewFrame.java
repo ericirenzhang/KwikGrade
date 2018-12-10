@@ -68,7 +68,7 @@ public class CourseOverviewFrame extends JDialog {
 		String newTitle = managedCourse.getCourseNum()+" "+managedCourse.getCourseTerm()+" "+managedCourse.getCourseTitle();
 		setTitle(newTitle);
 
-		setBounds(100, 100, 746, 586);
+		setBounds(100, 100, 746, 700);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -80,7 +80,7 @@ public class CourseOverviewFrame extends JDialog {
 
 		// Add Student Table
 		JScrollPane studentDisplayTableScrollPane = new JScrollPane();
-		studentDisplayTableScrollPane.setBounds(10, 38, 545, 498);
+		studentDisplayTableScrollPane.setBounds(10, 38, 545, 620);
 		contentPanel.add(studentDisplayTableScrollPane);
 		studentDisplayTable = new JTable();
 		studentDisplayTable.setGridColor(Color.BLACK); // set lines to black for Mac
@@ -92,7 +92,7 @@ public class CourseOverviewFrame extends JDialog {
 
 		// Add KwikStats Table
 		JScrollPane kwikStatsTableScrollPane = new JScrollPane();
-		kwikStatsTableScrollPane.setBounds(565, 315, 155, 221);
+		kwikStatsTableScrollPane.setBounds(567, 488, 155, 170);
 		contentPanel.add(kwikStatsTableScrollPane);
 		kwikStatsTable = new JTable();
 		kwikStatsTable.setGridColor(Color.BLACK); // set lines to black for Mac
@@ -116,13 +116,34 @@ public class CourseOverviewFrame extends JDialog {
 				addStudent.setVisible(true);
 
 				// Update our models for the current frame
-				studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
-				updateStatsModel(managedCourse, statsTableModel);
+				studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
+				updateStatsModel(getManagedCourse(), statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}
 		});
-		addStudentButton.setBounds(565, 11, 155, 40);
+		addStudentButton.setBounds(565, 36, 155, 40);
 		contentPanel.add(addStudentButton);
+		
+		JButton dropStudentButton = new JButton("Drop Student");
+		dropStudentButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(studentDisplayTable.getSelectedRow() < 0) {
+					JOptionPane.showMessageDialog(null, "No student selected!");
+					return;
+				}
+				else {
+					Student studentToDrop = managedCourse.getActiveStudents().get(studentDisplayTable.getSelectedRow());
+					managedCourse.removeStudent(studentToDrop);
+					studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
+					updateStatsModel(managedCourse, statsTableModel);
+					kwikStatsTable.setModel(statsTableModel);
+					FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
+					FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
+				}
+			}
+		});
+		dropStudentButton.setBounds(565, 85, 155, 40);
+		contentPanel.add(dropStudentButton);
 		
 		JButton manageStudentButton = new JButton("Manage Student");
 		manageStudentButton.addActionListener(new ActionListener() {
@@ -138,15 +159,26 @@ public class CourseOverviewFrame extends JDialog {
 					manageStudentFrame.setModal(true);
 					manageStudentFrame.setVisible(true);
 
-					studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
-					updateStatsModel(managedCourse, statsTableModel);
+					studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
+					updateStatsModel(getManagedCourse(), statsTableModel);
 					kwikStatsTable.setModel(statsTableModel);
 				}
 
 			}
 		});
-		manageStudentButton.setBounds(565, 62, 155, 40);
+		manageStudentButton.setBounds(565, 136, 155, 40);
 		contentPanel.add(manageStudentButton);
+		
+		JButton inactiveStudentsButton = new JButton("Inactive Students");
+		inactiveStudentsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ViewDroppedStudents viewDroppedStudents = new ViewDroppedStudents(getManagedCourse().getInactiveStudents());
+				viewDroppedStudents.setModal(true);
+				viewDroppedStudents.setVisible(true);
+			}
+		});
+		inactiveStudentsButton.setBounds(565, 187, 155, 40);
+		contentPanel.add(inactiveStudentsButton);
 		
 		// Double click on a student to manage
 		studentDisplayTable.addMouseListener(new MouseAdapter() {
@@ -167,28 +199,46 @@ public class CourseOverviewFrame extends JDialog {
 				addGrade.setModal(true);
 				addGrade.setVisible(true);
 
-				studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
-				updateStatsModel(managedCourse, statsTableModel);
+				studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
+				updateStatsModel(getManagedCourse(), statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}
 		});
 
-		addGradeButton.setBounds(565, 110, 155, 40);
+		addGradeButton.setBounds(565, 238, 155, 40);
 		contentPanel.add(addGradeButton);
 		
 		JButton manageCategoryButton = new JButton("Manage Categories");
 		manageCategoryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ManageCategoriesFrame manageCategoriesFrame = new ManageCategoriesFrame(managedCourse);
+				ManageCategoriesFrame manageCategoriesFrame = new ManageCategoriesFrame(getManagedCourse());
 				manageCategoriesFrame.setModal(true);
 				manageCategoriesFrame.setVisible(true);
 
-				studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
-				updateStatsModel(managedCourse, statsTableModel);
+				studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
+				updateStatsModel(getManagedCourse(), statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}
 		});
-		manageCategoryButton.setBounds(565, 161, 155, 40);
+
+
+		JButton addCurveButton = new JButton("Add Curve");
+		addCurveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AddCurveFrame addCurveFrame = new AddCurveFrame(getManagedCourse());
+				addCurveFrame.setModal(true);
+				addCurveFrame.setVisible(true);
+
+				studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
+				updateStatsModel(getManagedCourse(), statsTableModel);
+				kwikStatsTable.setModel(statsTableModel);
+			}
+		});
+		addCurveButton.setBounds(567, 341, 155, 40);
+		contentPanel.add(addCurveButton);
+
+
+		manageCategoryButton.setBounds(565, 289, 155, 40);
 		contentPanel.add(manageCategoryButton);
 		
 		JButton saveCloseButton = new JButton("Save and Close");
@@ -200,7 +250,8 @@ public class CourseOverviewFrame extends JDialog {
 				dispose();
 			}
 		});
-		saveCloseButton.setBounds(565, 212, 155, 40);
+		saveCloseButton.setBounds(567, 436, 155, 40);
 		contentPanel.add(saveCloseButton);
+
 	}
 }

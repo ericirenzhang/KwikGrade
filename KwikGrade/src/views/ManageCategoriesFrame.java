@@ -19,6 +19,10 @@ public class ManageCategoriesFrame extends JDialog {
 	private GradingSchemeGrid gradingSchemeGrid;
 	private OverallGrade overallGradeScheme;
 
+	public OverallGrade getOverallGradeScheme() {
+		return this.overallGradeScheme;
+	}
+
 	/**
 	 * Create the dialog.
 	 */
@@ -34,7 +38,11 @@ public class ManageCategoriesFrame extends JDialog {
 		contentPanel.setLayout(null);
 
 		GridBagConstraints frameConstraints = new GridBagConstraints();
+		frameConstraints.gridx = 0;
+		frameConstraints.gridy = 1;
+		frameConstraints.weighty = 1;
 
+		// Dropdown menu
 		JComboBox studentStatusDropdown = new JComboBox();
 		studentStatusDropdown.addItem("Undergraduate");
 		studentStatusDropdown.addItem("Graduate");
@@ -58,14 +66,63 @@ public class ManageCategoriesFrame extends JDialog {
 			}
 		});
 
-		studentStatusDropdown.setBounds(382, 127, 130, 26);
+		studentStatusDropdown.setBounds(52, 103, 148, 26);
 		contentPanel.add(studentStatusDropdown);
 
-		// Add panel to frame
-		frameConstraints.gridx = 0;
-		frameConstraints.gridy = 1;
-		frameConstraints.weighty = 1;
+		// Labels
+		JLabel titleLabel = new JLabel("Manage Categories");
+		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		titleLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
+		titleLabel.setBounds(42, 31, 212, 33);
+		contentPanel.add(titleLabel);
 
+		JLabel selectStudentLabel = new JLabel("Select the student scheme that you'd like to modify:");
+		selectStudentLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		selectStudentLabel.setBounds(42, 76, 348, 16);
+		contentPanel.add(selectStudentLabel);
+
+		// Buttons
+		JButton addCategoryButton = new JButton("Add a Category");
+		addCategoryButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AddCategoryFrame addCategory = new AddCategoryFrame(getOverallGradeScheme());
+				addCategory.setModal(true);
+				addCategory.setVisible(true);
+
+				// Rerenders a the grading scheme by removing/adding to the content panel.
+				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
+				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
+				contentPanel.remove(gradingSchemeScrollPane);
+				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
+				contentPanel.add(gradingSchemeScrollPane);
+				contentPanel.revalidate();
+				contentPanel.repaint();
+			}
+		});
+		addCategoryButton.setBounds(801, 41, 179, 29);
+		contentPanel.add(addCategoryButton);
+
+		JButton btnDeleteCategory = new JButton("Delete a Category");
+		btnDeleteCategory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DeleteCategoryFrame deleteCategory = new DeleteCategoryFrame(getOverallGradeScheme());
+				deleteCategory.setModal(true);
+				deleteCategory.setVisible(true);
+
+				// Rerenders a the grading scheme by removing/adding to the content panel.
+				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
+				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
+				contentPanel.remove(gradingSchemeScrollPane);
+				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
+				contentPanel.add(gradingSchemeScrollPane);
+				contentPanel.revalidate();
+				contentPanel.repaint();
+			}
+		});
+		btnDeleteCategory.setBounds(801, 71, 179, 29);
+		contentPanel.add(btnDeleteCategory);
+
+		// Save and Cancel buttons
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
@@ -73,9 +130,6 @@ public class ManageCategoriesFrame extends JDialog {
 		JButton saveButton = new JButton("Save and Add");
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// Create a new student from the TextFields.
-
-				//pulls data into variables to make code easier to read/follow, and to allow for a check of required fields
 				String gradUndergradStatus = (String) studentStatusDropdown.getSelectedItem();
 
 				if (studentStatusDropdown.getSelectedIndex() == -1) {
@@ -135,28 +189,46 @@ public class ManageCategoriesFrame extends JDialog {
 			if(currStudent.getStatus().equals(gradUndergradStatus)) {
 				studentOverallGrade = currStudent.getOverallGradeObject();
 
-				// Iterate through all categories and update weights.
 				ArrayList<CourseCategory> studentCourseCategoryList = studentOverallGrade.getCourseCategoryList();
-				for(int courseIndex = 0; courseIndex < studentCourseCategoryList.size(); courseIndex++) {
-					CourseCategory currCategory = studentCourseCategoryList.get(courseIndex);
+				ArrayList<CourseCategory> courseCategoriesFromField = overallGradeFromFields.getCourseCategoryList();
 
-					// TODO: index will be the same for now but after "Add Category" button, this may need to be changed
-					double newCategoryWeight = overallGradeFromFields.getCourseCategoryList().get(courseIndex).getWeight();
-					currCategory.setWeight(newCategoryWeight);
-
-					// Iterate through all SubCategories and update weights.
-					ArrayList<SubCategory> studentSubCategoryList = currCategory.getSubCategoryList();
-					for(int subCategoryIndex = 0; subCategoryIndex < studentSubCategoryList.size(); subCategoryIndex++) {
-						SubCategory currSubCategory = studentSubCategoryList.get(subCategoryIndex);
-
-						// TODO: index will be the same for now but after "Add Category" button, this may need to be changed? Maybe not cause it's SubCategory
-						SubCategory subCategoryFromFields = overallGradeFromFields.getCourseCategoryList().get(courseIndex).getSubCategoryList().get(subCategoryIndex);
-						currSubCategory.setWeight(subCategoryFromFields.getWeight());
+				// If the number of CourseCategory fields are less than a Student's, then that means Categories were deleted.
+				if(courseCategoriesFromField.size() < studentCourseCategoryList.size()) {
+					for (int courseIndex = 0; courseIndex < studentCourseCategoryList.size(); courseIndex++) {
+						CourseCategory currCategory = studentCourseCategoryList.get(courseIndex);
+						if(!isCategoryInCategoryList(currCategory, courseCategoriesFromField)) {
+							studentOverallGrade.deleteCategory(currCategory.getName());
+						}
 					}
-					currCategory.setSubCategoryList(studentSubCategoryList);
+				}
+
+				// By this point, if a Category was deleted, the Student should have matching indices with overallGradeFromFields.
+				// Iterate through all categories and update weights in the Student.
+				for(int courseIndex = 0; courseIndex < overallGradeFromFields.getCourseCategoryList().size(); courseIndex++) {
+					// If the number of CourseCategory fields are greater than a Student's, then that means Categories were added.
+					if(courseIndex > studentCourseCategoryList.size() - 1) {
+						CourseCategory currCategory = overallGradeFromFields.getCourseCategoryList().get(courseIndex);
+						studentOverallGrade.addCourseCategory(currCategory);
+					} else {
+						// Otherwise Update Course Categories
+						CourseCategory currCategory = studentCourseCategoryList.get(courseIndex);
+						double newCategoryWeight = overallGradeFromFields.getCourseCategoryList().get(courseIndex).getWeight();
+						currCategory.setWeight(newCategoryWeight);
+
+						// Iterate through all SubCategories and update weights.
+						ArrayList<SubCategory> studentSubCategoryList = currCategory.getSubCategoryList();
+						for(int subCategoryIndex = 0; subCategoryIndex < studentSubCategoryList.size(); subCategoryIndex++) {
+							SubCategory currSubCategory = studentSubCategoryList.get(subCategoryIndex);
+
+							SubCategory subCategoryFromFields = overallGradeFromFields.getCourseCategoryList().get(courseIndex).getSubCategoryList().get(subCategoryIndex);
+							currSubCategory.setWeight(subCategoryFromFields.getWeight());
+						}
+						currCategory.setSubCategoryList(studentSubCategoryList);
+					}
 				}
 				studentOverallGrade.setCategoryList(studentCourseCategoryList);
 				currStudent.setOverallGrade(studentOverallGrade);
+
 				// Because Student list of ActiveStudents is casted, we need to re-assign the status.
 				currStudent.setStatus(gradUndergradStatus);
 			}
@@ -164,13 +236,47 @@ public class ManageCategoriesFrame extends JDialog {
 		// Update the Students weightings.
 		managedCourse.setActiveStudents(students);
 
-		// Update the default schema as well
+		// Create a clone of the category with 0 points for all SubCategory items to assign back to the default schema
+		double overallGradeNew = studentOverallGrade.getOverallGrade();
+		ArrayList<CourseCategory> newCategoryList = new ArrayList<CourseCategory>();
+		for(int i = 0; i < studentOverallGrade.getCourseCategoryList().size(); i++) {
+			String newCategoryName = studentOverallGrade.getCourseCategoryList().get(i).getName();
+			double newCategoryWeight = studentOverallGrade.getCourseCategoryList().get(i).getWeight();
+			CourseCategory clonedCategory = new CourseCategory(newCategoryName, newCategoryWeight, new ArrayList<SubCategory>());
+
+			// Clone the subcategories
+			for(int j = 0; j < studentOverallGrade.getCourseCategoryList().get(i).getSubCategoryList().size(); j++) {
+				SubCategory originalSubCategory = studentOverallGrade.getCourseCategoryList().get(i).getSubCategoryList().get(j);
+				String newSubCategoryName = originalSubCategory.getName();
+				double newSubCategoryWeight = originalSubCategory.getWeight();
+				double newSubCategoryTotalPoints = originalSubCategory.getTotalPoints();
+				SubCategory clonedSubCategory = new SubCategory(newSubCategoryName, newSubCategoryWeight, 0, newSubCategoryTotalPoints);
+				clonedCategory.addSubCategory(clonedSubCategory);
+			}
+			newCategoryList.add(clonedCategory);
+		}
+		OverallGrade clonedOverallGrade = new OverallGrade(overallGradeNew, newCategoryList);
+
 		if (gradUndergradStatus.equals("Undergraduate")) {
-			managedCourse.setCourseUnderGradDefaultGradeScheme(studentOverallGrade);
+			managedCourse.setCourseUnderGradDefaultGradeScheme(clonedOverallGrade);
 		}
 		else {
-			managedCourse.setCourseGradDefaultGradeScheme(studentOverallGrade);
+			managedCourse.setCourseGradDefaultGradeScheme(clonedOverallGrade);
 		}
 	}
 
+	/**
+	 * Given a courseCategory, check if it's in courseCategories by checking on the name.
+	 * @param courseCategory
+	 * @param courseCategories
+	 * @return
+	 */
+	public boolean isCategoryInCategoryList(CourseCategory courseCategory, ArrayList<CourseCategory> courseCategories) {
+		for(int i = 0; i < courseCategories.size(); i++) {
+			if(courseCategory.getName().equals(courseCategories.get(i).getName())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

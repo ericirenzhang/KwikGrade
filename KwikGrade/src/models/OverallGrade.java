@@ -94,7 +94,17 @@ public class OverallGrade implements Serializable {
 		OverallGrade newOverallGrade = new OverallGrade(overallGradeNew, newCategoryList);
 		return newOverallGrade;
 	}
-	
+
+	public void deleteCategory(String categoryName) {
+		for(int i = 0; i < categoryList.size(); i++) {
+			CourseCategory currCategory = categoryList.get(i);
+			if(currCategory.getName().equals(categoryName)) {
+				categoryList.remove(currCategory);
+				break;
+			}
+		}
+	}
+
 	//==========================
 	// Getters
 	//==========================

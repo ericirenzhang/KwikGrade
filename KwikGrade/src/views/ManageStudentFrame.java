@@ -9,6 +9,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class ManageStudentFrame extends JDialog {
 	private final JPanel contentPanel = new JPanel();
@@ -16,12 +18,16 @@ public class ManageStudentFrame extends JDialog {
 	private JTextField lNameField;
 	private JTextField buIdField;
 	private JTextField emailField;
+	private JTextArea commentTextArea;
 	private JTextField mInitialField;
+	private JLabel fNameLabel;
 	private JLabel lNameLabel;
 	private JLabel buIdLabel;
 	private JLabel emailLabel;
 	private JLabel statusLabel;
 	private JLabel mInitialLabel;
+	private JLabel commentsLabel;
+	private JLabel titleLabel;
 
 	private GradingSchemeGrid gradingSchemeGrid;
 	private OverallGrade managedOverallGradeScheme;
@@ -46,55 +52,81 @@ public class ManageStudentFrame extends JDialog {
 		// ===========================
 		// Student information/Fields
 		// ===========================
+		titleLabel = new JLabel("Manage a Student");
+		titleLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
+		titleLabel.setBounds(52, 31, 194, 26);
+		contentPanel.add(titleLabel);
+
 		fNameField = new JTextField(managedStudent.getfName());
-		fNameField.setBounds(53, 60, 130, 26);
+		fNameField.setBounds(51, 81, 130, 26);
 		contentPanel.add(fNameField);
 		fNameField.setColumns(10);
 
 		mInitialField = new JTextField(managedStudent.getMiddleInitial());
-		mInitialField.setBounds(217, 60, 130, 26);
+		mInitialField.setBounds(215, 81, 130, 26);
 		mInitialField.setColumns(10);
 		contentPanel.add(mInitialField);
 
 		lNameField = new JTextField(managedStudent.getlName());
-		lNameField.setBounds(382, 60, 130, 26);
+		lNameField.setBounds(380, 81, 130, 26);
 		lNameField.setColumns(10);
 		contentPanel.add(lNameField);
 
 		buIdField = new JTextField(managedStudent.getBuId());
-		buIdField.setBounds(53, 124, 130, 26);
+		buIdField.setBounds(51, 145, 130, 26);
 		buIdField.setColumns(10);
 		contentPanel.add(buIdField);
 
 		emailField = new JTextField(managedStudent.getEmail());
-		emailField.setBounds(217, 124, 130, 26);
+		emailField.setBounds(215, 145, 130, 26);
 		emailField.setColumns(10);
 		contentPanel.add(emailField);
+		
+		commentTextArea = new JTextArea(managedStudent.getComment());
+		//added key listener for tab so user can tab through
+		commentTextArea.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                    if (e.getModifiers() > 0) {
+                    	commentTextArea.transferFocusBackward();
+                    } else {
+                    	commentTextArea.transferFocus();
+                    }
+                    e.consume();
+				}
+			}
+		});
+		commentTextArea.setBounds(567, 82, 218, 94);
+		contentPanel.add(commentTextArea);
 
-		JLabel lblFirstName = new JLabel("First Name (Required)");
-		lblFirstName.setBounds(53, 45, 130, 16);
-		contentPanel.add(lblFirstName);
+		fNameLabel = new JLabel("First Name (Required)");
+		fNameLabel.setBounds(51, 66, 152, 16);
+		contentPanel.add(fNameLabel);
 
 		lNameLabel = new JLabel("Last Name (Required)");
-		lNameLabel.setBounds(382, 45, 130, 16);
+		lNameLabel.setBounds(380, 66, 144, 16);
 		contentPanel.add(lNameLabel);
 
 		buIdLabel = new JLabel("BU ID (Required)");
-		buIdLabel.setBounds(53, 109, 130, 16);
+		buIdLabel.setBounds(51, 130, 130, 16);
 		contentPanel.add(buIdLabel);
 
 		emailLabel = new JLabel("Email (Required)");
-		emailLabel.setBounds(217, 109, 130, 16);
+		emailLabel.setBounds(215, 130, 130, 16);
 		contentPanel.add(emailLabel);
 
 		statusLabel = new JLabel("Status (Required)");
-		statusLabel.setBounds(382, 109, 130, 16);
+		statusLabel.setBounds(380, 130, 130, 16);
 		contentPanel.add(statusLabel);
 
-
 		mInitialLabel = new JLabel("Middle Initial (Optional)");
-		mInitialLabel.setBounds(217, 45, 130, 16);
+		mInitialLabel.setBounds(215, 66, 153, 16);
 		contentPanel.add(mInitialLabel);
+		
+		commentsLabel = new JLabel("Notes:");
+		commentsLabel.setBounds(567, 67, 46, 14);
+		contentPanel.add(commentsLabel);
 
 		JComboBox studentStatusDropdown = new JComboBox();
 		studentStatusDropdown.addItem("Undergraduate");
@@ -123,7 +155,7 @@ public class ManageStudentFrame extends JDialog {
 			}
 		});
 
-		studentStatusDropdown.setBounds(382, 127, 130, 26);
+		studentStatusDropdown.setBounds(380, 148, 130, 26);
 		contentPanel.add(studentStatusDropdown);
 
 		// Add panel to frame
@@ -135,7 +167,7 @@ public class ManageStudentFrame extends JDialog {
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-		JButton saveButton = new JButton("Save and Add");
+		JButton saveButton = new JButton("Save and Close");
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// Create a new student from the TextFields.
@@ -146,6 +178,7 @@ public class ManageStudentFrame extends JDialog {
 				String lName = lNameField.getText();
 				String buId = buIdField.getText();
 				String email = emailField.getText();
+				String comment;
 				String gradUndergradStatus = (String) studentStatusDropdown.getSelectedItem();
 
 				if (fName.equals("")||lName.equals("")||buId.equals("")||email.equals("")||studentStatusDropdown.getSelectedIndex()==-1) {
@@ -160,6 +193,14 @@ public class ManageStudentFrame extends JDialog {
 				else {
 					middleInitial = mInitialField.getText();
 				}
+				
+				//sets comment field, if it is not specified
+				if (commentTextArea.getText() == null) {
+					comment = "";
+				}
+				else {
+					comment = commentTextArea.getText();
+				}
 
 				// Update this student object. Have to use setters because this is in an inner function call
 				OverallGrade gradeFromFields = gradingSchemeGrid.getOverallGradeFromFields();
@@ -170,6 +211,7 @@ public class ManageStudentFrame extends JDialog {
 				managedStudent.setEmail(email);
 				managedStudent.setStatus(gradUndergradStatus);
 				managedStudent.setOverallGrade(gradeFromFields);
+				managedStudent.setComment(comment);
 
 				// Save the changes.
 				FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
