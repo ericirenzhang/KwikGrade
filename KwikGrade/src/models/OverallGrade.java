@@ -49,6 +49,7 @@ public class OverallGrade implements Serializable {
 	public void updateOverallGrade() {
 		this.overallGrade = 0;
 		for(int i = 0; i < this.categoryList.size(); i++) {
+			this.categoryList.get(i).updateCategoryFinalWeightedScore();
 			this.overallGrade += this.categoryList.get(i).getCategoryFinalWeightedScore();
 		}
 	}

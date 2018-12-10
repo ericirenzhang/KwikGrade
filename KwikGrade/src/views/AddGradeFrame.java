@@ -389,6 +389,7 @@ public class AddGradeFrame extends JDialog {
 							//function that balances the assignment weights
 							studentOverallGrade.balanceAssignWeights();
 							studentOverallGrade.updateOverallGrade();
+
 						}
 						managedCourse.setActiveStudents(studentList);
 
