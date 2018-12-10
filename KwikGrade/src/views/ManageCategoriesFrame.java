@@ -38,7 +38,11 @@ public class ManageCategoriesFrame extends JDialog {
 		contentPanel.setLayout(null);
 
 		GridBagConstraints frameConstraints = new GridBagConstraints();
+		frameConstraints.gridx = 0;
+		frameConstraints.gridy = 1;
+		frameConstraints.weighty = 1;
 
+		// Dropdown menu
 		JComboBox studentStatusDropdown = new JComboBox();
 		studentStatusDropdown.addItem("Undergraduate");
 		studentStatusDropdown.addItem("Graduate");
@@ -65,11 +69,60 @@ public class ManageCategoriesFrame extends JDialog {
 		studentStatusDropdown.setBounds(52, 103, 148, 26);
 		contentPanel.add(studentStatusDropdown);
 
-		// Add panel to frame
-		frameConstraints.gridx = 0;
-		frameConstraints.gridy = 1;
-		frameConstraints.weighty = 1;
+		// Labels
+		JLabel titleLabel = new JLabel("Manage Categories");
+		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		titleLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
+		titleLabel.setBounds(42, 31, 212, 33);
+		contentPanel.add(titleLabel);
 
+		JLabel selectStudentLabel = new JLabel("Select the student scheme that you'd like to modify:");
+		selectStudentLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		selectStudentLabel.setBounds(42, 76, 348, 16);
+		contentPanel.add(selectStudentLabel);
+
+		// Buttons
+		JButton addCategoryButton = new JButton("Add a Category");
+		addCategoryButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AddCategoryFrame addCategory = new AddCategoryFrame(getOverallGradeScheme());
+				addCategory.setModal(true);
+				addCategory.setVisible(true);
+
+				// Rerenders a the grading scheme by removing/adding to the content panel.
+				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
+				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
+				contentPanel.remove(gradingSchemeScrollPane);
+				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
+				contentPanel.add(gradingSchemeScrollPane);
+				contentPanel.revalidate();
+				contentPanel.repaint();
+			}
+		});
+		addCategoryButton.setBounds(801, 41, 179, 29);
+		contentPanel.add(addCategoryButton);
+
+		JButton btnDeleteCategory = new JButton("Delete a Category");
+		btnDeleteCategory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DeleteCategoryFrame deleteCategory = new DeleteCategoryFrame(getOverallGradeScheme());
+				deleteCategory.setModal(true);
+				deleteCategory.setVisible(true);
+
+				// Rerenders a the grading scheme by removing/adding to the content panel.
+				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
+				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
+				contentPanel.remove(gradingSchemeScrollPane);
+				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
+				contentPanel.add(gradingSchemeScrollPane);
+				contentPanel.revalidate();
+				contentPanel.repaint();
+			}
+		});
+		btnDeleteCategory.setBounds(801, 71, 179, 29);
+		contentPanel.add(btnDeleteCategory);
+
+		// Save and Cancel buttons
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
@@ -115,57 +168,6 @@ public class ManageCategoriesFrame extends JDialog {
 		gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
 		gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
 		contentPanel.add(gradingSchemeScrollPane);
-		
-		JLabel titleLabel = new JLabel("Manage Categories");
-		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		titleLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
-		titleLabel.setBounds(42, 31, 212, 33);
-		contentPanel.add(titleLabel);
-		
-		JLabel selectStudentLabel = new JLabel("Select the student scheme that you'd like to modify:");
-		selectStudentLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		selectStudentLabel.setBounds(42, 76, 348, 16);
-		contentPanel.add(selectStudentLabel);
-		
-		JButton addCategoryButton = new JButton("Add a new Category");
-		addCategoryButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				AddCategoryFrame addCategory = new AddCategoryFrame(getOverallGradeScheme());
-				addCategory.setModal(true);
-				addCategory.setVisible(true);
-
-				// Rerenders a the grading scheme by removing/adding to the content panel.
-				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
-				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
-				contentPanel.remove(gradingSchemeScrollPane);
-				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
-				contentPanel.add(gradingSchemeScrollPane);
-				contentPanel.revalidate();
-				contentPanel.repaint();
-			}
-		});
-		addCategoryButton.setBounds(801, 41, 179, 29);
-		contentPanel.add(addCategoryButton);
-		
-		JButton btnDeleteCategory = new JButton("Delete a Category");
-		btnDeleteCategory.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				DeleteCategoryFrame deleteCategory = new DeleteCategoryFrame(getOverallGradeScheme());
-				deleteCategory.setModal(true);
-				deleteCategory.setVisible(true);
-
-				// Rerenders a the grading scheme by removing/adding to the content panel.
-				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
-				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
-				contentPanel.remove(gradingSchemeScrollPane);
-				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
-				contentPanel.add(gradingSchemeScrollPane);
-				contentPanel.revalidate();
-				contentPanel.repaint();
-			}
-		});
-		btnDeleteCategory.setBounds(801, 71, 179, 29);
-		contentPanel.add(btnDeleteCategory);
 	}
 
 	/**

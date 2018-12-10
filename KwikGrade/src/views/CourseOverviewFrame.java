@@ -68,7 +68,7 @@ public class CourseOverviewFrame extends JDialog {
 		String newTitle = managedCourse.getCourseNum()+" "+managedCourse.getCourseTerm()+" "+managedCourse.getCourseTitle();
 		setTitle(newTitle);
 
-		setBounds(100, 100, 746, 586);
+		setBounds(100, 100, 746, 700);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -80,7 +80,7 @@ public class CourseOverviewFrame extends JDialog {
 
 		// Add Student Table
 		JScrollPane studentDisplayTableScrollPane = new JScrollPane();
-		studentDisplayTableScrollPane.setBounds(10, 38, 545, 498);
+		studentDisplayTableScrollPane.setBounds(10, 38, 545, 620);
 		contentPanel.add(studentDisplayTableScrollPane);
 		studentDisplayTable = new JTable();
 		studentDisplayTable.setGridColor(Color.BLACK); // set lines to black for Mac
@@ -92,7 +92,7 @@ public class CourseOverviewFrame extends JDialog {
 
 		// Add KwikStats Table
 		JScrollPane kwikStatsTableScrollPane = new JScrollPane();
-		kwikStatsTableScrollPane.setBounds(565, 366, 155, 170);
+		kwikStatsTableScrollPane.setBounds(567, 488, 155, 170);
 		contentPanel.add(kwikStatsTableScrollPane);
 		kwikStatsTable = new JTable();
 		kwikStatsTable.setGridColor(Color.BLACK); // set lines to black for Mac
@@ -121,7 +121,7 @@ public class CourseOverviewFrame extends JDialog {
 				kwikStatsTable.setModel(statsTableModel);
 			}
 		});
-		addStudentButton.setBounds(565, 11, 155, 40);
+		addStudentButton.setBounds(565, 36, 155, 40);
 		contentPanel.add(addStudentButton);
 		
 		JButton dropStudentButton = new JButton("Drop Student");
@@ -142,7 +142,7 @@ public class CourseOverviewFrame extends JDialog {
 				}
 			}
 		});
-		dropStudentButton.setBounds(565, 60, 155, 40);
+		dropStudentButton.setBounds(565, 85, 155, 40);
 		contentPanel.add(dropStudentButton);
 		
 		JButton manageStudentButton = new JButton("Manage Student");
@@ -166,7 +166,7 @@ public class CourseOverviewFrame extends JDialog {
 
 			}
 		});
-		manageStudentButton.setBounds(565, 111, 155, 40);
+		manageStudentButton.setBounds(565, 136, 155, 40);
 		contentPanel.add(manageStudentButton);
 		
 		JButton inactiveStudentsButton = new JButton("Inactive Students");
@@ -177,7 +177,7 @@ public class CourseOverviewFrame extends JDialog {
 				viewDroppedStudents.setVisible(true);
 			}
 		});
-		inactiveStudentsButton.setBounds(565, 162, 155, 40);
+		inactiveStudentsButton.setBounds(565, 187, 155, 40);
 		contentPanel.add(inactiveStudentsButton);
 		
 		// Double click on a student to manage
@@ -205,7 +205,7 @@ public class CourseOverviewFrame extends JDialog {
 			}
 		});
 
-		addGradeButton.setBounds(565, 213, 155, 40);
+		addGradeButton.setBounds(565, 238, 155, 40);
 		contentPanel.add(addGradeButton);
 		
 		JButton manageCategoryButton = new JButton("Manage Categories");
@@ -220,7 +220,25 @@ public class CourseOverviewFrame extends JDialog {
 				kwikStatsTable.setModel(statsTableModel);
 			}
 		});
-		manageCategoryButton.setBounds(565, 264, 155, 40);
+
+
+		JButton addCurveButton = new JButton("Add Curve");
+		addCurveButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AddCurveFrame addCurveFrame = new AddCurveFrame(getManagedCourse());
+				addCurveFrame.setModal(true);
+				addCurveFrame.setVisible(true);
+
+				studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
+				updateStatsModel(getManagedCourse(), statsTableModel);
+				kwikStatsTable.setModel(statsTableModel);
+			}
+		});
+		addCurveButton.setBounds(567, 341, 155, 40);
+		contentPanel.add(addCurveButton);
+
+
+		manageCategoryButton.setBounds(565, 289, 155, 40);
 		contentPanel.add(manageCategoryButton);
 		
 		JButton saveCloseButton = new JButton("Save and Close");
@@ -232,7 +250,8 @@ public class CourseOverviewFrame extends JDialog {
 				dispose();
 			}
 		});
-		saveCloseButton.setBounds(565, 315, 155, 40);
+		saveCloseButton.setBounds(567, 436, 155, 40);
 		contentPanel.add(saveCloseButton);
+
 	}
 }
