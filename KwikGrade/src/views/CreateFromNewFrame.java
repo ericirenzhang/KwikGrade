@@ -245,10 +245,8 @@ public class CreateFromNewFrame extends JDialog {
 		btnUseSameScheme.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				DefaultTableModel original = (DefaultTableModel) ugCourseCategoryTable.getModel();
-				DefaultTableModel gradTableModel = new DefaultTableModel(ugCourseCategoryTable.getRowCount(), original.getColumnCount());
-				for (int col = 0; col < original.getColumnCount(); col++) {
-					gradTableModel.addColumn(original.getColumnName(col));
-				}
+				gradTableModel = (DefaultTableModel) ugCourseCategoryTable.getModel();
+				//gradTableModel = new DefaultTableModel(ugCourseCategoryTable.getRowCount(), original.getColumnCount());
 				selectRows(ugCourseCategoryTable, 0, ugCourseCategoryTable.getRowCount());
 				int[] selectedRows = ugCourseCategoryTable.getSelectedRows();
 				for (int targetRow = 0; targetRow < selectedRows.length; targetRow++) {
