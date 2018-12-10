@@ -51,12 +51,11 @@ public class GradingSchemeGrid {
 
     public void configureGradingSchemeGrid(GradingSchemeType gradingSchemeType) {
         this.gradingSchemeType = gradingSchemeType;
-        String finalGrade = String.format("%.2f%%", this.modifiedGradeScheme.getOverallGrade());
+        String finalGrade = String.format("%.2f%%", this.initialGradeScheme.getOverallGrade());
 
         switch(gradingSchemeType) {
             case ADD_STUDENT:
                 gradingSchemeRowCount = 5;
-                // TODO: this Points Gained may need to dynamically change based on the switch we will add
                 firstColumnText = new String[]{"", "", "Final Raw Score", "Points Gained on Item", "Total Points on Item"};
                 secondColumnText = new String[]{"Final Grade", "", finalGrade, "", ""};
                 GRADING_SCHEME_HEIGHT = 300;
@@ -120,8 +119,7 @@ public class GradingSchemeGrid {
         }
 
         this.hasFinishedRendering = true;
-
-        rerenderGradeValues();
+        rerenderGradeValues(true);
 
         // Add everything we just built into a JScrollPane.
         JScrollPane scrollPane = new JScrollPane();
@@ -150,12 +148,14 @@ public class GradingSchemeGrid {
                  }
                  public void removeUpdate(DocumentEvent e) {
                      if(!currTextField.getText().equals("")) {
-                         rerenderGradeValues();
-                     }                 }
+                         rerenderGradeValues(false);
+                     }
+                 }
                  public void insertUpdate(DocumentEvent e) {
                      if(!currTextField.getText().equals("")) {
-                         rerenderGradeValues();
-                     }                 }
+                         rerenderGradeValues(false);
+                     }
+                 }
             });
 
 
@@ -231,12 +231,12 @@ public class GradingSchemeGrid {
                 }
                 public void removeUpdate(DocumentEvent e) {
                     if(!currTextField.getText().equals("")) {
-                        rerenderGradeValues();
+                        rerenderGradeValues(false);
                     }
                 }
                 public void insertUpdate(DocumentEvent e) {
                     if(!currTextField.getText().equals("")) {
-                        rerenderGradeValues();
+                        rerenderGradeValues(false);
                     }                }
             });
 
@@ -434,12 +434,15 @@ public class GradingSchemeGrid {
     /**
      * When the user updates any of the JTextFields, we need to update all the appropriate JLabels.
      */
-    public void rerenderGradeValues() {
+    public void rerenderGradeValues(boolean isInitialRender) {
         // TODO: refactor this boolean, hacky fix for now in order to use a DocumentListener
         if(!this.hasFinishedRendering) {
             return;
         }
-        this.modifiedGradeScheme = getOverallGradeFromFields();
+        // TODO: refactor this boolean, hacky fix for now in order to enable proper display of curving
+        if(!isInitialRender) {
+            this.modifiedGradeScheme = getOverallGradeFromFields();
+        }
 
         JPanel currPanel;
 
