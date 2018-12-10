@@ -43,15 +43,17 @@ public class AddCurveFrame extends JDialog {
         percentLabel.setBounds(324, 186, 61, 16);
         contentPanel.add(percentLabel);
 
+        JLabel curveExampleLabel = new JLabel("(e.g. 10 to add 10% to each student grade)");
+        curveExampleLabel.setBounds(159, 153, 265, 30);
+        contentPanel.add(curveExampleLabel);
+
+        // TextFields
         curveAmountTextField = new JTextField();
         curveAmountTextField.setBounds(253, 181, 66, 26);
         contentPanel.add(curveAmountTextField);
         curveAmountTextField.setColumns(10);
         
-        JLabel curveExampleLabel = new JLabel("(e.g. 10 to add 10% to each student grade)");
-        curveExampleLabel.setBounds(159, 153, 265, 30);
-        contentPanel.add(curveExampleLabel);
-        
+        // Dropdown
         JComboBox curveDropdown = new JComboBox();
         curveDropdown.addItem("All Students");
         curveDropdown.addItem("Undergraduate");
@@ -74,7 +76,6 @@ public class AddCurveFrame extends JDialog {
                     return;
                 }
 
-//                String categoryName = curveAmountTextField.getText();
                 Double curveAmount = Double.parseDouble(curveAmountTextField.getText());
 
                 ArrayList<Student> studentList = managedCourse.getActiveStudents();
