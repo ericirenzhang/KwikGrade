@@ -246,7 +246,6 @@ public class CreateFromNewFrame extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				DefaultTableModel original = (DefaultTableModel) ugCourseCategoryTable.getModel();
 				gradTableModel = (DefaultTableModel) ugCourseCategoryTable.getModel();
-				//gradTableModel = new DefaultTableModel(ugCourseCategoryTable.getRowCount(), original.getColumnCount());
 				selectRows(ugCourseCategoryTable, 0, ugCourseCategoryTable.getRowCount());
 				int[] selectedRows = ugCourseCategoryTable.getSelectedRows();
 				for (int targetRow = 0; targetRow < selectedRows.length; targetRow++) {
@@ -379,11 +378,8 @@ public class CreateFromNewFrame extends JDialog {
 		if(null != table.getCellEditor()) {
 			table.getCellEditor().stopCellEditing();
 		}
-        // Use this mode to demonstrate the following examples
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        // Needs to be set or rows cannot be selected
         table.setRowSelectionAllowed(true);
-        // Select rows from start to end if start is 0 we change to 1 or leave it (used to preserve coloums headers)
         table.setRowSelectionInterval(start, end - 1);
     }
 		
