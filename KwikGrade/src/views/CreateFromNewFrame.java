@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Vector;
 
 public class CreateFromNewFrame extends JDialog {
 
@@ -239,7 +240,28 @@ public class CreateFromNewFrame extends JDialog {
 		});
 		gradSubRowButton.setBounds(429, 568, 121, 23);
 		contentPanel.add(gradSubRowButton);
-
+		
+		JButton btnUseSameScheme = new JButton("Use Same Scheme For Both Categories");
+		btnUseSameScheme.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DefaultTableModel original = (DefaultTableModel) ugCourseCategoryTable.getModel();
+				gradTableModel = (DefaultTableModel) ugCourseCategoryTable.getModel();
+				selectRows(ugCourseCategoryTable, 0, ugCourseCategoryTable.getRowCount());
+				int[] selectedRows = ugCourseCategoryTable.getSelectedRows();
+				for (int targetRow = 0; targetRow < selectedRows.length; targetRow++) {
+				    int row = selectedRows[targetRow];
+				    int modelRow = ugCourseCategoryTable.convertRowIndexToModel(row);
+				    for (int col = 0; col < original.getColumnCount(); col++) {
+				    	gradTableModel.setValueAt(original.getValueAt(modelRow, col), targetRow, col);
+				    }
+				}
+				gradCourseCategoryTable.setModel(gradTableModel);
+				gradTableModelRows = ugTableModelRows;
+			}
+		});
+		btnUseSameScheme.setBounds(150, 591, 286, 29);
+		contentPanel.add(btnUseSameScheme);
+		
 		// Add OK and Cancel buttons
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -266,7 +288,18 @@ public class CreateFromNewFrame extends JDialog {
 					return;
 				}
 				
-				//Parses through and grabs the name and weight 
+				//check to make sure weights for table add up to 100
+ 				if (checkAddToHundred(ugCourseCategoryTable) == false || checkAddToHundred(gradCourseCategoryTable) == false) {
+ 					return;
+ 				}
+ 
+ 				//checks to make sure that all the values for a percentage are actual numbers
+ 				//parameterized both tables, into one function...only for you Sean ;)
+ 				if (checkForDouble(ugCourseCategoryTable) == false || checkForDouble(gradCourseCategoryTable) == false) {
+ 					return;
+ 				}
+ 				
+				//Parses through and grabs the name and weight
 				for(int ugIndex = 0; ugIndex < ugTableModelRows; ugIndex++) {
 					try {
 					String ugCategoryName = ugCourseCategoryTable.getValueAt(ugIndex, 0).toString();
@@ -339,7 +372,17 @@ public class CreateFromNewFrame extends JDialog {
 		tableModel.removeRow(tableModel.getRowCount()-1);
 		table.setModel(tableModel);
 	}
-
+	
+	//method to select all rows in the Undergrad table
+	private void selectRows(JTable table, int start, int end) {
+		if(null != table.getCellEditor()) {
+			table.getCellEditor().stopCellEditing();
+		}
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        table.setRowSelectionAllowed(true);
+        table.setRowSelectionInterval(start, end - 1);
+    }
+		
 	/**
 	 * Imports students by parsing a text file into this.importedStudentList.
 	 * @param filePath
@@ -394,6 +437,43 @@ public class CreateFromNewFrame extends JDialog {
 			System.out.println("COULD NOT FIND FILE!!!!");
 		}
 	}
+	
+	/**
+ 	 * Checks that all values where the user should have entered doubles are actually doubles
+ 	 * @param JTable
+ 	 * @return boolean
+ 	 */
+ 	public boolean checkForDouble(JTable gradeSchemeTable) {
+ 		for(int tableIndex = 0; tableIndex < gradeSchemeTable.getRowCount(); tableIndex++) {
+ 			try {
+ 				double catWeight = (Double.parseDouble(String.valueOf(gradeSchemeTable.getValueAt(tableIndex, 1)))/100);
+ 			}
+ 			catch (Exception overallGradeCreate) {
+ 				JOptionPane.showMessageDialog(null, "Make sure all Grading Scheme values are filled properly!");
+ 				return false;
+ 			}
+ 		}
+ 		return true;
+ 	}
+ 	
+	/**
+ 	 * Checks that all grade values add up to 100
+ 	 * @param JTable
+ 	 * @return boolean
+ 	 */
+ 	public boolean checkAddToHundred(JTable gradeSchemeTable) {
+ 		double catWeight = 0;
+ 		for(int tableIndex = 0; tableIndex < gradeSchemeTable.getRowCount(); tableIndex++) {
+ 			catWeight = catWeight + (Double.parseDouble(String.valueOf(gradeSchemeTable.getValueAt(tableIndex, 1))));
+ 		}
+ 		if (catWeight == 100) {
+ 			return true;
+ 		}
+ 		else {
+ 			JOptionPane.showMessageDialog(null, "Make sure your category weights add up to 100!");
+ 			return false;
+ 		}
+ 	}
 
 	//=============================
 	// Getters
