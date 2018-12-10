@@ -1,5 +1,6 @@
 package views;
 
+import helpers.FileManager;
 import views.components.GradingSchemeGrid;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -32,14 +33,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class AddStudentFrame extends JDialog {
-	private static int GRADING_SCHEME_ROW_COUNT = 3;
-	private static int GRADING_SCHEME_WIDTH = 900;
-	private static int GRADING_SCHEME_HEIGHT = 300;
-	private static int GRADING_SCHEME_COL_OFFSET = 1;
-
-	private static Color LIGHT_GRAY_COLOR = new Color(0xF0F0F0);
-	private static Color DARK_GRAY_COLOR = new Color(0xE0E0E0);
-
 	private final JPanel contentPanel = new JPanel();
 	private JTextField fNameField;
 	private JTextField lNameField;
@@ -63,13 +56,11 @@ public class AddStudentFrame extends JDialog {
 			        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	Pattern pattern = Pattern.compile(VALID_EMAIL_ADDRESS_REGEX);
 
-	private boolean didSave;
-
 	/**
 	 * Create the dialog.
 	 */
-	public AddStudentFrame(Course currCourse) {
-		overallGradeScheme = currCourse.getCourseUnderGradDefaultGradeScheme();
+	public AddStudentFrame(Course managedCourse) {
+		overallGradeScheme = managedCourse.getCourseUnderGradDefaultGradeScheme();
 
 		setBounds(100, 100, 1000, 600);
 
@@ -153,17 +144,14 @@ public class AddStudentFrame extends JDialog {
 		JComboBox studentStatusDropdown = new JComboBox();
 		studentStatusDropdown.addItem("Undergraduate");
 		studentStatusDropdown.addItem("Graduate");
-		
-		//trying to get the grid to dynamiclly generate the grade scheme...need help on how the grid generator actually works
-		//TODO: need Sean's support on this, to get it to work
-		
+
 		studentStatusDropdown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (studentStatusDropdown.getSelectedItem().equals("Undergraduate")) {
-					overallGradeScheme = currCourse.getCourseUnderGradDefaultGradeScheme();
+					overallGradeScheme = managedCourse.getCourseUnderGradDefaultGradeScheme();
 				}
 				else {
-					overallGradeScheme = currCourse.getCourseGradDefaultGradeScheme();
+					overallGradeScheme = managedCourse.getCourseGradDefaultGradeScheme();
 				}
 				// Rerenders a the grading scheme by removing/adding to the content panel.
 				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
@@ -207,6 +195,7 @@ public class AddStudentFrame extends JDialog {
 				}
 				else {
 				String gradUndergrad = (String) studentStatusDropdown.getSelectedItem();
+
 				
 				if (fName.equals("")||lName.equals("")||buId.equals("")||email.equals("")||studentStatusDropdown.getSelectedIndex()==-1) {
 					JOptionPane.showMessageDialog(null, "Please make sure all required fields are filled!");
@@ -221,19 +210,21 @@ public class AddStudentFrame extends JDialog {
 					middleInitial = mInitialField.getText();
 				}
 								
-				//creates undergraduate or graduate students, and creates copies of default grading schemes
-				if (gradUndergrad.equals("Undergraduate")) {
+				// Creates undergraduate or graduate students, and creates copies of default grading schemes.
+				if (gradUndergradStatus.equals("Undergraduate")) {
 					studentOverallGrade = gradingSchemeGrid.getOverallGradeFromFields();
-					newStudent = new UndergraduateStudent(fName, middleInitial, lName, buId, email, gradUndergrad, studentOverallGrade);
+					newStudent = new UndergraduateStudent(fName, middleInitial, lName, buId, email, gradUndergradStatus, studentOverallGrade);
 				}
 				else {
 					studentOverallGrade = gradingSchemeGrid.getOverallGradeFromFields();
-					newStudent = new GraduateStudent(fName, middleInitial, lName, buId, email, gradUndergrad, studentOverallGrade);
+					newStudent = new GraduateStudent(fName, middleInitial, lName, buId, email, gradUndergradStatus, studentOverallGrade);
 				}
-
 				// Add the student to the course.
-				currCourse.addActiveStudents(newStudent);
-				didSave = true;
+				managedCourse.addActiveStudents(newStudent);
+
+				// Save the changes.
+				FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
+				FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
 				dispose();
 				}
 			}
@@ -249,8 +240,6 @@ public class AddStudentFrame extends JDialog {
 		});
 		cancelButton.setActionCommand("Cancel");
 		buttonPane.add(cancelButton);
-		
-		//TODO: Need Sean's help in figuring out how to make this dynamiclly display the overall grade scheme based on the dropdown
 
 		// ======================================
 		// Build Grading Scheme Grid Layout
@@ -260,9 +249,5 @@ public class AddStudentFrame extends JDialog {
 		gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
 		contentPanel.add(gradingSchemeScrollPane);
 
-	}
-
-	public boolean didSave() {
-		return this.didSave;
 	}
 }

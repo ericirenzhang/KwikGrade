@@ -35,6 +35,7 @@ public class GradingSchemeGrid {
     private static int gradingSchemeRowCount;
     private static String[] firstColumnText;
     private static String[] secondColumnText;
+    private boolean hasFinishedRendering;
 
     private OverallGrade initialGradeScheme, modifiedGradeScheme;
     private GradingSchemeType gradingSchemeType;
@@ -90,6 +91,7 @@ public class GradingSchemeGrid {
      * @return JScrollPane containing the entire grading scheme table
      */
     public JScrollPane buildGradingSchemeGrid() {
+        this.hasFinishedRendering = false;
         parentPanel.setBackground(Color.WHITE);
 
         // Append initial header/title columns.
@@ -122,6 +124,8 @@ public class GradingSchemeGrid {
             }
         }
 
+        this.hasFinishedRendering = true;
+
         rerenderGradeValues();
 
         // Add everything we just built into a JScrollPane.
@@ -148,40 +152,47 @@ public class GradingSchemeGrid {
         for(int rowIndex = 0; rowIndex < gradingSchemeRowCount; rowIndex++) {
             JPanel currPanel = schemeGrid.get(rowIndex).get(lastColumnIndex);
             JTextField currTextField = new JTextField();
-            currTextField.addFocusListener(new FocusListener() {
-                @Override
-                public void focusGained(FocusEvent e) {
-
-                }
-
-                @Override
-                public void focusLost(FocusEvent e) {
-                    rerenderGradeValues();
-                }
+            currTextField.getDocument().addDocumentListener(new DocumentListener() {
+                 public void changedUpdate(DocumentEvent e) {
+                 }
+                 public void removeUpdate(DocumentEvent e) {
+                     if(!currTextField.getText().equals("")) {
+                         rerenderGradeValues();
+                     }                 }
+                 public void insertUpdate(DocumentEvent e) {
+                     if(!currTextField.getText().equals("")) {
+                         rerenderGradeValues();
+                     }                 }
             });
+
 
             switch(rowIndex) {
                 case 0:
                     break;
                 case 1:
-                    currPanel.setLayout(new BoxLayout(currPanel, BoxLayout.Y_AXIS));
-                    // Show name and weight percentage
-                    currPanel.add(new JLabel(currSubCategory.getName() + " (Weight)"));
+                    currPanel.setLayout(new BorderLayout(0,0));
+                    currPanel.add(new JLabel(currSubCategory.getName() + " (Weight)"), BorderLayout.NORTH);
                     currTextField.setText(subCategoryWeightPercentage);
-                    currPanel.add(currTextField);
+                    currTextField.setPreferredSize(new Dimension(100, 30));
+                    currPanel.add(currTextField, BorderLayout.WEST);
+                    currPanel.add(new JLabel("%"), BorderLayout.CENTER);
                     break;
                 case 2:
                     currPanel.add(new JLabel(subCategoryNonWeightedPercentage));
                     break;
                 case 3:
-                    currPanel.setLayout(new BoxLayout(currPanel, BoxLayout.Y_AXIS));
+                    currPanel.setLayout(new BorderLayout(0,0));
                     currTextField.setText(Double.toString(currSubCategory.getPointsGained()));
-                    currPanel.add(currTextField);
+                    currTextField.setPreferredSize(new Dimension(100, 30));
+                    currPanel.add(currTextField, BorderLayout.WEST);
+                    currPanel.add(new JLabel("pts"), BorderLayout.CENTER);
                     break;
                 case 4:
-                    currPanel.setLayout(new BoxLayout(currPanel, BoxLayout.Y_AXIS));
+                    currPanel.setLayout(new BorderLayout(0,0));
                     currTextField.setText(Double.toString(currSubCategory.getTotalPoints()));
-                    currPanel.add(currTextField);
+                    currTextField.setPreferredSize(new Dimension(100, 30));
+                    currPanel.add(currTextField, BorderLayout.WEST);
+                    currPanel.add(new JLabel("pts"), BorderLayout.CENTER);
                     break;
                 default:
                     break;
@@ -207,24 +218,28 @@ public class GradingSchemeGrid {
         for(int rowIndex = 0; rowIndex < gradingSchemeRowCount; rowIndex++) {
             JPanel currPanel = schemeGrid.get(rowIndex).get(lastColumnIndex);
             JTextField currTextField = new JTextField();
-            currTextField.addFocusListener(new FocusListener() {
-                @Override
-                public void focusGained(FocusEvent e) {
-
+            currTextField.getDocument().addDocumentListener(new DocumentListener() {
+                public void changedUpdate(DocumentEvent e) {
                 }
-
-                @Override
-                public void focusLost(FocusEvent e) {
-                    rerenderGradeValues();
+                public void removeUpdate(DocumentEvent e) {
+                    if(!currTextField.getText().equals("")) {
+                        rerenderGradeValues();
+                    }
                 }
+                public void insertUpdate(DocumentEvent e) {
+                    if(!currTextField.getText().equals("")) {
+                        rerenderGradeValues();
+                    }                }
             });
 
             switch(rowIndex) {
                 case 0:
-                    currPanel.setLayout(new BoxLayout(currPanel, BoxLayout.Y_AXIS));
-                    currPanel.add(new JLabel(currCategory.getName() + " (Weight)"));
+                    currPanel.setLayout(new BorderLayout(0,0));
+                    currPanel.add(new JLabel(currCategory.getName() + " (Weight)"), BorderLayout.NORTH);
                     currTextField.setText(categoryWeightPercentage);
-                    currPanel.add(currTextField);
+                    currTextField.setPreferredSize(new Dimension(100, 30));
+                    currPanel.add(currTextField, BorderLayout.WEST);
+                    currPanel.add(new JLabel("%"), BorderLayout.CENTER);
                 case 1:
                     break;
                 case 2:
@@ -304,6 +319,10 @@ public class GradingSchemeGrid {
         return schemeGrid.get(0).size()-1;
     }
 
+    /**
+     * Iterates through all cells in this custom grid component and creates an OverallGrade object of all the fields.
+     * @return
+     */
     public OverallGrade getOverallGradeFromFields() {
         OverallGrade overallGradeFromFields = new OverallGrade();
 
@@ -391,21 +410,30 @@ public class GradingSchemeGrid {
     }
 
     /**
-     * When the user clicks away from the JTextField, we need to update all the appropriate JLabels.
+     * When the user updates any of the JTextFields, we need to update all the appropriate JLabels.
      */
     public void rerenderGradeValues() {
+        // TODO: refactor this boolean, hacky fix for now in order to use a DocumentListener
+        if(!this.hasFinishedRendering) {
+            return;
+        }
         this.modifiedGradeScheme = getOverallGradeFromFields();
 
-        // TODO: add check to avoid doing this in Manage Categories because Manage Categories only has two rows
-        // Manually update Final Grade column for now
-        JPanel currPanel = schemeGrid.get(2).get(1);
-        for (Component c : currPanel.getComponents()) {
-            if (c instanceof JLabel) {
-                // Row 2 is the category final score, update it
-                ((JLabel) c).setText(Double.toString(this.modifiedGradeScheme.getOverallGrade()));
+        JPanel currPanel;
+
+        // TODO: maybe add a more elegant check to this.
+        // AddStudentFrame/ManageStudentFrame have a Final Grade Score JLabel. If it's ManageCategoriesFrame, don't try to modify the JLabel because it'll go out of bounds.
+        if(this.gradingSchemeType != GradingSchemeType.MANAGE_CATEGORIES) {
+            currPanel = schemeGrid.get(2).get(1);
+            for (Component c : currPanel.getComponents()) {
+                if (c instanceof JLabel) {
+                    // Row 2 is the category final score, update it
+                    ((JLabel) c).setText(Double.toString(this.modifiedGradeScheme.getOverallGrade()));
+                }
             }
         }
 
+        // Update all of the JLabels
         for (int columnIndex = 0; columnIndex < schemeGrid.get(0).size(); columnIndex++) {
             currPanel = schemeGrid.get(0).get(columnIndex);
 
