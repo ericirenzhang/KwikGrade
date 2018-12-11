@@ -106,6 +106,11 @@ public class MainDashboard extends JFrame {
 		contentPane.add(closedCourseScrollPane);
 
 		closedCourseDisplayList = new JList();
+		closedCourseDisplayList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				activeCourseDisplayList.clearSelection();
+			}
+		});
 		closedCourseScrollPane.setViewportView(closedCourseDisplayList);
 		closedCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		closedCourseDisplayList.setModel(loadCourseList(kwikGrade.getClosedCourses()));
