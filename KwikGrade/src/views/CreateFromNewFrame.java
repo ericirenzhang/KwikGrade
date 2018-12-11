@@ -178,7 +178,7 @@ public class CreateFromNewFrame extends JDialog {
 				if(null != ugCourseCategoryTable.getCellEditor()) {
 					ugCourseCategoryTable.getCellEditor().stopCellEditing();
 				}
-				addTableRow( ugTableModel, ugCourseCategoryTable);
+				addTableRow(ugTableModel, ugCourseCategoryTable);
 			}
 		});
 		ugAddRowButton.setBounds(12, 568, 115, 23);
@@ -244,8 +244,12 @@ public class CreateFromNewFrame extends JDialog {
 		JButton btnUseSameScheme = new JButton("Use Same Scheme For Both Categories");
 		btnUseSameScheme.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				gradTableModel.setRowCount(1);
+				for(int i = 1; i < ugCourseCategoryTable.getRowCount(); i++) {
+					gradTableModel.addRow(new Object[] {"",""});
+				}
 				DefaultTableModel original = (DefaultTableModel) ugCourseCategoryTable.getModel();
-				gradTableModel = (DefaultTableModel) ugCourseCategoryTable.getModel();
+				gradTableModel = (DefaultTableModel) gradCourseCategoryTable.getModel();
 				selectRows(ugCourseCategoryTable, 0, ugCourseCategoryTable.getRowCount());
 				int[] selectedRows = ugCourseCategoryTable.getSelectedRows();
 				for (int targetRow = 0; targetRow < selectedRows.length; targetRow++) {
@@ -255,8 +259,12 @@ public class CreateFromNewFrame extends JDialog {
 				    	gradTableModel.setValueAt(original.getValueAt(modelRow, col), targetRow, col);
 				    }
 				}
-				gradCourseCategoryTable.setModel(gradTableModel);
 				gradTableModelRows = ugTableModelRows;
+				gradCourseCategoryTable.setModel(gradTableModel);
+				//gradTableModel = (DefaultTableModel) gradCourseCategoryTable.getModel();
+				//ugTableModel = (DefaultTableModel) ugCourseCategoryTable.getModel();
+				//ugCourseCategoryTable.setModel(ugTableModel);
+				//ugTableModel = new DefaultTableModel(ugTableModelRows, 2);
 			}
 		});
 		btnUseSameScheme.setBounds(150, 591, 286, 29);
@@ -357,11 +365,11 @@ public class CreateFromNewFrame extends JDialog {
 	 * @param tableModel, table
 	 */
 	public void addTableRow(DefaultTableModel tableModel, JTable table) {
-		tableModel = (DefaultTableModel) table.getModel();
-		tableModel.addRow(new Object[] {"",""});
-		table.setModel(tableModel);
+			tableModel = (DefaultTableModel) table.getModel();
+			tableModel.addRow(new Object[] {"",""});
+			table.setModel(tableModel);
 	}
-
+	
 	/**
 	 * Dynamically removes rows to the Course Category Table
 	 * Kept generic to allow for both UG and Grad to use
