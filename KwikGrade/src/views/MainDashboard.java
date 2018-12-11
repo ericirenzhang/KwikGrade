@@ -121,17 +121,41 @@ public class MainDashboard extends JFrame {
 		JButton openCourseButton = new JButton("Open Course");
 		openCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int manageIndex = activeCourseDisplayList.getSelectedIndex();
-				System.out.println(manageIndex);
-				try {
-					CourseOverviewFrame courseOverview = new CourseOverviewFrame(kwikGrade, kwikGrade.getActiveCourses().get(manageIndex));
-					courseOverview.setModal(true);
-					courseOverview.setVisible(true);
+				int manageIndex;
+				Course selectedCourse;
+				//determines if a closed course is selected or an active
+				if (closedCourseDisplayList.getSelectedIndex() < 0 && activeCourseDisplayList.getSelectedIndex() < 0 ) {
+					JOptionPane.showMessageDialog(null, "No course is selected!");
+					return;
 				}
-				catch (Exception eManage) {
-					JOptionPane.showMessageDialog(null, "No course selected!");
+				else if (closedCourseDisplayList.getSelectedIndex() <= activeCourseDisplayList.getSelectedIndex()) {
+					manageIndex = activeCourseDisplayList.getSelectedIndex();
+					selectedCourse = kwikGrade.getActiveCourses().get(manageIndex);
+					
+					try {
+						CourseOverviewFrame courseOverview = new CourseOverviewFrame(kwikGrade, selectedCourse);
+						courseOverview.setModal(true);
+						courseOverview.setVisible(true);
+					}
+					catch (Exception eManage) {
+						JOptionPane.showMessageDialog(null, "No course is selected!");
+					}
+					
 				}
-
+				else {
+					manageIndex = closedCourseDisplayList.getSelectedIndex();
+					selectedCourse = kwikGrade.getClosedCourses().get(manageIndex);
+					
+					try {
+						ClosedCourseOverviewFrame courseOverview = new ClosedCourseOverviewFrame(kwikGrade, selectedCourse);
+						courseOverview.setModal(true);
+						courseOverview.setVisible(true);
+					}
+					catch (Exception eManage) {
+						JOptionPane.showMessageDialog(null, "No course is selected!");
+					}
+					
+				}	
 			}
 		});
 		openCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
