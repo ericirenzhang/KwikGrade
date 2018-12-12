@@ -18,7 +18,7 @@ public class SubCategory implements Serializable {
 		this.weight = weight;
 		this.pointsGained = pointsGained;
 		this.totalPoints = totalPoints;
-		this.rawFinalScore = this.pointsGained / this.totalPoints;
+		this.rawFinalScore = (this.pointsGained / this.totalPoints) * 100;
 	}
 	
 	//==========================
