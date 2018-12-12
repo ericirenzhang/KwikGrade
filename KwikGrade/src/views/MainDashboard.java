@@ -42,7 +42,6 @@ public class MainDashboard extends JFrame {
 	 */
 	public MainDashboard() {
 		kwikGrade = new KwikGrade();
-		
 
 		// Load from saved file.
 		kwikGrade.setActiveCourses(FileManager.loadFile(SERIALIZED_FILE_NAME_ACTIVE));
