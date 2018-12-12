@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import helpers.ModelGenerators;
 import models.Course;
 import models.GraduateStudent;
 import models.KwikGrade;
@@ -55,19 +56,6 @@ public class CreateFromExistingFrame extends JDialog {
 	private boolean hasCreatedNewCourse = false;
 
 	private ArrayList<Student> importedStudentList = new ArrayList<>();
-	
-	/**
-	 * Pulls active course names for display in dynamic Jlist
-	 * @param courseList
-	 * @return Default List Model
-	 */
-	public DefaultListModel loadCourseList(ArrayList<Course> courseList) {
-		DLM = new DefaultListModel();
-		for(int i = 0; i < courseList.size(); i++) {
-			DLM.addElement(courseList.get(i).getCourseNum()+" "+courseList.get(i).getCourseTerm()+" "+courseList.get(i).getCourseTitle());
-		}
-		return DLM;
-	}
 	
 	public OverallGrade getUGGradeScheme(ArrayList<Course> courseList, int selectedCourse) {
 		OverallGrade gradeScheme = courseList.get(selectedCourse).getCourseUnderGradDefaultGradeScheme();
@@ -170,7 +158,7 @@ public class CreateFromExistingFrame extends JDialog {
 		
 		JList cloneCourseList = new JList();
 		scrollPane.setViewportView(cloneCourseList);
-		cloneCourseList.setModel(loadCourseList(MainDashboard.getKwikGrade().getActiveCourses()));
+		cloneCourseList.setModel(ModelGenerators.loadCourseList(MainDashboard.getKwikGrade().getActiveCourses()));
 
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));

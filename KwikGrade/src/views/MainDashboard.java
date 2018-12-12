@@ -1,6 +1,7 @@
 package views;
 
 import helpers.FileManager;
+import helpers.ModelGenerators;
 import models.Course;
 import models.KwikGrade;
 import javax.swing.JFrame;
@@ -35,19 +36,6 @@ public class MainDashboard extends JFrame {
 	private static KwikGrade kwikGrade;
 	private JList activeCourseDisplayList;
 	private JList closedCourseDisplayList;
-	
-	/**
-	 * Pulls active course names for display in dynamic Jlist
-	 * @param courseList
-	 * @return Default List Model
-	 */
-	public DefaultListModel loadCourseList(ArrayList<Course> courseList) {
-		DLM = new DefaultListModel();
-		for(int i = 0; i < courseList.size(); i++) {
-			DLM.addElement(courseList.get(i).getCourseNum()+" "+courseList.get(i).getCourseTerm()+" "+courseList.get(i).getCourseTitle());
-		}
-		return DLM;
-	}
 
 	/**
 	 * Create the MainDashboard Frame.
@@ -93,7 +81,7 @@ public class MainDashboard extends JFrame {
 		activeCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		// Loads courses upon verifyAndOpenDashboard for display in dynamic list
-		activeCourseDisplayList.setModel(loadCourseList(kwikGrade.getActiveCourses()));
+		activeCourseDisplayList.setModel(ModelGenerators.loadCourseList(kwikGrade.getActiveCourses()));
 		
 		// Closing courses
 		JLabel closedCourseLabel = new JLabel("Closed Courses");
@@ -113,7 +101,7 @@ public class MainDashboard extends JFrame {
 		});
 		closedCourseScrollPane.setViewportView(closedCourseDisplayList);
 		closedCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		closedCourseDisplayList.setModel(loadCourseList(kwikGrade.getClosedCourses()));
+		closedCourseDisplayList.setModel(ModelGenerators.loadCourseList(kwikGrade.getClosedCourses()));
 
 		// =====================
 		// Buttons
@@ -267,8 +255,8 @@ public class MainDashboard extends JFrame {
 	}
 
 	public void updateCourseDisplayModel() {
-		activeCourseDisplayList.setModel(loadCourseList(kwikGrade.getActiveCourses()));
-		closedCourseDisplayList.setModel(loadCourseList(kwikGrade.getClosedCourses()));
+		activeCourseDisplayList.setModel(ModelGenerators.loadCourseList(kwikGrade.getActiveCourses()));
+		closedCourseDisplayList.setModel(ModelGenerators.loadCourseList(kwikGrade.getClosedCourses()));
 	}
 	
 	public static String getActiveSaveFileName() {

@@ -1,6 +1,7 @@
 package views;
 
 import helpers.FileManager;
+import helpers.ModelGenerators;
 import models.Course;
 import models.KwikGrade;
 import models.Student;
@@ -32,30 +33,12 @@ public class CourseOverviewFrame extends JDialog {
 
 	private JTable kwikStatsTable;
 
-	public DefaultTableModel generateStudentTableModel(ArrayList<Student> Students) {
-		DefaultTableModel studentTableModel;
-		studentTableModel = new DefaultTableModel();
-		Object[] title = {"First Name", "Middle Initial", "Last Name", "Grade"};
-		studentTableModel.setColumnIdentifiers(title);
-		for(int i = 0; i < Students.size(); i++) {
-			studentTableModel.addRow(new Object[] {Students.get(i).getfName(),Students.get(i).getMiddleInitial(), Students.get(i).getlName(), Students.get(i).getOverallGradeObject().getOverallGrade()} );
-		}
-		return studentTableModel;
-	}
-
 	public void setManagedCourse(Course managedCourse) {
 		this.managedCourse = managedCourse;
 	}
 
 	public Course getManagedCourse() {
 		return this.managedCourse;
-	}
-
-	// Updates the Stats Model with the values from course object
-	public void updateStatsModel(Course course, DefaultTableModel statsTableModel) {
-		statsTableModel.setValueAt(String.format("Mean: %.2f%%", course.calcMean()), 0, 0);
-		statsTableModel.setValueAt(String.format("Median: %.2f%%", course.calcMedian()), 1, 0);
-		statsTableModel.setValueAt(String.format("Std Dev: %.2f%%", course.calcStandardDeviation()), 2, 0);
 	}
 
 	/**
@@ -87,7 +70,7 @@ public class CourseOverviewFrame extends JDialog {
 		studentDisplayTable.setRowHeight(25);
 		studentDisplayTable.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		studentDisplayTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
+		studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(managedCourse.getActiveStudents()));
 		studentDisplayTableScrollPane.setViewportView(studentDisplayTable);
 
 		// Add KwikStats Table
@@ -98,10 +81,11 @@ public class CourseOverviewFrame extends JDialog {
 		kwikStatsTable.setGridColor(Color.BLACK); // set lines to black for Mac
 		kwikStatsTable.setRowHeight(30);
 		kwikStatsTable.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		
 		// Initialize values for stats table
 		statsTableModel = new DefaultTableModel(3, 1);
 		statsTableModel.setColumnIdentifiers(new Object[]{"KwikStats"});
-		updateStatsModel(managedCourse, statsTableModel);
+		ModelGenerators.updateStatsModel(managedCourse, statsTableModel);
 		kwikStatsTable.setModel(statsTableModel);
 		kwikStatsTableScrollPane.setViewportView(kwikStatsTable);
 
@@ -116,8 +100,8 @@ public class CourseOverviewFrame extends JDialog {
 				addStudent.setVisible(true);
 
 				// Update our models for the current frame
-				studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
-				updateStatsModel(getManagedCourse(), statsTableModel);
+				studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(getManagedCourse().getActiveStudents()));
+				ModelGenerators.updateStatsModel(managedCourse, statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}
 		});
@@ -134,8 +118,8 @@ public class CourseOverviewFrame extends JDialog {
 				else {
 					Student studentToDrop = managedCourse.getActiveStudents().get(studentDisplayTable.getSelectedRow());
 					managedCourse.removeStudent(studentToDrop);
-					studentDisplayTable.setModel(generateStudentTableModel(managedCourse.getActiveStudents()));
-					updateStatsModel(managedCourse, statsTableModel);
+					studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(managedCourse.getActiveStudents()));
+					ModelGenerators.updateStatsModel(managedCourse, statsTableModel);
 					kwikStatsTable.setModel(statsTableModel);
 					FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
 					FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
@@ -159,8 +143,8 @@ public class CourseOverviewFrame extends JDialog {
 					manageStudentFrame.setModal(true);
 					manageStudentFrame.setVisible(true);
 
-					studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
-					updateStatsModel(getManagedCourse(), statsTableModel);
+					studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(getManagedCourse().getActiveStudents()));
+					ModelGenerators.updateStatsModel(managedCourse, statsTableModel);
 					kwikStatsTable.setModel(statsTableModel);
 				}
 
@@ -199,8 +183,8 @@ public class CourseOverviewFrame extends JDialog {
 				addGrade.setModal(true);
 				addGrade.setVisible(true);
 
-				studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
-				updateStatsModel(getManagedCourse(), statsTableModel);
+				studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(getManagedCourse().getActiveStudents()));
+				ModelGenerators.updateStatsModel(managedCourse, statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}
 		});
@@ -215,8 +199,8 @@ public class CourseOverviewFrame extends JDialog {
 				manageCategoriesFrame.setModal(true);
 				manageCategoriesFrame.setVisible(true);
 
-				studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
-				updateStatsModel(getManagedCourse(), statsTableModel);
+				studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(getManagedCourse().getActiveStudents()));
+				ModelGenerators.updateStatsModel(managedCourse, statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}
 		});
@@ -229,8 +213,8 @@ public class CourseOverviewFrame extends JDialog {
 				addCurveFrame.setModal(true);
 				addCurveFrame.setVisible(true);
 
-				studentDisplayTable.setModel(generateStudentTableModel(getManagedCourse().getActiveStudents()));
-				updateStatsModel(getManagedCourse(), statsTableModel);
+				studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(getManagedCourse().getActiveStudents()));
+				ModelGenerators.updateStatsModel(managedCourse, statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}
 		});
