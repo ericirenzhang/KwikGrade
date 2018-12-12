@@ -180,7 +180,7 @@ public class GradingSchemeGrid {
                     currPanel.add(new JLabel("%"), BorderLayout.CENTER);
                     break;
                 case 2:
-                    String subCategoryScorePercentage = String.format("%.2f%%", 100 * currSubCategory.getRawFinalScore());
+                    String subCategoryScorePercentage = String.format("%.2f%%", currSubCategory.getRawFinalScore());
                     JLabel subCategoryWeightLabel = new JLabel(subCategoryScorePercentage);
                     font = subCategoryWeightLabel.getFont();
                     boldFont = new Font(font.getFontName(), Font.BOLD, 12);
