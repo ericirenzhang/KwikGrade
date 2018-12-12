@@ -29,7 +29,7 @@ public class ModelGenerators {
 	 * iterates through and creates a tablemodel of all students to add a grade for
 	 * @param Students
 	 */
-	public static DefaultTableModel displayAllStudents(ArrayList<Student> Students) {
+	public static DefaultTableModel generateAddGradeTableModel(ArrayList<Student> Students) {
 		DefaultTableModel addGradeTableModel = new DefaultTableModel();
 		Object[] title = {"Name", "Points"};
 		addGradeTableModel.setColumnIdentifiers(title);

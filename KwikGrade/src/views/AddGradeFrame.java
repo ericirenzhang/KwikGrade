@@ -195,7 +195,7 @@ public class AddGradeFrame extends JDialog {
 					studentGradeTable.setModel(ModelGenerators.dispGradUGStudents(studentList, false));
 				}
 				else {
-					studentGradeTable.setModel(ModelGenerators.displayAllStudents(managedCourse.getActiveStudents()));
+					studentGradeTable.setModel(ModelGenerators.generateAddGradeTableModel(managedCourse.getActiveStudents()));
 					catNameDropdown.setModel(commonCourseCategories(managedCourse));
 				}
 			}
@@ -287,7 +287,7 @@ public class AddGradeFrame extends JDialog {
 		studentGradeTable.setFont(new Font("Tahoma", Font.BOLD, 14));
 		scrollPane.setViewportView(studentGradeTable);
 		contentPanel.setLayout(gl_contentPanel);
-		studentGradeTable.setModel(ModelGenerators.displayAllStudents(managedCourse.getActiveStudents()));
+		studentGradeTable.setModel(ModelGenerators.generateAddGradeTableModel(managedCourse.getActiveStudents()));
 		
 		{
 			JPanel buttonPane = new JPanel();
