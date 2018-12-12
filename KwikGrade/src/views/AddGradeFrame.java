@@ -13,6 +13,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import helpers.FileManager;
+import helpers.ModelGenerators;
 import models.Course;
 import models.CourseCategory;
 import models.OverallGrade;
@@ -67,45 +68,6 @@ public class AddGradeFrame extends JDialog {
 	private DefaultComboBoxModel catNameDropdownModel; 
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JTextField assignValueText;
-
-	/**
-	 * iterates through and creates a tablemodel of all students
-	 * @param Students
-	 */
-	public DefaultTableModel displayAllStudents(ArrayList<Student> Students) {
-		addGradeTableModel = new DefaultTableModel();
-		Object[] title = {"Name", "Points"};
-		addGradeTableModel.setColumnIdentifiers(title);
-		for(int i = 0; i < Students.size(); i++) {
-			addGradeTableModel.addRow(new Object[] {Students.get(i).getfName()+" "+Students.get(i).getMiddleInitial()+" "+Students.get(i).getlName()} );
-		}
-		return addGradeTableModel;
-	}
-	
-	/**
-	 * creates a tablemodel that displays either only undergrad or only grad students
-	 * @param Students
-	 * @param undergrad
-	 */
-	public DefaultTableModel dispGradUGStudents(ArrayList<Student> Students, boolean undergrad) {
-		String statusFlag;
-		if(undergrad == true){
-			statusFlag = "Undergraduate";
-		}
-		else {
-			statusFlag = "Graduate";
-		}
-		
-		addGradeTableModel = new DefaultTableModel();
-		Object[] title = {"Name", "Points"};
-		addGradeTableModel.setColumnIdentifiers(title);
-		for(int i = 0; i < Students.size(); i++) {
-			if (Students.get(i).getStatus().equals(statusFlag)) {
-			addGradeTableModel.addRow(new Object[] {Students.get(i).getfName()+" "+Students.get(i).getMiddleInitial()+" "+Students.get(i).getlName()} );
-			}
-		}
-		return addGradeTableModel;
-	}
 	
 	/**
 	 * creates a pointer array that tells you, where each undergrad and grad student is located in the course's enrolled students
@@ -226,14 +188,14 @@ public class AddGradeFrame extends JDialog {
 				//displays only the course categories that are relevant depending on if grad, UG, or all students are selected
 				if (gradeSchemeDropdown.getSelectedItem().equals("Undergraduate")) {
 					catNameDropdown.setModel(catNameDropdownUpdater(managedCourse, true));
-					studentGradeTable.setModel(dispGradUGStudents(studentList, true));
+					studentGradeTable.setModel(ModelGenerators.dispGradUGStudents(studentList, true));
 				}
 				else if (gradeSchemeDropdown.getSelectedItem().equals("Graduate")){
 					catNameDropdown.setModel(catNameDropdownUpdater(managedCourse, false));
-					studentGradeTable.setModel(dispGradUGStudents(studentList, false));
+					studentGradeTable.setModel(ModelGenerators.dispGradUGStudents(studentList, false));
 				}
 				else {
-					studentGradeTable.setModel(displayAllStudents(managedCourse.getActiveStudents()));
+					studentGradeTable.setModel(ModelGenerators.generateAddGradeTableModel(managedCourse.getActiveStudents()));
 					catNameDropdown.setModel(commonCourseCategories(managedCourse));
 				}
 			}
@@ -325,7 +287,7 @@ public class AddGradeFrame extends JDialog {
 		studentGradeTable.setFont(new Font("Tahoma", Font.BOLD, 14));
 		scrollPane.setViewportView(studentGradeTable);
 		contentPanel.setLayout(gl_contentPanel);
-		studentGradeTable.setModel(displayAllStudents(managedCourse.getActiveStudents()));
+		studentGradeTable.setModel(ModelGenerators.generateAddGradeTableModel(managedCourse.getActiveStudents()));
 		
 		{
 			JPanel buttonPane = new JPanel();
