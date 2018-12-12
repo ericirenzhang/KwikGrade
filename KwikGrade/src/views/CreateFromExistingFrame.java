@@ -24,6 +24,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import helpers.ModelGenerators;
+import helpers.StudentTextImport;
 import models.Course;
 import models.GraduateStudent;
 import models.KwikGrade;
@@ -190,7 +191,7 @@ public class CreateFromExistingFrame extends JDialog {
 				}
 
 				if(!filePath.equals("")) {
-					addImportedStudents(filePath);
+					importedStudentList = StudentTextImport.addImportedStudents(filePath, clonedUGGradingScheme, clonedGradGradingScheme);
 				}
 
 				hasCreatedNewCourse = true;
@@ -210,58 +211,6 @@ public class CreateFromExistingFrame extends JDialog {
 		});
 		buttonPane.add(cancelButton);
 	}
-
-	public void addImportedStudents(String filePath) {
-		Scanner rawStudentData;
-
-		try {
-			System.out.println("Loading Students");
-			rawStudentData = new Scanner(new File(filePath));
-
-			while(rawStudentData.hasNext()) {
-				String line = rawStudentData.nextLine();
-				List<String> splitLine = Arrays.asList(line.split(","));
-				if(splitLine.size()==6) { //checks for middle initial, if there's middle initial, there will be 6 items in string
-					String fName = splitLine.get(0);
-					String middleInitial = splitLine.get(1);
-					String lName = splitLine.get(2);
-					String buId = splitLine.get(3);
-					String email = splitLine.get(4);
-					String standing = splitLine.get(5);
-					if(standing.equals("Undergraduate")) {
-						this.importedStudentList.add(new UndergraduateStudent(fName, middleInitial, lName, buId, email, "Undergraduate", clonedUGGradingScheme));
-					} else if (standing.equals("Graduate")) {
-						this.importedStudentList.add(new GraduateStudent(fName, middleInitial, lName, buId, email, "Graduate", clonedGradGradingScheme));
- 					} else {
-						this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
-					}
-				}
-				else { //if no middle initial, then 5 items in string
-					String fName = splitLine.get(0);
-					String middleInitial = "";
-					String lName = splitLine.get(1);
-					String buId = splitLine.get(2);
-					String email = splitLine.get(3);
-					String standing = splitLine.get(4);
-					if(standing.equals("Undergraduate")) {
-						this.importedStudentList.add(new UndergraduateStudent(fName, middleInitial, lName, buId, email, "Undergraduate", clonedUGGradingScheme));
-					} else if (standing.equals("Graduate")) {
-						this.importedStudentList.add(new GraduateStudent(fName, middleInitial, lName, buId, email, "Graduate", clonedGradGradingScheme));
-					} else {
-						this.importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
-					}
-				}
-			}
-
-			rawStudentData.close();
-			System.out.println("Student Import Complete!");
-		}
-		// TODO: change this to prompt user for another file
-		catch(Exception e) {
-			System.out.println("COULD NOT FIND FILE!!!!");
-		}
-	}
-
 
 	//=============================
 	// Getters
