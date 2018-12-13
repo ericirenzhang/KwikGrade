@@ -1,7 +1,7 @@
 import views.LoginFrame;
 
+import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 public class KwikGradeMain {
 
@@ -12,7 +12,12 @@ public class KwikGradeMain {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    // Start a Login frame.
+                    // Set the theme and launch the Login frame.
+                    try {
+                        UIManager.setLookAndFeel("com.jtattoo.plaf.aluminium.AluminiumLookAndFeel");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                     new LoginFrame();
                 } catch (Exception e) {
                     e.printStackTrace();
