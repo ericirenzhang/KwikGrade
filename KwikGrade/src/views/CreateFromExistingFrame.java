@@ -1,6 +1,7 @@
 package views;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -36,6 +37,7 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JComboBox;
 
 public class CreateFromExistingFrame extends JDialog {
 
@@ -53,7 +55,6 @@ public class CreateFromExistingFrame extends JDialog {
 	private OverallGrade clonedGradGradingScheme;
 	private DefaultListModel DLM;
 	private JList cloneCourseList;
-	private ArrayList<Course> courseList;
 	
 	private boolean hasCreatedNewCourse = false;
 
@@ -151,20 +152,34 @@ public class CreateFromExistingFrame extends JDialog {
 		
 		JLabel courseCloneSelectLabel = new JLabel("Select a Course to Clone");
 		courseCloneSelectLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		courseCloneSelectLabel.setBounds(193, 192, 217, 25);
+		courseCloneSelectLabel.setBounds(63, 180, 217, 25);
 		contentPanel.add(courseCloneSelectLabel);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(34, 216, 499, 304);
 		contentPanel.add(scrollPane);
 		
-		courseList = MainDashboard.getKwikGrade().getActiveCourses();
-		courseList.addAll(MainDashboard.getKwikGrade().getClosedCourses());
-		
 		JList cloneCourseList = new JList();
 		scrollPane.setViewportView(cloneCourseList);
 		cloneCourseList.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		cloneCourseList.setModel(ModelGenerators.loadCourseList(courseList));
+		cloneCourseList.setModel(ModelGenerators.loadCourseList(MainDashboard.getKwikGrade().getActiveCourses()));
+		
+		JComboBox openClosedCourses = new JComboBox();
+		openClosedCourses.addItem("Active Courses");
+		openClosedCourses.addItem("Closed Courses");
+		openClosedCourses.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (openClosedCourses.getSelectedItem().equals("Active Courses")) {
+					cloneCourseList.setModel(ModelGenerators.loadCourseList(MainDashboard.getKwikGrade().getActiveCourses()));
+				}
+				else {
+					cloneCourseList.setModel(ModelGenerators.loadCourseList(MainDashboard.getKwikGrade().getClosedCourses()));
+				}
+			}
+		});
+		openClosedCourses.setBounds(290, 181, 168, 26);
+
+		contentPanel.add(openClosedCourses);
 
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -184,15 +199,13 @@ public class CreateFromExistingFrame extends JDialog {
 					return;
 				}
 
-				//created copies of a grade scheme
-				int activeCourseSize = MainDashboard.getKwikGrade().getActiveCourses().size();
-				if (cloneIndex < activeCourseSize) {
+				if (openClosedCourses.getSelectedItem().equals("Active Courses")) {
 					clonedUGGradingScheme = clonedUGGradingScheme.copyOverallGrade(getUGGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex));
 					clonedGradGradingScheme = clonedGradGradingScheme.copyOverallGrade(getGradGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex));
 				}
 				else {
-					clonedUGGradingScheme = clonedUGGradingScheme.copyOverallGrade(getUGGradeScheme(MainDashboard.getKwikGrade().getClosedCourses(), cloneIndex-activeCourseSize));
-					clonedGradGradingScheme = clonedGradGradingScheme.copyOverallGrade(getGradGradeScheme(MainDashboard.getKwikGrade().getClosedCourses(), cloneIndex-activeCourseSize));
+					clonedUGGradingScheme = clonedUGGradingScheme.copyOverallGrade(getUGGradeScheme(MainDashboard.getKwikGrade().getClosedCourses(), (cloneIndex)));
+					clonedGradGradingScheme = clonedGradGradingScheme.copyOverallGrade(getGradGradeScheme(MainDashboard.getKwikGrade().getClosedCourses(), (cloneIndex)));
 				}
 
 				if(courseNum.equals("") || courseTerm.equals("") || courseTitle.equals("")) {
