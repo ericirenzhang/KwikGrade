@@ -53,6 +53,7 @@ public class CreateFromExistingFrame extends JDialog {
 	private OverallGrade clonedGradGradingScheme;
 	private DefaultListModel DLM;
 	private JList cloneCourseList;
+	private ArrayList<Course> courseList;
 	
 	private boolean hasCreatedNewCourse = false;
 
@@ -157,15 +158,17 @@ public class CreateFromExistingFrame extends JDialog {
 		scrollPane.setBounds(34, 216, 499, 304);
 		contentPanel.add(scrollPane);
 		
+		courseList = MainDashboard.getKwikGrade().getActiveCourses();
+		courseList.addAll(MainDashboard.getKwikGrade().getClosedCourses());
+		
 		JList cloneCourseList = new JList();
 		scrollPane.setViewportView(cloneCourseList);
-		cloneCourseList.setModel(ModelGenerators.loadCourseList(MainDashboard.getKwikGrade().getActiveCourses()));
+		cloneCourseList.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		cloneCourseList.setModel(ModelGenerators.loadCourseList(courseList));
 
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
-		//TODO: Need to implement feature to actually clone the courses
-		// Need to implement methods to get the grading scheme
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -182,8 +185,15 @@ public class CreateFromExistingFrame extends JDialog {
 				}
 
 				//created copies of a grade scheme
-				clonedUGGradingScheme = clonedUGGradingScheme.copyOverallGrade(getUGGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex));
-				clonedGradGradingScheme = clonedGradGradingScheme.copyOverallGrade(getGradGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex));
+				int activeCourseSize = MainDashboard.getKwikGrade().getActiveCourses().size();
+				if (cloneIndex < activeCourseSize) {
+					clonedUGGradingScheme = clonedUGGradingScheme.copyOverallGrade(getUGGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex));
+					clonedGradGradingScheme = clonedGradGradingScheme.copyOverallGrade(getGradGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex));
+				}
+				else {
+					clonedUGGradingScheme = clonedUGGradingScheme.copyOverallGrade(getUGGradeScheme(MainDashboard.getKwikGrade().getClosedCourses(), cloneIndex-activeCourseSize));
+					clonedGradGradingScheme = clonedGradGradingScheme.copyOverallGrade(getGradGradeScheme(MainDashboard.getKwikGrade().getClosedCourses(), cloneIndex-activeCourseSize));
+				}
 
 				if(courseNum.equals("") || courseTerm.equals("") || courseTitle.equals("")) {
 					JOptionPane.showMessageDialog(null, "Must enter in required information!");
