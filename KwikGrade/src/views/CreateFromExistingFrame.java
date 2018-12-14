@@ -55,6 +55,7 @@ public class CreateFromExistingFrame extends JDialog {
 	private OverallGrade clonedGradGradingScheme;
 	private DefaultListModel DLM;
 	private JList cloneCourseList;
+	private ArrayList<Course> courseList;
 	
 	private boolean hasCreatedNewCourse = false;
 
@@ -158,6 +159,9 @@ public class CreateFromExistingFrame extends JDialog {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(34, 216, 499, 304);
 		contentPanel.add(scrollPane);
+		
+		courseList = MainDashboard.getKwikGrade().getActiveCourses();
+		courseList.addAll(MainDashboard.getKwikGrade().getClosedCourses());
 		
 		JList cloneCourseList = new JList();
 		scrollPane.setViewportView(cloneCourseList);
