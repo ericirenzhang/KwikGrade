@@ -159,15 +159,11 @@ public class CreateFromExistingFrame extends JDialog {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(34, 216, 499, 304);
 		contentPanel.add(scrollPane);
-		
-		courseList = MainDashboard.getKwikGrade().getActiveCourses();
-		courseList.addAll(MainDashboard.getKwikGrade().getClosedCourses());
-		
+
 		JList cloneCourseList = new JList();
 		scrollPane.setViewportView(cloneCourseList);
 		cloneCourseList.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		cloneCourseList.setModel(ModelGenerators.loadCourseList(MainDashboard.getKwikGrade().getActiveCourses()));
-		
 		JComboBox openClosedCourses = new JComboBox();
 		openClosedCourses.addItem("Active Courses");
 		openClosedCourses.addItem("Closed Courses");
