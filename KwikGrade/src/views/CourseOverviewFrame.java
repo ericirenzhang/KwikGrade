@@ -69,7 +69,7 @@ public class CourseOverviewFrame extends JDialog {
 		studentDisplayTableScrollPane.setBounds(10, 38, 545, 620);
 		contentPanel.add(studentDisplayTableScrollPane);
 		studentDisplayTable = new JTable();
-		ModelGenerators.defaultTableStarter(studentDisplayTable);
+		ModelGenerators.setDefaultAttributes(studentDisplayTable);
 		studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(managedCourse.getActiveStudents(), detailedView));
 		studentDisplayTableScrollPane.setViewportView(studentDisplayTable);
 		
@@ -83,12 +83,12 @@ public class CourseOverviewFrame extends JDialog {
 					//sets column widths for detailed table
 					detailedView = true;
 					studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(managedCourse.getActiveStudents(), detailedView));
-					ModelGenerators.studentTableSizing(studentDisplayTable, detailedView);
+					ModelGenerators.setTableSizing(studentDisplayTable, detailedView);
 				}
 				else {
 					detailedView = false;
 					studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(managedCourse.getActiveStudents(), detailedView));
-					ModelGenerators.studentTableSizing(studentDisplayTable, detailedView);
+					ModelGenerators.setTableSizing(studentDisplayTable, detailedView);
 				}
 			}
 		});
@@ -100,7 +100,7 @@ public class CourseOverviewFrame extends JDialog {
 		kwikStatsTableScrollPane.setBounds(567, 488, 155, 170);
 		contentPanel.add(kwikStatsTableScrollPane);
 		kwikStatsTable = new JTable();
-		ModelGenerators.defaultTableStarter(kwikStatsTable);
+		ModelGenerators.setDefaultAttributes(kwikStatsTable);
 		
 		// Initialize values for stats table
 		statsTableModel = new DefaultTableModel(3, 1);
@@ -121,7 +121,7 @@ public class CourseOverviewFrame extends JDialog {
 
 				// Update our models for the current frame
 				studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(getManagedCourse().getActiveStudents(), detailedView));
-				ModelGenerators.studentTableSizing(studentDisplayTable, detailedView);
+				ModelGenerators.setTableSizing(studentDisplayTable, detailedView);
 				ModelGenerators.updateStatsModel(managedCourse, statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}
@@ -140,7 +140,7 @@ public class CourseOverviewFrame extends JDialog {
 					Student studentToDrop = managedCourse.getActiveStudents().get(studentDisplayTable.getSelectedRow());
 					managedCourse.removeStudent(studentToDrop);
 					studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(managedCourse.getActiveStudents(), detailedView));
-					ModelGenerators.studentTableSizing(studentDisplayTable, detailedView);
+					ModelGenerators.setTableSizing(studentDisplayTable, detailedView);
 					ModelGenerators.updateStatsModel(managedCourse, statsTableModel);
 					kwikStatsTable.setModel(statsTableModel);
 					FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
@@ -166,7 +166,7 @@ public class CourseOverviewFrame extends JDialog {
 					manageStudentFrame.setVisible(true);
 
 					studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(getManagedCourse().getActiveStudents(), detailedView));
-					ModelGenerators.studentTableSizing(studentDisplayTable, detailedView);
+					ModelGenerators.setTableSizing(studentDisplayTable, detailedView);
 					ModelGenerators.updateStatsModel(managedCourse, statsTableModel);
 					kwikStatsTable.setModel(statsTableModel);
 				}
@@ -207,7 +207,7 @@ public class CourseOverviewFrame extends JDialog {
 				addGrade.setVisible(true);
 
 				studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(getManagedCourse().getActiveStudents(), detailedView));
-				ModelGenerators.studentTableSizing(studentDisplayTable, detailedView);
+				ModelGenerators.setTableSizing(studentDisplayTable, detailedView);
 				ModelGenerators.updateStatsModel(managedCourse, statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}
@@ -224,7 +224,7 @@ public class CourseOverviewFrame extends JDialog {
 				manageCategoriesFrame.setVisible(true);
 
 				studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(getManagedCourse().getActiveStudents(), detailedView));
-				ModelGenerators.studentTableSizing(studentDisplayTable, detailedView);
+				ModelGenerators.setTableSizing(studentDisplayTable, detailedView);
 				ModelGenerators.updateStatsModel(managedCourse, statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}
@@ -239,7 +239,7 @@ public class CourseOverviewFrame extends JDialog {
 				addCurveFrame.setVisible(true);
 
 				studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(getManagedCourse().getActiveStudents(), detailedView));
-				ModelGenerators.studentTableSizing(studentDisplayTable, detailedView);
+				ModelGenerators.setTableSizing(studentDisplayTable, detailedView);
 				ModelGenerators.updateStatsModel(managedCourse, statsTableModel);
 				kwikStatsTable.setModel(statsTableModel);
 			}

@@ -284,7 +284,7 @@ public class AddGradeFrame extends JDialog {
 		);
 
 		studentGradeTable = new JTable();
-		ModelGenerators.defaultTableStarter(studentGradeTable);
+		ModelGenerators.setDefaultAttributes(studentGradeTable);
 		scrollPane.setViewportView(studentGradeTable);
 		contentPanel.setLayout(gl_contentPanel);
 		studentGradeTable.setModel(ModelGenerators.generateAddGradeTableModel(managedCourse.getActiveStudents()));

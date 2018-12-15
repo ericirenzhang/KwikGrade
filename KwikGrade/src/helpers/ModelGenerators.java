@@ -46,7 +46,7 @@ public class ModelGenerators {
 	 * creates JTable for students, for use in course overview
 	 * @param Students
 	 */
-	public static JTable defaultTableStarter(JTable table) {
+	public static JTable setDefaultAttributes(JTable table) {
 		table.setGridColor(Color.BLACK); // set lines to black for Mac
 		table.setRowHeight(30);
 		table.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -55,7 +55,11 @@ public class ModelGenerators {
 		return table;
 	}
 	
-	public static JTable studentTableSizing(JTable table, boolean detailedView) {
+	/**
+	 * resizes the JTable columns if 
+	 * @param JTable, detailedView boolean
+	 */
+	public static JTable setTableSizing(JTable table, boolean detailedView) {
 		TableColumnModel columnModel = table.getColumnModel();
 		if(detailedView == true) {
 			table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

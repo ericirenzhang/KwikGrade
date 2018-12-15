@@ -63,17 +63,17 @@ public class ClosedCourseOverviewFrame extends JDialog {
 
 		//Creates the table itself
 		studentDisplayTable = new JTable();
-		ModelGenerators.defaultTableStarter(studentDisplayTable);
+		ModelGenerators.setDefaultAttributes(studentDisplayTable);
 		studentDisplayTableScrollPane.setViewportView(studentDisplayTable);
 		studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(managedCourse.getActiveStudents(), true));
-		ModelGenerators.studentTableSizing(studentDisplayTable, true);
+		ModelGenerators.setTableSizing(studentDisplayTable, true);
 
 		// Add KwikStats Table
 		JScrollPane kwikStatsTableScrollPane = new JScrollPane();
 		kwikStatsTableScrollPane.setBounds(565, 366, 155, 170);
 		contentPanel.add(kwikStatsTableScrollPane);
 		kwikStatsTable = new JTable();
-		ModelGenerators.defaultTableStarter(kwikStatsTable);
+		ModelGenerators.setDefaultAttributes(kwikStatsTable);
 		
 		// Initialize values for stats table
 		statsTableModel = new DefaultTableModel(3, 1);
