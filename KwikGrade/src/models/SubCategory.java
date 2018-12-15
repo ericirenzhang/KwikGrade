@@ -9,6 +9,11 @@ public class SubCategory implements Serializable {
 	double pointsGained;
 	double totalPoints;
 
+	/**
+	 * A SubCategory is an individual item of a Course Category.
+	 *
+	 * (i.e. Homework 1, Midterm 2, etc.)
+ 	 */
 	public SubCategory(String name) {
 		this.name = name;
 	}
