@@ -110,9 +110,13 @@ public class AddCurveFrame extends JDialog {
             Student student = studentList.get(i);
             if(studentStatus.equals("All Students")) {
                 OverallGrade currStudentGrade = student.getOverallGrade();
+                if((currStudentGrade.getOverallGrade() + curveAmount)>100)
+                	curveAmount = 100 - currStudentGrade.getOverallGrade();
                 currStudentGrade.setOverallGrade(currStudentGrade.getOverallGrade() + curveAmount);
             } else if(student.getStatus().equals(studentStatus)) {
                 OverallGrade currStudentGrade = student.getOverallGrade();
+                if((currStudentGrade.getOverallGrade() + curveAmount)>100)
+                	curveAmount = 100 - currStudentGrade.getOverallGrade();
                 currStudentGrade.setOverallGrade(currStudentGrade.getOverallGrade() + curveAmount);
             }
         }
