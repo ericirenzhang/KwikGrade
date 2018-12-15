@@ -63,21 +63,17 @@ public class ClosedCourseOverviewFrame extends JDialog {
 
 		//Creates the table itself
 		studentDisplayTable = new JTable();
-		studentDisplayTable.setGridColor(Color.BLACK); // set lines to black for Mac
-		studentDisplayTable.setRowHeight(25);
+		ModelGenerators.defaultTableStarter(studentDisplayTable);
 		studentDisplayTableScrollPane.setViewportView(studentDisplayTable);
-		studentDisplayTable.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		studentDisplayTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(managedCourse.getActiveStudents()));
+		studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(managedCourse.getActiveStudents(), true));
+		ModelGenerators.studentTableSizing(studentDisplayTable, true);
 
 		// Add KwikStats Table
 		JScrollPane kwikStatsTableScrollPane = new JScrollPane();
-		kwikStatsTableScrollPane.setBounds(567, 488, 155, 170);
+		kwikStatsTableScrollPane.setBounds(565, 366, 155, 170);
 		contentPanel.add(kwikStatsTableScrollPane);
 		kwikStatsTable = new JTable();
-		kwikStatsTable.setGridColor(Color.BLACK); // set lines to black for Mac
-		kwikStatsTable.setRowHeight(30);
-		kwikStatsTable.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		ModelGenerators.defaultTableStarter(kwikStatsTable);
 		
 		// Initialize values for stats table
 		statsTableModel = new DefaultTableModel(3, 1);

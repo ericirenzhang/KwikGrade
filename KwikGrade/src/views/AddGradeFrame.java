@@ -284,7 +284,7 @@ public class AddGradeFrame extends JDialog {
 		);
 
 		studentGradeTable = new JTable();
-		studentGradeTable.setFont(new Font("Tahoma", Font.BOLD, 14));
+		ModelGenerators.defaultTableStarter(studentGradeTable);
 		scrollPane.setViewportView(studentGradeTable);
 		contentPanel.setLayout(gl_contentPanel);
 		studentGradeTable.setModel(ModelGenerators.generateAddGradeTableModel(managedCourse.getActiveStudents()));
