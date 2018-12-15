@@ -36,15 +36,19 @@ public class SubCategory implements Serializable {
 		return this.pointsGained;
 	}
 
-
-	public void updateRawFinalScore() {
-		this.rawFinalScore = (this.pointsGained / this.totalPoints) * 100;
-	}
-
 	public double getTotalPoints(){
 		return this.totalPoints;
 	}
-	
+
+	public double getRawFinalScore() {
+		return this.rawFinalScore;
+	}
+
+	public double getWeightedFinalScore()
+	{
+		return (pointsGained/totalPoints) * weight * 100;
+	}
+
 	//==========================
 	// Setters
 	//==========================
@@ -66,21 +70,7 @@ public class SubCategory implements Serializable {
 		this.updateRawFinalScore();
 	}
 
-	public double getRawFinalScore() {
-		return this.rawFinalScore;
-	}
-
-	public void setRawFinalScore(double rawFinalScore) {
-		this.rawFinalScore = rawFinalScore;
-	}
-
-	/**
-	 * Returns the raw score for a SubCategory times the weight.
-	 *
-	 * @return
-	 */
-	public double getWeightedFinalScore()
-	{
-		return (pointsGained/totalPoints) * weight * 100;
+	public void updateRawFinalScore() {
+		this.rawFinalScore = (this.pointsGained / this.totalPoints) * 100;
 	}
 }

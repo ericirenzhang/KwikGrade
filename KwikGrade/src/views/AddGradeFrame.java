@@ -13,10 +13,7 @@ import javax.swing.table.DefaultTableModel;
 
 import helpers.FileManager;
 import helpers.ModelGenerators;
-import models.Course;
-import models.CourseCategory;
-import models.OverallGrade;
-import models.Student;
+import models.*;
 import models.SubCategory;
 
 import javax.swing.JLabel;

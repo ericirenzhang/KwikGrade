@@ -1,15 +1,13 @@
 package views.components;
 
 import models.CourseCategory;
-import models.OverallGrade;
 import models.SubCategory;
+import models.OverallGrade;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

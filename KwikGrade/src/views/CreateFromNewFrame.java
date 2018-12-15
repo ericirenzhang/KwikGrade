@@ -1,9 +1,6 @@
 package views;
 
-import models.GraduateStudent;
-import models.OverallGrade;
-import models.Student;
-import models.UndergraduateStudent;
+import models.*;
 
 import java.awt.*;
 
@@ -313,7 +310,8 @@ public class CreateFromNewFrame extends JDialog {
 					try {
 					String ugCategoryName = ugCourseCategoryTable.getValueAt(ugIndex, 0).toString();
 					double ugCategoryWeight = (Double.parseDouble(String.valueOf(ugCourseCategoryTable.getValueAt(ugIndex, 1)))/100);
-					ugOverallGrade.addCourseCategory(ugCategoryName, ugCategoryWeight);
+					CourseCategory categoryToAdd = new CourseCategory(ugCategoryName, ugCategoryWeight);
+					ugOverallGrade.addCourseCategory(categoryToAdd);
 					}
 					//tried to implement logic for a blank table...does not work...need to rethink
 					//TODO: Rethink logic for catching blank cells in a table
@@ -328,7 +326,8 @@ public class CreateFromNewFrame extends JDialog {
 					try {
 					String gradCategoryName = gradCourseCategoryTable.getValueAt(gradIndex, 0).toString();
 					double gradCategoryWeight = (Double.parseDouble(String.valueOf(gradCourseCategoryTable.getValueAt(gradIndex, 1)))/100);
-					gradOverallGrade.addCourseCategory(gradCategoryName, gradCategoryWeight);
+					CourseCategory categoryToAdd = new CourseCategory(gradCategoryName, gradCategoryWeight);
+					gradOverallGrade.addCourseCategory(categoryToAdd);
 					}
 					//tried to implement logic for a blank table...does not work...need to rethink
 					//TODO: Rethink logic for catching blank cells in a table

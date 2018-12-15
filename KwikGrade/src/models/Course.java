@@ -8,18 +8,15 @@ public class Course implements Serializable {
 	private String courseTerm;
 	private String courseTitle;
 	private boolean isOpen;
-	
-	//added overall grade objects for default grad and undergrad schemes
+
+	// Default schemes for the Course for when a new student is created
 	private OverallGrade courseUnderGradDefaultGradeScheme = new OverallGrade();
 	private OverallGrade courseGradDefaultGradeScheme = new OverallGrade();
 
 	public ArrayList<Student> activeStudents;
 	private ArrayList<Student> inactiveStudents;
-	
-	public Course() {
-	}
-	
-// course constructor for not adding bulk students
+
+	// Course constructor for when user chooses not to import
 	public Course(String courseNum, String courseTerm, String courseTitle, OverallGrade ugCourseCategory, OverallGrade gradCourseCategory) {
 		this.courseNum = courseNum;
 		this.courseTerm = courseTerm;
@@ -31,7 +28,7 @@ public class Course implements Serializable {
 		this.courseGradDefaultGradeScheme = gradCourseCategory;
 	}
 	
-	//	course constructor for adding bulk students from a file
+	// Course constructor for when user chooses to import students from a file
 	public Course(String courseNum, String courseTerm, String courseTitle, ArrayList<Student> importedStudentsList, OverallGrade ugCourseCategory, OverallGrade gradCourseCategory) {
 		this.courseNum = courseNum;
 		this.courseTerm = courseTerm;
@@ -42,17 +39,12 @@ public class Course implements Serializable {
 		this.courseUnderGradDefaultGradeScheme = ugCourseCategory;
 		this.courseGradDefaultGradeScheme = gradCourseCategory;
 	}
-	
-	public void closeCourse() {
-		this.isOpen = false;
+
+	public void addActiveStudents(Student activeStudents) {
+		this.activeStudents.add(activeStudents);
 	}
 
-	// TODO: may need to accomodate for undergrad vs grad student later on
-	public void addStudent(Student studentToAdd) {
-		activeStudents.add(studentToAdd);
-	}
-	
-	//removes a student from active list, makes them an inactive student
+	// Removes a student from active list, moves them to inactive student list
 	public void removeStudent(Student studentToRemove) {
 		if(this.activeStudents.contains(studentToRemove)){
 			this.activeStudents.remove(studentToRemove);
@@ -68,11 +60,11 @@ public class Course implements Serializable {
 			return 0;
 		}
 		int num = activeStudents.size();
-		double x = 0.0;
+		double classtotal = 0.0;
 		for(int i = 0;i<num;i++) {
-			x += activeStudents.get(i).getOverallGradeObject().getOverallGrade();
+			classtotal += activeStudents.get(i).getOverallGradeObject().getOverallGrade();
 		}
-		return Math.round((x/num) * 100.0)/100.0;
+		return Math.round((classtotal/num) * 100.0)/100.0;
 	}
 
 	public double calcMedian() {
@@ -81,15 +73,19 @@ public class Course implements Serializable {
 		}
 
 		List<Double> gradeList = new ArrayList<Double>();
-		for(int i=0;i<activeStudents.size();i++)
+		for(int i=0;i<activeStudents.size();i++) {
 			gradeList.add(activeStudents.get(i).getOverallGradeObject().getOverallGrade());
+		}
 		
 		Collections.sort(gradeList);
-		
+
+		// Find the median value after the list has been sorted.
 		int length = gradeList.size();
-		if(length%2 == 0)
-			return (gradeList.get((length/2)-1) + gradeList.get((length/2)))/2;
-		return Math.round(gradeList.get(length/2) * 100.0)/100.0;
+		if(length%2 == 0) {
+			return (gradeList.get((length / 2) - 1) + gradeList.get((length / 2))) / 2;
+		} else {
+			return Math.round(gradeList.get(length/2) * 100.0)/100.0;
+		}
 	}
 	
 	public double calcStandardDeviation() {
@@ -124,10 +120,6 @@ public class Course implements Serializable {
 		return this.courseTitle;
 	}
 
-	public boolean getIsOpen() {
-		return this.isOpen;
-	}
-
 	public ArrayList<Student> getActiveStudents() {
 		return this.activeStudents;
 	}
@@ -147,17 +139,6 @@ public class Course implements Serializable {
 	//==========================
 	// Setters
 	//==========================
-	public void setCourseNum(String courseNum) {
-		this.courseNum = courseNum;
-	}
-	
-	public void setCourseTerm(String courseTerm) {
-		this.courseTerm = courseTerm;
-	}
-	
-	public void setCourseTitle(String courseTitle) {
-		this.courseTitle = courseTitle;
-	}
 	public void setIsOpen(boolean isOpen) {
 		this.isOpen = isOpen;
 	}
@@ -166,10 +147,6 @@ public class Course implements Serializable {
 	}
 	public void setCourseGradDefaultGradeScheme(OverallGrade gradingScheme) {
 		this.courseGradDefaultGradeScheme = gradingScheme;
-	}
-	
-	public void addActiveStudents(Student activeStudents) {
-		this.activeStudents.add(activeStudents);
 	}
 	
 	public void setActiveStudents(ArrayList<Student> activeStudents) {
