@@ -49,7 +49,7 @@ public class GradingSchemeGrid {
 
     public void configureGradingSchemeGrid(GradingSchemeType gradingSchemeType) {
         this.gradingSchemeType = gradingSchemeType;
-        String finalGrade = String.format("%.2f%%", this.initialGradeScheme.getOverallGrade());
+        String finalGrade = String.format("%.2f%%", this.initialGradeScheme.getOverallGradeValue());
 
         switch(gradingSchemeType) {
             case ADD_STUDENT:
@@ -451,7 +451,7 @@ public class GradingSchemeGrid {
             for (Component c : currPanel.getComponents()) {
                 if (c instanceof JLabel) {
                     // Row 2 is the category final score, update it
-                    String courseFinalScore = String.format("%.2f%%", this.modifiedGradeScheme.getOverallGrade());
+                    String courseFinalScore = String.format("%.2f%%", this.modifiedGradeScheme.getOverallGradeValue());
                     ((JLabel) c).setText(courseFinalScore);
                 }
             }

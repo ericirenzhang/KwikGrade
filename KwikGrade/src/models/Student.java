@@ -58,11 +58,7 @@ public class Student implements Serializable {
 	public String getComment() {
 		return this.comment;
 	}
-	
-	public OverallGrade getOverallGrade() {
-		return this.overallGrade;
-	}
-	
+
 	public OverallGrade getOverallGradeObject() {
 		return this.overallGrade;
 	}

@@ -26,7 +26,7 @@ public class ModelGenerators {
 			studentTableModel.setColumnIdentifiers(title);
 			for(int i = 0; i < Students.size(); i++) {
 				Student currStudent = Students.get(i);
-				studentTableModel.addRow(new Object[] {currStudent.getfName(),currStudent.getMiddleInitial(), currStudent.getlName(), currStudent.getStatus(), currStudent.getOverallGradeObject().getOverallGrade()} );
+				studentTableModel.addRow(new Object[] {currStudent.getfName(),currStudent.getMiddleInitial(), currStudent.getlName(), currStudent.getStatus(), currStudent.getOverallGradeObject().getOverallGradeValue()} );
 			}
 			return studentTableModel;
 		}
@@ -35,7 +35,7 @@ public class ModelGenerators {
 			studentTableModel.setColumnIdentifiers(title);
 			for(int i = 0; i < Students.size(); i++) {
 				Student currStudent = Students.get(i);
-				studentTableModel.addRow(new Object[] {currStudent.getfName(),currStudent.getMiddleInitial(), currStudent.getlName(), currStudent.getStatus(), currStudent.getBuId(), currStudent.getEmail(), currStudent.getOverallGradeObject().getOverallGrade()} );
+				studentTableModel.addRow(new Object[] {currStudent.getfName(),currStudent.getMiddleInitial(), currStudent.getlName(), currStudent.getStatus(), currStudent.getBuId(), currStudent.getEmail(), currStudent.getOverallGradeObject().getOverallGradeValue()} );
 			}
 			return studentTableModel;
 		}

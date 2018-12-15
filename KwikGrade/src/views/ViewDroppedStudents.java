@@ -29,7 +29,7 @@ public class ViewDroppedStudents extends JDialog {
 		Object[] title = {"First Name", "Middle Initial", "Last Name", "Grade"};
 		studentTableModel.setColumnIdentifiers(title);
 		for(int i = 0; i < Students.size(); i++) {
-			studentTableModel.addRow(new Object[] {Students.get(i).getfName(),Students.get(i).getMiddleInitial(), Students.get(i).getlName(), Students.get(i).getOverallGradeObject().getOverallGrade()} );
+			studentTableModel.addRow(new Object[] {Students.get(i).getfName(),Students.get(i).getMiddleInitial(), Students.get(i).getlName(), Students.get(i).getOverallGradeObject().getOverallGradeValue()} );
 		}
 		return studentTableModel;
 	}

@@ -21,7 +21,6 @@ public class UndergraduateStudent extends Student {
 	// ========================================
 	// Getters
 	// ========================================
-	
 	public String getStatus() {
 		return this.status;
 	}
@@ -33,7 +32,6 @@ public class UndergraduateStudent extends Student {
 	// ========================================
 	// Setters
 	// ========================================
-	
 	public void setStatus(String status) {
 		this.status = status;
 	}

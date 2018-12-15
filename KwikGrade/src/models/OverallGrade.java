@@ -46,7 +46,7 @@ public class OverallGrade implements Serializable {
 	
 	// Iterates through an overallGrade object and creates a deep copy
 	public static OverallGrade copyOverallGrade(OverallGrade overallGradeObj) {
-		double overallGradeNew = overallGradeObj.getOverallGrade();
+		double overallGradeNew = overallGradeObj.getOverallGradeValue();
 		ArrayList<CourseCategory> newCategoryList = new ArrayList<CourseCategory>();
 
 		// Clone the category.
@@ -81,7 +81,7 @@ public class OverallGrade implements Serializable {
 		}
 	}
 	
-	// function that rounds (instead of truncating) a double to specified number of decimal places
+	// Function that rounds (instead of truncating) a double to specified number of decimal places
 	public static double round(double value, int places) {
 	    if (places < 0) throw new IllegalArgumentException();
 
@@ -94,7 +94,7 @@ public class OverallGrade implements Serializable {
 	//==========================
 	// Getters
 	//==========================
-	public double getOverallGrade() {
+	public double getOverallGradeValue() {
 		return round(this.overallGrade, 2);
 	}
 
