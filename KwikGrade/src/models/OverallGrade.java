@@ -98,6 +98,10 @@ public class OverallGrade implements Serializable {
 		return round(this.overallGrade, 2);
 	}
 
+	public int getNumOfCategories(){
+		return this.categoryList.size();
+	}
+
 	public ArrayList<CourseCategory> getCourseCategoryList(){
 		return this.categoryList;
 	}

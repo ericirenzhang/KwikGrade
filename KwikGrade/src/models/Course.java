@@ -120,6 +120,10 @@ public class Course implements Serializable {
 		return this.courseTitle;
 	}
 
+	public boolean getIsOpen() {
+		return this.isOpen;
+	}
+
 	public ArrayList<Student> getActiveStudents() {
 		return this.activeStudents;
 	}
@@ -139,6 +143,18 @@ public class Course implements Serializable {
 	//==========================
 	// Setters
 	//==========================
+	public void setCourseNum(String courseNum) {
+		this.courseNum = courseNum;
+	}
+
+	public void setCourseTerm(String courseTerm) {
+		this.courseTerm = courseTerm;
+	}
+
+	public void setCourseTitle(String courseTitle) {
+		this.courseTitle = courseTitle;
+	}
+
 	public void setIsOpen(boolean isOpen) {
 		this.isOpen = isOpen;
 	}

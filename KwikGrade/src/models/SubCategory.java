@@ -75,6 +75,10 @@ public class SubCategory implements Serializable {
 		this.updateRawFinalScore();
 	}
 
+	public void setRawFinalScore(double rawFinalScore) {
+		this.rawFinalScore = rawFinalScore;
+	}
+
 	public void updateRawFinalScore() {
 		this.rawFinalScore = (this.pointsGained / this.totalPoints) * 100;
 	}
