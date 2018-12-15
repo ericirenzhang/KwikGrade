@@ -153,6 +153,7 @@ public class MainDashboard extends JFrame {
 		addCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		addCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				System.out.println(kwikGrade.getActiveCourses());
 
 				CreateCourseFrame createCourse = new CreateCourseFrame(kwikGrade);
 				createCourse.setModal(true);
@@ -164,6 +165,7 @@ public class MainDashboard extends JFrame {
 
 					//saves file upon course creation
 					FileManager.saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
+					System.out.println(kwikGrade.getActiveCourses());
 					updateCourseDisplayModel();
 				}
 			}
