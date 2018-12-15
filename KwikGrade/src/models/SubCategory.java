@@ -9,6 +9,11 @@ public class SubCategory implements Serializable {
 	double pointsGained;
 	double totalPoints;
 
+	/**
+	 * A SubCategory is an individual item of a Course Category.
+	 *
+	 * (i.e. Homework 1, Midterm 2, etc.)
+ 	 */
 	public SubCategory(String name) {
 		this.name = name;
 	}
@@ -36,15 +41,19 @@ public class SubCategory implements Serializable {
 		return this.pointsGained;
 	}
 
-
-	public void updateRawFinalScore() {
-		this.rawFinalScore = (this.pointsGained / this.totalPoints) * 100;
-	}
-
 	public double getTotalPoints(){
 		return this.totalPoints;
 	}
-	
+
+	public double getRawFinalScore() {
+		return this.rawFinalScore;
+	}
+
+	public double getWeightedFinalScore()
+	{
+		return (pointsGained/totalPoints) * weight * 100;
+	}
+
 	//==========================
 	// Setters
 	//==========================
@@ -66,21 +75,11 @@ public class SubCategory implements Serializable {
 		this.updateRawFinalScore();
 	}
 
-	public double getRawFinalScore() {
-		return this.rawFinalScore;
-	}
-
 	public void setRawFinalScore(double rawFinalScore) {
 		this.rawFinalScore = rawFinalScore;
 	}
 
-	/**
-	 * Returns the raw score for a SubCategory times the weight.
-	 *
-	 * @return
-	 */
-	public double getWeightedFinalScore()
-	{
-		return (pointsGained/totalPoints) * weight * 100;
+	public void updateRawFinalScore() {
+		this.rawFinalScore = (this.pointsGained / this.totalPoints) * 100;
 	}
 }

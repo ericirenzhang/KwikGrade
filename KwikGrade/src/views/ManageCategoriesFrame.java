@@ -237,7 +237,7 @@ public class ManageCategoriesFrame extends JDialog {
 		managedCourse.setActiveStudents(students);
 
 		// Create a clone of the category with 0 points for all SubCategory items to assign back to the default schema
-		double overallGradeNew = studentOverallGrade.getOverallGrade();
+		double overallGradeNew = studentOverallGrade.getOverallGradeValue();
 		ArrayList<CourseCategory> newCategoryList = new ArrayList<CourseCategory>();
 		for(int i = 0; i < studentOverallGrade.getCourseCategoryList().size(); i++) {
 			String newCategoryName = studentOverallGrade.getCourseCategoryList().get(i).getName();

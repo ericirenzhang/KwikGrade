@@ -13,10 +13,7 @@ import javax.swing.table.DefaultTableModel;
 
 import helpers.FileManager;
 import helpers.ModelGenerators;
-import models.Course;
-import models.CourseCategory;
-import models.OverallGrade;
-import models.Student;
+import models.*;
 import models.SubCategory;
 
 import javax.swing.JLabel;
@@ -331,7 +328,7 @@ public class AddGradeFrame extends JDialog {
 								studentIndex = gradLocationPointer.get(gradeAddIndex);
 							}
 							
-							ArrayList<CourseCategory> currentStudentCourseCat = studentList.get(studentIndex).getOverallGrade().getCourseCategoryList();
+							ArrayList<CourseCategory> currentStudentCourseCat = studentList.get(studentIndex).getOverallGradeObject().getCourseCategoryList();
 
 							for (int courseCatIndex = 0; courseCatIndex < currentStudentCourseCat.size(); courseCatIndex ++) {
 								if (currentStudentCourseCat.get(courseCatIndex).getName().equals(catNameDropdown.getSelectedItem())) {
@@ -340,7 +337,7 @@ public class AddGradeFrame extends JDialog {
 							}
 							
 							double studentPoints = togglePoints(Double.parseDouble(String.valueOf(studentGradeTable.getValueAt(gradeAddIndex, 1))), totalAssignValue, pointsGained);
-							OverallGrade studentOverallGrade = studentList.get(studentIndex).getOverallGrade();
+							OverallGrade studentOverallGrade = studentList.get(studentIndex).getOverallGradeObject();
 							studentOverallGrade.getCourseCategoryList().get(categoryIndex).addSubCategory(new SubCategory(assignNameText.getText(), 1, studentPoints, totalAssignValue));
 							
 							//function that balances the assignment weights

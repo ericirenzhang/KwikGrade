@@ -3,11 +3,6 @@ package models;
 public class GraduateStudent extends Student {
 	String status;
 	String comment;
-
-	public GraduateStudent(String fName, String middleInitial, String lName, String buId, String email,String status) {
-		super(fName, middleInitial, lName, buId, email);
-		this.status  = status;
-	}
 	
 	public GraduateStudent(String fName, String middleInitial, String lName, String buId, String email, String status, OverallGrade overallGrade) {
 		super(fName, middleInitial, lName, buId, email);
@@ -26,7 +21,6 @@ public class GraduateStudent extends Student {
 	// ========================================
 	// Getters
 	// ========================================
-	
 	public String getStatus() {
 		return this.status;
 	}
@@ -38,7 +32,6 @@ public class GraduateStudent extends Student {
 	// ========================================
 	// Setters
 	// ========================================
-	
 	public void setStatus(String status) {
 		this.status = status;
 	}

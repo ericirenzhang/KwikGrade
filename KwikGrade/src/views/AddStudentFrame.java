@@ -3,29 +3,20 @@ package views;
 import helpers.FileManager;
 import views.components.GradingSchemeGrid;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 
 import models.Course;
-import models.CourseCategory;
 import models.GraduateStudent;
 import models.OverallGrade;
 import models.Student;
-import models.SubCategory;
 import models.UndergraduateStudent;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

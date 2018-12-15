@@ -1,8 +1,5 @@
 package models;
 
-import models.CourseCategory;
-import models.Student;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -10,36 +7,29 @@ public class OverallGrade implements Serializable {
 	private double overallGrade;
 	private ArrayList<CourseCategory> categoryList = new ArrayList<CourseCategory>();
 
-	//generic constructor
+	// Constructors
 	public OverallGrade() {
 		overallGrade = 0.0;
 		categoryList = new ArrayList<CourseCategory>();
 	}
 
-	//constructor if someone wants to define all variables
 	public OverallGrade(double overallGrade, ArrayList<CourseCategory> categoryList) {
 		this.overallGrade = overallGrade;
 		this.categoryList = categoryList;
 	}
-  
-	//constructor if someone wants to define the categorylist
+
 	public OverallGrade(ArrayList<CourseCategory> categoryList) {
 		this.overallGrade = 0.0;
 		this.categoryList = categoryList;
 	}
 	
-	//adds a CourseCategory object to the OverallGrade object
-	public void addCourseCategory(String name, double weight) {
-		CourseCategory categoryToAdd = new CourseCategory(name, weight);
-		this.categoryList.add(categoryToAdd);
-		this.updateOverallGrade();
-	}
-
+	// Add a new Course Category to OverallGrade
 	public void addCourseCategory(CourseCategory courseCategory) {
 		this.categoryList.add(courseCategory);
 		this.updateOverallGrade();
 	}
-	
+
+	// Rebalance assignment weights for when a new SubCategory is added
 	public void balanceAssignWeights() {
 		for(int i = 0; i < this.categoryList.size(); i++) {
 			this.categoryList.get(i).balanceWeightSubcategory();
@@ -53,25 +43,10 @@ public class OverallGrade implements Serializable {
 			this.overallGrade += this.categoryList.get(i).getCategoryFinalWeightedScore();
 		}
 	}
-
-	//checks if the weights of all the CourseCategories equal to 1.0
-	public boolean checkSumOfWeight(ArrayList<CourseCategory> categoryList) {
-		double totalWeight = 0.0;
-		for(int i = 0; i < categoryList.size(); i++) {
-			totalWeight = totalWeight + (categoryList.get(i).getWeight());
-		}
-		if(totalWeight == 1.0) {
-			return true;
-		}
-		else {
-			return false;
-		}
-	}
 	
-	//this makes a copy of the overall grade object with a new object, so the references are not the same
-	//Actually I think this is OK...I did some googling, basically only way to make a new object is to make a NEW one, then just grab attributes from the old one
+	// Iterates through an overallGrade object and creates a deep copy
 	public static OverallGrade copyOverallGrade(OverallGrade overallGradeObj) {
-		double overallGradeNew = overallGradeObj.getOverallGrade();
+		double overallGradeNew = overallGradeObj.getOverallGradeValue();
 		ArrayList<CourseCategory> newCategoryList = new ArrayList<CourseCategory>();
 
 		// Clone the category.
@@ -106,7 +81,7 @@ public class OverallGrade implements Serializable {
 		}
 	}
 	
-	//function that rounds (instead of truncating) a double to specified number of decimal places
+	// Function that rounds (instead of truncating) a double to specified number of decimal places
 	public static double round(double value, int places) {
 	    if (places < 0) throw new IllegalArgumentException();
 
@@ -119,14 +94,14 @@ public class OverallGrade implements Serializable {
 	//==========================
 	// Getters
 	//==========================
-	public double getOverallGrade() {
+	public double getOverallGradeValue() {
 		return round(this.overallGrade, 2);
 	}
-	
+
 	public int getNumOfCategories(){
 		return this.categoryList.size();
 	}
-	
+
 	public ArrayList<CourseCategory> getCourseCategoryList(){
 		return this.categoryList;
 	}
@@ -136,10 +111,6 @@ public class OverallGrade implements Serializable {
 	//==========================
 	public void setOverallGrade(double overallGrade) {
 		this.overallGrade = overallGrade;
-	}
-    
-   public void addCategoryList(CourseCategory categoryList) {
-		this.categoryList.add(categoryList);
 	}
 
 	public void setCategoryList(ArrayList<CourseCategory> categoryList) {

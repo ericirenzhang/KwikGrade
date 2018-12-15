@@ -1,15 +1,13 @@
 package views.components;
 
 import models.CourseCategory;
-import models.OverallGrade;
 import models.SubCategory;
+import models.OverallGrade;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +49,7 @@ public class GradingSchemeGrid {
 
     public void configureGradingSchemeGrid(GradingSchemeType gradingSchemeType) {
         this.gradingSchemeType = gradingSchemeType;
-        String finalGrade = String.format("%.2f%%", this.initialGradeScheme.getOverallGrade());
+        String finalGrade = String.format("%.2f%%", this.initialGradeScheme.getOverallGradeValue());
 
         switch(gradingSchemeType) {
             case ADD_STUDENT:
@@ -453,7 +451,7 @@ public class GradingSchemeGrid {
             for (Component c : currPanel.getComponents()) {
                 if (c instanceof JLabel) {
                     // Row 2 is the category final score, update it
-                    String courseFinalScore = String.format("%.2f%%", this.modifiedGradeScheme.getOverallGrade());
+                    String courseFinalScore = String.format("%.2f%%", this.modifiedGradeScheme.getOverallGradeValue());
                     ((JLabel) c).setText(courseFinalScore);
                 }
             }
