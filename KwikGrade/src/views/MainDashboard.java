@@ -18,7 +18,6 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -80,7 +79,7 @@ public class MainDashboard extends JFrame {
 		activeCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
 
 		// Loads courses upon verifyAndOpenDashboard for display in dynamic list
-		activeCourseDisplayList.setModel(ModelGenerators.loadCourseList(kwikGrade.getActiveCourses()));
+		activeCourseDisplayList.setModel(ModelGenerators.generateCourseTableModel(kwikGrade.getActiveCourses()));
 		
 		// Closing courses
 		JLabel closedCourseLabel = new JLabel("Closed Courses");
@@ -100,7 +99,7 @@ public class MainDashboard extends JFrame {
 		});
 		closedCourseScrollPane.setViewportView(closedCourseDisplayList);
 		closedCourseDisplayList.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		closedCourseDisplayList.setModel(ModelGenerators.loadCourseList(kwikGrade.getClosedCourses()));
+		closedCourseDisplayList.setModel(ModelGenerators.generateCourseTableModel(kwikGrade.getClosedCourses()));
 
 		// =====================
 		// Buttons
@@ -256,8 +255,8 @@ public class MainDashboard extends JFrame {
 	}
 
 	public void updateCourseDisplayModel() {
-		activeCourseDisplayList.setModel(ModelGenerators.loadCourseList(kwikGrade.getActiveCourses()));
-		closedCourseDisplayList.setModel(ModelGenerators.loadCourseList(kwikGrade.getClosedCourses()));
+		activeCourseDisplayList.setModel(ModelGenerators.generateCourseTableModel(kwikGrade.getActiveCourses()));
+		closedCourseDisplayList.setModel(ModelGenerators.generateCourseTableModel(kwikGrade.getClosedCourses()));
 	}
 	
 	public static String getActiveSaveFileName() {

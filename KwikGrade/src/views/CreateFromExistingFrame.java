@@ -1,18 +1,11 @@
 package views;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
-
-import views.MainDashboard;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -27,11 +20,8 @@ import javax.swing.border.EmptyBorder;
 import helpers.ModelGenerators;
 import helpers.StudentTextImport;
 import models.Course;
-import models.GraduateStudent;
-import models.KwikGrade;
 import models.OverallGrade;
 import models.Student;
-import models.UndergraduateStudent;
 
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -163,17 +153,17 @@ public class CreateFromExistingFrame extends JDialog {
 		JList cloneCourseList = new JList();
 		scrollPane.setViewportView(cloneCourseList);
 		cloneCourseList.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		cloneCourseList.setModel(ModelGenerators.loadCourseList(MainDashboard.getKwikGrade().getActiveCourses()));
+		cloneCourseList.setModel(ModelGenerators.generateCourseTableModel(MainDashboard.getKwikGrade().getActiveCourses()));
 		JComboBox openClosedCourses = new JComboBox();
 		openClosedCourses.addItem("Active Courses");
 		openClosedCourses.addItem("Closed Courses");
 		openClosedCourses.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (openClosedCourses.getSelectedItem().equals("Active Courses")) {
-					cloneCourseList.setModel(ModelGenerators.loadCourseList(MainDashboard.getKwikGrade().getActiveCourses()));
+					cloneCourseList.setModel(ModelGenerators.generateCourseTableModel(MainDashboard.getKwikGrade().getActiveCourses()));
 				}
 				else {
-					cloneCourseList.setModel(ModelGenerators.loadCourseList(MainDashboard.getKwikGrade().getClosedCourses()));
+					cloneCourseList.setModel(ModelGenerators.generateCourseTableModel(MainDashboard.getKwikGrade().getClosedCourses()));
 				}
 			}
 		});

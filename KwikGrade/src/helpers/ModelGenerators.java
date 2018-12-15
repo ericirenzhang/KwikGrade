@@ -16,7 +16,7 @@ import models.Student;
 public class ModelGenerators {
 	
 	/**
-	 * iterates through and creates a tablemodel that summarizes the student and Grades for the Course Overview
+	 * Iterates through and creates a DefaultTableModel that summarizes the student and Grades for the Course Overview
 	 * @param Students
 	 */
 	public static DefaultTableModel generateStudentTableModel(ArrayList<Student> Students, boolean detailedView) {
@@ -44,7 +44,7 @@ public class ModelGenerators {
 	
 	/**
 	 * creates JTable for students, for use in course overview
-	 * @param Students
+	 * @param table
 	 */
 	public static JTable setDefaultAttributes(JTable table) {
 		table.setGridColor(Color.BLACK); // set lines to black for Mac
@@ -57,7 +57,8 @@ public class ModelGenerators {
 	
 	/**
 	 * resizes the JTable columns if 
-	 * @param JTable, detailedView boolean
+	 * @param table
+	 * @param detailedView
 	 */
 	public static JTable setTableSizing(JTable table, boolean detailedView) {
 		TableColumnModel columnModel = table.getColumnModel();
@@ -79,7 +80,7 @@ public class ModelGenerators {
 	}
 	
 	/**
-	 * iterates through and creates a tablemodel of all students to add a grade for
+	 * Iterates through and creates a DefaultTableModel of all students to Add a grade for
 	 * @param Students
 	 */
 	public static DefaultTableModel generateAddGradeTableModel(ArrayList<Student> Students) {
@@ -87,17 +88,17 @@ public class ModelGenerators {
 		Object[] title = {"Name", "Points"};
 		addGradeTableModel.setColumnIdentifiers(title);
 		for(int i = 0; i < Students.size(); i++) {
-			addGradeTableModel.addRow(new Object[] {Students.get(i).getfName()+" "+Students.get(i).getMiddleInitial()+" "+Students.get(i).getlName()} );
+			addGradeTableModel.addRow(new Object[] {Students.get(i).getFullName()} );
 		}
 		return addGradeTableModel;
 	}
 	
 	/**
-	 * creates a tablemodel that displays either only undergrad or only grad students
+	 * Creates a DefaultTableModel that displays either only undergrad or only grad students
 	 * @param Students
 	 * @param undergrad
 	 */
-	public static DefaultTableModel dispGradUGStudents(ArrayList<Student> Students, boolean undergrad) {
+	public static DefaultTableModel generateGradUndergradTableModel(ArrayList<Student> Students, boolean undergrad) {
 		String statusFlag;
 		if(undergrad == true){
 			statusFlag = "Undergraduate";
@@ -111,7 +112,7 @@ public class ModelGenerators {
 		addGradeTableModel.setColumnIdentifiers(title);
 		for(int i = 0; i < Students.size(); i++) {
 			if (Students.get(i).getStatus().equals(statusFlag)) {
-			addGradeTableModel.addRow(new Object[] {Students.get(i).getfName()+" "+Students.get(i).getMiddleInitial()+" "+Students.get(i).getlName()} );
+				addGradeTableModel.addRow(new Object[] { Students.get(i).getFullName() } );
 			}
 		}
 		return addGradeTableModel;
@@ -119,8 +120,8 @@ public class ModelGenerators {
 	
 	
 	/**
-	 * creates a tablemodel that updates the live statistics table
-	 * @param Course
+	 * Updates a DefaultTableModel that updates the live statistics table
+	 * @param course
 	 * @param statsTableModel
 	 */
 	public static void updateStatsModel(Course course, DefaultTableModel statsTableModel) {
@@ -130,11 +131,10 @@ public class ModelGenerators {
 	}
 	
 	/**
-	 * creates a listmodel that updates the course arraylists
-	 * @param Course
-	 * @param statsTableModel
+	 * Creates a DefaultTableModel of the course list.
+	 * @param courseList
 	 */
-	public static DefaultListModel loadCourseList(ArrayList<Course> courseList) {
+	public static DefaultListModel generateCourseTableModel(ArrayList<Course> courseList) {
 		DefaultListModel DLM = new DefaultListModel();
 		for(int i = 0; i < courseList.size(); i++) {
 			DLM.addElement(courseList.get(i).getCourseNum()+" "+courseList.get(i).getCourseTerm()+" "+courseList.get(i).getCourseTitle());

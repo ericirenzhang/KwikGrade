@@ -11,6 +11,8 @@ import models.OverallGrade;
 import models.Student;
 import models.UndergraduateStudent;
 
+import javax.swing.*;
+
 public class StudentTextImport {
 	/**
 	 * Imports students by parsing a text file into this.importedStudentList.
@@ -21,13 +23,15 @@ public class StudentTextImport {
 		Scanner rawStudentData;
 
 		try {
-			System.out.println("Loading Students");
 			rawStudentData = new Scanner(new File(filePath));
 
+			// Read line by line from the file
 			while(rawStudentData.hasNext()) {
 				String line = rawStudentData.nextLine();
 				List<String> splitLine = Arrays.asList(line.split(","));
-				if(splitLine.size()==6) { //checks for middle initial, if there's middle initial, there will be 6 items in string
+
+				// Checks for middle initial, if there's middle initial, there will be 6 items in string
+				if(splitLine.size() == 6) {
 					String fName = splitLine.get(0);
 					String middleInitial = splitLine.get(1);
 					String lName = splitLine.get(2);
@@ -42,7 +46,8 @@ public class StudentTextImport {
 						importedStudentList.add(new Student(fName, middleInitial, lName, buId, email));
 					}
 				}
-				else { //if no middle initial, then 5 items in string
+				//if no middle initial, then 5 items in string
+				else {
 					String fName = splitLine.get(0);
 					String middleInitial = "";
 					String lName = splitLine.get(1);
@@ -60,11 +65,9 @@ public class StudentTextImport {
 			}
 
 			rawStudentData.close();
-			System.out.println("Student Import Complete!");
 		}
-		//will change this to prompt user for another file
 		catch(Exception e) {
-			System.out.println("COULD NOT FIND FILE!!!!");
+			JOptionPane.showMessageDialog(null, "Could not find Student file. Please try again.");
 		}
 		
 		return importedStudentList;

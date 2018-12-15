@@ -2,6 +2,7 @@ package helpers;
 
 import models.Course;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 
@@ -21,8 +22,6 @@ public class FileManager {
             // Write Course list to file.
             objectOutputStream.writeObject(courseList);
             objectOutputStream.close();
-
-            System.out.println("Successfully saved data.");
         }
         catch(IOException ioe) {
             ioe.printStackTrace();
@@ -45,11 +44,10 @@ public class FileManager {
             savedCoursesList = (ArrayList<Course>) objectInputStream.readObject();
             objectInputStream.close();
 
-            System.out.println("Successfully loaded save data.");
             return savedCoursesList;
         }
         catch(FileNotFoundException fnfe) {
-            System.out.println("File not found: " + fnfe.getMessage());
+            JOptionPane.showMessageDialog(null, "Attempted to load file that was not found.");
         }
         catch(IOException ioe) {
             ioe.printStackTrace();

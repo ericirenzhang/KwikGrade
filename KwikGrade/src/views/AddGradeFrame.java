@@ -2,7 +2,6 @@ package views;
 
 import java.awt.BorderLayout;
 
-import java.awt.Button;
 import java.awt.Color;
 import java.awt.FlowLayout;
 
@@ -22,14 +21,10 @@ import models.SubCategory;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import java.awt.GridBagLayout;
 import java.util.ArrayList;
-import java.awt.GridBagConstraints;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -188,11 +183,11 @@ public class AddGradeFrame extends JDialog {
 				//displays only the course categories that are relevant depending on if grad, UG, or all students are selected
 				if (gradeSchemeDropdown.getSelectedItem().equals("Undergraduate")) {
 					catNameDropdown.setModel(catNameDropdownUpdater(managedCourse, true));
-					studentGradeTable.setModel(ModelGenerators.dispGradUGStudents(studentList, true));
+					studentGradeTable.setModel(ModelGenerators.generateGradUndergradTableModel(studentList, true));
 				}
 				else if (gradeSchemeDropdown.getSelectedItem().equals("Graduate")){
 					catNameDropdown.setModel(catNameDropdownUpdater(managedCourse, false));
-					studentGradeTable.setModel(ModelGenerators.dispGradUGStudents(studentList, false));
+					studentGradeTable.setModel(ModelGenerators.generateGradUndergradTableModel(studentList, false));
 				}
 				else {
 					studentGradeTable.setModel(ModelGenerators.generateAddGradeTableModel(managedCourse.getActiveStudents()));
