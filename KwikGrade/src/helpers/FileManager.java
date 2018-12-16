@@ -47,7 +47,7 @@ public class FileManager {
             return savedCoursesList;
         }
         catch(FileNotFoundException fnfe) {
-            JOptionPane.showMessageDialog(null, "Attempted to load file that was not found.");
+            fnfe.printStackTrace();
         }
         catch(IOException ioe) {
             ioe.printStackTrace();

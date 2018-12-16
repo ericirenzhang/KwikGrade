@@ -1,11 +1,11 @@
-package views;
+package views.dialogs;
 
+import helpers.KwikGradeUIManager;
 import models.KwikGrade;
 import models.OverallGrade;
 import models.Student;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -17,12 +17,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
-public class CreateCourseFrame extends JDialog {
-	
+public class CreateCourseDialog extends JDialog {
 	private String courseNum;
 	private String courseTerm;
 	private String courseTitle;
-	private int cloneCourseIndex;
 	private boolean hasCreatedNewCourse;
 
 	private ArrayList<Student> importedStudentsList = new ArrayList<>();
@@ -33,18 +31,18 @@ public class CreateCourseFrame extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 
 	/**
-	 * Create the dialog.
+	 * Create the dialog that allows user to choose how they want to create a course.
 	 */
-	public CreateCourseFrame(KwikGrade kwikGrade) {
-		setBounds(100, 100, 450, 300);
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(null);
+	public CreateCourseDialog() {
+		KwikGradeUIManager.setUpUI(this, contentPanel, 450, 300);
+
+		// ============================================
+		// Create From New or Create From Existing Action buttons
+		// ============================================
 		JButton createNewButton = new JButton("Create From New");
 		createNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CreateFromNewFrame createFromNew = new CreateFromNewFrame();
+				CreateFromNewDialog createFromNew = new CreateFromNewDialog();
 				createFromNew.setModal(true);
 				createFromNew.setVisible(true);
 
@@ -65,7 +63,7 @@ public class CreateCourseFrame extends JDialog {
 		JButton createExistingButton = new JButton("Create From Existing");
 		createExistingButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				CreateFromExistingFrame createFromExisting = new CreateFromExistingFrame();
+				CreateFromExistingDialog createFromExisting = new CreateFromExistingDialog();
 				createFromExisting.setModal(true);
 				createFromExisting.setVisible(true);
 

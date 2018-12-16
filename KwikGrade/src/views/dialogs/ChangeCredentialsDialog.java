@@ -1,4 +1,6 @@
-package views;
+package views.dialogs;
+
+import helpers.KwikGradeUIManager;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -16,7 +18,7 @@ import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.awt.event.ActionEvent;
 
-public class ChangeCredsFrame extends JDialog {
+public class ChangeCredentialsDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JPasswordField newPasswordField;
@@ -24,36 +26,37 @@ public class ChangeCredsFrame extends JDialog {
 	private JTextField newUsernameField;
 
 	/**
-	 * Create the dialog.
+	 * Create the dialog to change credentials.
 	 */
-	public ChangeCredsFrame() {
-		setBounds(100, 100, 600, 300);
-		setLocationRelativeTo ( null );
-		contentPanel.setLayout(null);
+	public ChangeCredentialsDialog() {
+		KwikGradeUIManager.setUpUI(this, contentPanel, 600, 300);
 
-		// TODO: Update this with GridBagLayout so this scales upon resizing.
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-
+		// ============================================
+		// Change Credentials
+		// ============================================
+		// Change Credentials Labels
 		JLabel newUsernameLabel = new JLabel("New Username");
 		newUsernameLabel.setBounds(67, 74, 95, 14);
 		contentPanel.add(newUsernameLabel);
+
+		JLabel newPasswordLabel = new JLabel("New Password");
+		newPasswordLabel.setBounds(67, 108, 95, 14);
+		contentPanel.add(newPasswordLabel);
+
+		JLabel retypePasswordLabel = new JLabel("Re-type Password");
+		retypePasswordLabel.setBounds(67, 139, 105, 14);
+		contentPanel.add(retypePasswordLabel);
+
+		// Change Credentials TextFields
 		newUsernameField = new JTextField();
 		newUsernameField.setBounds(172, 71, 133, 20);
 		contentPanel.add(newUsernameField);
 		newUsernameField.setColumns(10);
 
-		JLabel newPasswordLabel = new JLabel("New Password");
-		newPasswordLabel.setBounds(67, 108, 95, 14);
-		contentPanel.add(newPasswordLabel);
 		newPasswordField = new JPasswordField();
 		newPasswordField.setBounds(172, 105, 133, 20);
 		contentPanel.add(newPasswordField);
 
-		JLabel retypePasswordLabel = new JLabel("Re-type Password");
-		retypePasswordLabel.setBounds(67, 139, 105, 14);
-		contentPanel.add(retypePasswordLabel);
 		retypePasswordField = new JPasswordField();
 		retypePasswordField.setBounds(172, 136, 133, 20);
 		contentPanel.add(retypePasswordField);
@@ -62,6 +65,7 @@ public class ChangeCredsFrame extends JDialog {
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
+		// Set Action button listeners
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

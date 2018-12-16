@@ -1,62 +1,63 @@
-package views;
+package views.dialogs;
 
+import helpers.KwikGradeUIManager;
 import models.CourseCategory;
 import models.SubCategory;
 import models.OverallGrade;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class AddCategoryFrame extends JDialog {
+public class AddCategoryDialog extends JDialog {
     private final JPanel contentPanel = new JPanel();
     private JTextField categoryNameTextField;
     private JTextField categoryWeightTextField;
 
-    public AddCategoryFrame(OverallGrade overallGrade) {
-        setBounds(100, 100, 600, 300);
-        setLocationRelativeTo ( null );
-        contentPanel.setLayout(null);
+    /**
+     * Create the dialog to add a new category
+     * @param overallGrade
+     */
+    public AddCategoryDialog(OverallGrade overallGrade) {
+        KwikGradeUIManager.setUpUI(this, contentPanel, 600, 300);
 
-        getContentPane().setLayout(new BorderLayout());
-        contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        getContentPane().add(contentPanel, BorderLayout.CENTER);
-
-        // Labels
         JLabel titleLabel = new JLabel("Add a new Category");
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         titleLabel.setFont(new Font("Lucida Grande", Font.BOLD, 16));
         titleLabel.setBounds(196, 39, 181, 26);
         contentPanel.add(titleLabel);
 
+        // =============================
+        // Category Name UI
+        // =============================
         JLabel categoryNameLabel = new JLabel("Category Name:");
         categoryNameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         categoryNameLabel.setBounds(164, 102, 100, 14);
         contentPanel.add(categoryNameLabel);
 
-        JLabel categoryWeightLabel = new JLabel("Category Weight (e.g. 50):");
-        categoryWeightLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        categoryWeightLabel.setBounds(85, 128, 179, 16);
-        contentPanel.add(categoryWeightLabel);
-
-        JLabel percentLabel = new JLabel("%");
-        percentLabel.setBounds(345, 128, 61, 16);
-        contentPanel.add(percentLabel);
-
-        // TextFields
         categoryNameTextField = new JTextField();
         categoryNameTextField.setBounds(276, 96, 130, 26);
         contentPanel.add(categoryNameTextField);
         categoryNameTextField.setColumns(10);
+
+        // =============================
+        // Category Weight UI
+        // =============================
+        JLabel categoryWeightLabel = new JLabel("Category Weight (e.g. 50):");
+        categoryWeightLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        categoryWeightLabel.setBounds(85, 128, 179, 16);
+        contentPanel.add(categoryWeightLabel);
 
         categoryWeightTextField = new JTextField();
         categoryWeightTextField.setBounds(276, 123, 66, 26);
         contentPanel.add(categoryWeightTextField);
         categoryWeightTextField.setColumns(10);
 
+        JLabel percentLabel = new JLabel("%");
+        percentLabel.setBounds(345, 128, 61, 16);
+        contentPanel.add(percentLabel);
 
         // Set action buttons
         JPanel buttonPane = new JPanel();

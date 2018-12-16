@@ -24,22 +24,21 @@ public class GradingSchemeGrid {
     private static Color DARK_GRAY_COLOR = new Color(0xE0E0E0);
     private static Color BORDER_COLOR = new Color(0xD1D0D1);
     private static Color LIGHT_GREEN_COLOR = new Color(0x97FFBF);
-    private static Color LIGHT_BLUE_COLOR = new Color(0x0C97F5);
 
-
-    private static int GRADING_SCHEME_COL_OFFSET = 2;
+    private static int gradingSchemeRowCount;
 
     // First two columns of the grading scheme grid are just header/titles.
-    private static int gradingSchemeRowCount;
     private static String[] firstColumnText;
     private static String[] secondColumnText;
     private boolean hasFinishedRendering;
 
+    // initialGradeScheme holds OverallGrade when this component is initially rendered, modifiedGradeScheme is the OverallGrade based on updated fields
     private OverallGrade initialGradeScheme, modifiedGradeScheme;
     private GradingSchemeType gradingSchemeType;
     private List<List<JPanel>> schemeGrid = new ArrayList<List<JPanel>>();
     private HashMap<JPanel, CourseCategory> courseCategoryColMapping = new HashMap<>();
     private HashMap<JPanel, SubCategory> subCategoryColMapping = new HashMap<>();
+
     JPanel parentPanel = new JPanel();
 
     public GradingSchemeGrid(OverallGrade modifiedGradeScheme) {
@@ -103,7 +102,7 @@ public class GradingSchemeGrid {
         parentPanel.setLayout(new GridLayout(schemeGrid.size(), schemeGrid.get(0).size()));
         parentPanel.setBounds(75, 200, GRADING_SCHEME_WIDTH, GRADING_SCHEME_HEIGHT);
 
-        // The first two columns are static with text. When we build the JPanels in the columns, they need to be offset by these initial columns of static text.
+        // Add Category and SubCategory columns
         for(int categoryIndex = 0; categoryIndex < modifiedGradeScheme.getCourseCategoryList().size(); categoryIndex++) {
             CourseCategory currCategory = modifiedGradeScheme.getCourseCategoryList().get(categoryIndex);
 
@@ -235,7 +234,8 @@ public class GradingSchemeGrid {
                 public void insertUpdate(DocumentEvent e) {
                     if(!currTextField.getText().equals("")) {
                         rerenderGradeValues(false);
-                    }                }
+                    }
+                }
             });
 
             switch(rowIndex) {
@@ -364,15 +364,14 @@ public class GradingSchemeGrid {
                     }
                 }
                 CourseCategory categoryFromFields = new CourseCategory(currCategory.getName(), categoryWeight);
-
                 categoryFromFields.setWeight(categoryWeight/100);
 
-                // for each subcategory within CourseCategory (we can make this assumption since SubCategory cannot be edited from any of these pages)
+                // For each SubCategory within this given CourseCategory (we can make this assumption since SubCategory cannot be edited from any of these pages)
                 for (int subCategoryIndex = 0; subCategoryIndex < currCategory.getSubCategoryList().size(); subCategoryIndex++) {
                     SubCategory currSubCategory = currCategory.getSubCategoryList().get(subCategoryIndex);
                     SubCategory subCategoryFromFields = new SubCategory(currSubCategory.getName());
 
-                    // for each row
+                    // For each SubCategory row...
                     for (int rowIndex = 0; rowIndex < gradingSchemeRowCount; rowIndex++) {
                         JPanel rowPanel = schemeGrid.get(rowIndex).get(columnIndex+subCategoryIndex+1);
                         // Get TextField with value.
@@ -433,19 +432,18 @@ public class GradingSchemeGrid {
      * When the user updates any of the JTextFields, we need to update all the appropriate JLabels.
      */
     public void rerenderGradeValues(boolean isInitialRender) {
-        // TODO: refactor this boolean, hacky fix for now in order to use a DocumentListener
+        // Keeping track of rendering is necessary for the DocumentListener on the TextFields
         if(!this.hasFinishedRendering) {
             return;
         }
-        // TODO: refactor this boolean, hacky fix for now in order to enable proper display of curving
+        // Keeping track of initial render is necessary if a curve was added
         if(!isInitialRender) {
             this.modifiedGradeScheme = getOverallGradeFromFields();
         }
 
         JPanel currPanel;
 
-        // TODO: maybe add a more elegant check to this.
-        // AddStudentFrame/ManageStudentFrame have a Final Grade Score JLabel. If it's ManageCategoriesFrame, don't try to modify the JLabel because it'll go out of bounds.
+        // AddStudentDialog/ManageStudentDialog have a Final Grade Score JLabel. If it's ManageCategoriesDialog, don't try to modify the JLabel because it does not exist
         if(this.gradingSchemeType != GradingSchemeType.MANAGE_CATEGORIES) {
             currPanel = schemeGrid.get(2).get(1);
             for (Component c : currPanel.getComponents()) {
@@ -465,10 +463,9 @@ public class GradingSchemeGrid {
             if (courseCategoryColMapping.containsKey(currPanel)) {
                 // Create CourseCategory object of weight from textfield and getName
                 CourseCategory currCategory = courseCategoryColMapping.get(currPanel);
-
                 CourseCategory categoryToUpdateWith = findMatchingCategory(currCategory);
 
-                // for each row
+                // For each Category row
                 for (int rowIndex = 0; rowIndex < gradingSchemeRowCount; rowIndex++) {
                     JPanel rowPanel = schemeGrid.get(rowIndex).get(columnIndex);
                     // Get TextField with value.
@@ -484,7 +481,7 @@ public class GradingSchemeGrid {
                 }
                 courseCategoryColMapping.put(currPanel, categoryToUpdateWith);
 
-                // for each subcategory within CourseCategory (we can make this assumption since SubCategory cannot be edited from any of these pages)
+                // For each SubCategory within the given CourseCategory (we can make this assumption since SubCategory cannot be edited from any of these pages)
                 for (int subCategoryIndex = 0; subCategoryIndex < categoryToUpdateWith.getSubCategoryList().size(); subCategoryIndex++) {
                     SubCategory currSubCategory = categoryToUpdateWith.getSubCategoryList().get(subCategoryIndex);
 

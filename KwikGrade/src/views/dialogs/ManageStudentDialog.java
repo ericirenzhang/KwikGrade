@@ -1,8 +1,10 @@
-package views;
+package views.dialogs;
 
 import helpers.FileManager;
+import helpers.KwikGradeUIManager;
 import models.*;
 import views.components.GradingSchemeGrid;
+import views.frames.MainDashboardFrame;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -12,7 +14,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class ManageStudentFrame extends JDialog {
+public class ManageStudentDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField fNameField;
 	private JTextField lNameField;
@@ -34,99 +36,21 @@ public class ManageStudentFrame extends JDialog {
 	private JScrollPane gradingSchemeScrollPane;
 
 	/**
-	 * Create the dialog.
+	 * Create the Dialog to Manage a Student.
+	 *
+	 * @param managedStudent
+	 * @param managedCourse
 	 */
-	public ManageStudentFrame(Student managedStudent, Course managedCourse) {
-		//TODO: add if-else logic on which overall grade scheme to use. By default we will use the Undergraduate schema
+	public ManageStudentDialog(Student managedStudent, Course managedCourse) {
 		managedOverallGradeScheme = managedStudent.getOverallGradeObject();
 
-		setBounds(100, 100, 1000, 600);
+		KwikGradeUIManager.setUpUI(this, contentPanel, 1000, 600);
 
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(null);
-
-		GridBagConstraints frameConstraints = new GridBagConstraints();
-
-		// ===========================
-		// Student information/Fields
-		// ===========================
-		titleLabel = new JLabel("Manage a Student");
-		titleLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
-		titleLabel.setBounds(52, 31, 194, 26);
-		contentPanel.add(titleLabel);
-
-		fNameField = new JTextField(managedStudent.getfName());
-		fNameField.setBounds(51, 81, 130, 26);
-		contentPanel.add(fNameField);
-		fNameField.setColumns(10);
-
-		mInitialField = new JTextField(managedStudent.getMiddleInitial());
-		mInitialField.setBounds(215, 81, 130, 26);
-		mInitialField.setColumns(10);
-		contentPanel.add(mInitialField);
-
-		lNameField = new JTextField(managedStudent.getlName());
-		lNameField.setBounds(380, 81, 130, 26);
-		lNameField.setColumns(10);
-		contentPanel.add(lNameField);
-
-		buIdField = new JTextField(managedStudent.getBuId());
-		buIdField.setBounds(51, 145, 130, 26);
-		buIdField.setColumns(10);
-		contentPanel.add(buIdField);
-
-		emailField = new JTextField(managedStudent.getEmail());
-		emailField.setBounds(215, 145, 130, 26);
-		emailField.setColumns(10);
-		contentPanel.add(emailField);
-		
-		commentTextArea = new JTextArea(managedStudent.getComment());
-		//added key listener for tab so user can tab through
-		commentTextArea.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_TAB) {
-                    if (e.getModifiers() > 0) {
-                    	commentTextArea.transferFocusBackward();
-                    } else {
-                    	commentTextArea.transferFocus();
-                    }
-                    e.consume();
-				}
-			}
-		});
-		commentTextArea.setBounds(567, 82, 218, 94);
-		contentPanel.add(commentTextArea);
-
-		fNameLabel = new JLabel("First Name (Required)");
-		fNameLabel.setBounds(51, 66, 152, 16);
-		contentPanel.add(fNameLabel);
-
-		lNameLabel = new JLabel("Last Name (Required)");
-		lNameLabel.setBounds(380, 66, 144, 16);
-		contentPanel.add(lNameLabel);
-
-		buIdLabel = new JLabel("BU ID (Required)");
-		buIdLabel.setBounds(51, 130, 130, 16);
-		contentPanel.add(buIdLabel);
-
-		emailLabel = new JLabel("Email (Required)");
-		emailLabel.setBounds(215, 130, 130, 16);
-		contentPanel.add(emailLabel);
-
-		statusLabel = new JLabel("Status (Required)");
-		statusLabel.setBounds(380, 130, 130, 16);
-		contentPanel.add(statusLabel);
-
-		mInitialLabel = new JLabel("Middle Initial (Optional)");
-		mInitialLabel.setBounds(215, 66, 153, 16);
-		contentPanel.add(mInitialLabel);
-		
-		commentsLabel = new JLabel("Notes:");
-		commentsLabel.setBounds(567, 67, 46, 14);
-		contentPanel.add(commentsLabel);
+		// ============================================
+		// Manage Student details
+		// ============================================
+		buildAndAddLabels();
+		buildAndAddTextFields(managedStudent);
 
 		JComboBox studentStatusDropdown = new JComboBox();
 		studentStatusDropdown.addItem("Undergraduate");
@@ -158,15 +82,11 @@ public class ManageStudentFrame extends JDialog {
 		studentStatusDropdown.setBounds(380, 148, 130, 26);
 		contentPanel.add(studentStatusDropdown);
 
-		// Add panel to frame
-		frameConstraints.gridx = 0;
-		frameConstraints.gridy = 1;
-		frameConstraints.weighty = 1;
-
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
+		// Add save and cancel button listeners
 		JButton saveButton = new JButton("Save and Close");
 		saveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -214,8 +134,8 @@ public class ManageStudentFrame extends JDialog {
 				managedStudent.setComment(comment);
 
 				// Save the changes.
-				FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
-				FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
+				FileManager.saveFile(MainDashboardFrame.getKwikGrade().getActiveCourses(), MainDashboardFrame.getActiveSaveFileName());
+				FileManager.saveFile(MainDashboardFrame.getKwikGrade().getClosedCourses(), MainDashboardFrame.getClosedSaveFileName());
 
 				dispose();
 			}
@@ -239,5 +159,85 @@ public class ManageStudentFrame extends JDialog {
 		gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_STUDENT);
 		gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
 		contentPanel.add(gradingSchemeScrollPane);
+	}
+
+	private void buildAndAddTextFields(Student managedStudent) {
+		fNameField = new JTextField(managedStudent.getfName());
+		fNameField.setBounds(51, 81, 130, 26);
+		contentPanel.add(fNameField);
+		fNameField.setColumns(10);
+
+		mInitialField = new JTextField(managedStudent.getMiddleInitial());
+		mInitialField.setBounds(215, 81, 130, 26);
+		mInitialField.setColumns(10);
+		contentPanel.add(mInitialField);
+
+		lNameField = new JTextField(managedStudent.getlName());
+		lNameField.setBounds(380, 81, 130, 26);
+		lNameField.setColumns(10);
+		contentPanel.add(lNameField);
+
+		buIdField = new JTextField(managedStudent.getBuId());
+		buIdField.setBounds(51, 145, 130, 26);
+		buIdField.setColumns(10);
+		contentPanel.add(buIdField);
+
+		emailField = new JTextField(managedStudent.getEmail());
+		emailField.setBounds(215, 145, 130, 26);
+		emailField.setColumns(10);
+		contentPanel.add(emailField);
+
+		commentTextArea = new JTextArea(managedStudent.getComment());
+		//added key listener for tab so user can tab through
+		commentTextArea.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_TAB) {
+                    if (e.getModifiers() > 0) {
+                    	commentTextArea.transferFocusBackward();
+                    } else {
+                    	commentTextArea.transferFocus();
+                    }
+                    e.consume();
+				}
+			}
+		});
+		commentTextArea.setBounds(567, 82, 218, 94);
+		contentPanel.add(commentTextArea);
+	}
+
+	private void buildAndAddLabels() {
+		titleLabel = new JLabel("Manage a Student");
+		titleLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
+		titleLabel.setBounds(52, 31, 194, 26);
+		contentPanel.add(titleLabel);
+
+		fNameLabel = new JLabel("First Name (Required)");
+		fNameLabel.setBounds(51, 66, 152, 16);
+		contentPanel.add(fNameLabel);
+
+		lNameLabel = new JLabel("Last Name (Required)");
+		lNameLabel.setBounds(380, 66, 144, 16);
+		contentPanel.add(lNameLabel);
+
+		buIdLabel = new JLabel("BU ID (Required)");
+		buIdLabel.setBounds(51, 130, 130, 16);
+		contentPanel.add(buIdLabel);
+
+		emailLabel = new JLabel("Email (Required)");
+		emailLabel.setBounds(215, 130, 130, 16);
+		contentPanel.add(emailLabel);
+
+		statusLabel = new JLabel("Status (Required)");
+		statusLabel.setBounds(380, 130, 130, 16);
+		contentPanel.add(statusLabel);
+
+		mInitialLabel = new JLabel("Middle Initial (Optional)");
+		mInitialLabel.setBounds(215, 66, 153, 16);
+		contentPanel.add(mInitialLabel);
+
+		commentsLabel = new JLabel("Notes:");
+		commentsLabel.setBounds(567, 67, 46, 14);
+		contentPanel.add(commentsLabel);
 	}
 }

@@ -1,8 +1,10 @@
-package views;
+package views.dialogs;
 
 import helpers.FileManager;
+import helpers.KwikGradeUIManager;
 import models.*;
 import views.components.GradingSchemeGrid;
+import views.frames.MainDashboardFrame;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -10,43 +12,82 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 
-public class ManageCategoriesFrame extends JDialog {
+public class ManageCategoriesDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JScrollPane gradingSchemeScrollPane;
 
 	private GradingSchemeGrid gradingSchemeGrid;
 	private OverallGrade overallGradeScheme;
 
-	public OverallGrade getOverallGradeScheme() {
-		return this.overallGradeScheme;
-	}
-
 	/**
-	 * Create the dialog.
+	 * Create the dialog to manage categories.
+	 *
+	 * @param managedCourse
 	 */
-	public ManageCategoriesFrame(Course managedCourse) {
-		// TODO: add support later for undergraduate vs. graduate scheme on Manage Categories page. Default to Undergrad for now.
+	public ManageCategoriesDialog(Course managedCourse) {
+		// The dropdown menu defaults to "Undergrad"
 		overallGradeScheme = managedCourse.getCourseUnderGradDefaultGradeScheme();
 
-		setBounds(100, 100, 1000, 600);
+		KwikGradeUIManager.setUpUI(this, contentPanel, 1000, 600);
 
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(null);
+		// Labels
+		JLabel titleLabel = new JLabel("Manage Categories");
+		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		titleLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
+		titleLabel.setBounds(42, 31, 212, 33);
+		contentPanel.add(titleLabel);
 
-		GridBagConstraints frameConstraints = new GridBagConstraints();
-		frameConstraints.gridx = 0;
-		frameConstraints.gridy = 1;
-		frameConstraints.weighty = 1;
+		JLabel selectStudentLabel = new JLabel("Select the student scheme that you'd like to modify:");
+		selectStudentLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		selectStudentLabel.setBounds(42, 76, 348, 16);
+		contentPanel.add(selectStudentLabel);
 
-		// Dropdown menu
+		// Buttons
+		JButton addCategoryButton = new JButton("Add a Category");
+		addCategoryButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AddCategoryDialog addCategory = new AddCategoryDialog(getOverallGradeScheme());
+				addCategory.setModal(true);
+				addCategory.setVisible(true);
+
+				// Rerenders a the grading scheme by removing/adding to the content panel.
+				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
+				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
+				contentPanel.remove(gradingSchemeScrollPane);
+				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
+				contentPanel.add(gradingSchemeScrollPane);
+				contentPanel.revalidate();
+				contentPanel.repaint();
+			}
+		});
+		addCategoryButton.setBounds(801, 41, 179, 29);
+		contentPanel.add(addCategoryButton);
+
+		JButton btnDeleteCategory = new JButton("Delete a Category");
+		btnDeleteCategory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				DeleteCategoryDialog deleteCategory = new DeleteCategoryDialog(getOverallGradeScheme());
+				deleteCategory.setModal(true);
+				deleteCategory.setVisible(true);
+
+				// Rerenders a the grading scheme by removing/adding to the content panel.
+				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
+				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
+				contentPanel.remove(gradingSchemeScrollPane);
+				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
+				contentPanel.add(gradingSchemeScrollPane);
+				contentPanel.revalidate();
+				contentPanel.repaint();
+			}
+		});
+		btnDeleteCategory.setBounds(801, 71, 179, 29);
+		contentPanel.add(btnDeleteCategory);
+
+		// Dropdown menu for type of Student schema to modify
 		JComboBox studentStatusDropdown = new JComboBox();
 		studentStatusDropdown.addItem("Undergraduate");
 		studentStatusDropdown.addItem("Graduate");
-
 		studentStatusDropdown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (studentStatusDropdown.getSelectedItem().equals("Undergraduate")) {
@@ -69,59 +110,6 @@ public class ManageCategoriesFrame extends JDialog {
 		studentStatusDropdown.setBounds(52, 103, 148, 26);
 		contentPanel.add(studentStatusDropdown);
 
-		// Labels
-		JLabel titleLabel = new JLabel("Manage Categories");
-		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		titleLabel.setFont(new Font("Tahoma", Font.BOLD, 20));
-		titleLabel.setBounds(42, 31, 212, 33);
-		contentPanel.add(titleLabel);
-
-		JLabel selectStudentLabel = new JLabel("Select the student scheme that you'd like to modify:");
-		selectStudentLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		selectStudentLabel.setBounds(42, 76, 348, 16);
-		contentPanel.add(selectStudentLabel);
-
-		// Buttons
-		JButton addCategoryButton = new JButton("Add a Category");
-		addCategoryButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				AddCategoryFrame addCategory = new AddCategoryFrame(getOverallGradeScheme());
-				addCategory.setModal(true);
-				addCategory.setVisible(true);
-
-				// Rerenders a the grading scheme by removing/adding to the content panel.
-				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
-				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
-				contentPanel.remove(gradingSchemeScrollPane);
-				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
-				contentPanel.add(gradingSchemeScrollPane);
-				contentPanel.revalidate();
-				contentPanel.repaint();
-			}
-		});
-		addCategoryButton.setBounds(801, 41, 179, 29);
-		contentPanel.add(addCategoryButton);
-
-		JButton btnDeleteCategory = new JButton("Delete a Category");
-		btnDeleteCategory.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				DeleteCategoryFrame deleteCategory = new DeleteCategoryFrame(getOverallGradeScheme());
-				deleteCategory.setModal(true);
-				deleteCategory.setVisible(true);
-
-				// Rerenders a the grading scheme by removing/adding to the content panel.
-				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
-				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
-				contentPanel.remove(gradingSchemeScrollPane);
-				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
-				contentPanel.add(gradingSchemeScrollPane);
-				contentPanel.revalidate();
-				contentPanel.repaint();
-			}
-		});
-		btnDeleteCategory.setBounds(801, 71, 179, 29);
-		contentPanel.add(btnDeleteCategory);
-
 		// Save and Cancel buttons
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -137,15 +125,12 @@ public class ManageCategoriesFrame extends JDialog {
 					return;
 				}
 
-				OverallGrade overallGradeFromFields;
-				overallGradeFromFields = gradingSchemeGrid.getOverallGradeFromFields();
-
 				// Go through all Students in Course to set their weightings based on TextField inputs.
-				updateStudentAndDefaultOverallGrades(gradUndergradStatus, overallGradeFromFields, managedCourse);
+				updateStudentAndDefaultOverallGrades(gradUndergradStatus, managedCourse);
 
 				// Save the changes.
-				FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
-				FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
+				FileManager.saveFile(MainDashboardFrame.getKwikGrade().getActiveCourses(), MainDashboardFrame.getActiveSaveFileName());
+				FileManager.saveFile(MainDashboardFrame.getKwikGrade().getClosedCourses(), MainDashboardFrame.getClosedSaveFileName());
 				dispose();
 			}
 		});
@@ -175,13 +160,15 @@ public class ManageCategoriesFrame extends JDialog {
 	 * 	- Each student's OverallGrade object with the new weightings from the TextFields.
 	 * 	- Default ugrad and grad OverallGrade schemes based on what the user wanted to update.
 	 * @param gradUndergradStatus
-	 * @param overallGradeFromFields
 	 * @param managedCourse
 	 */
-	private void updateStudentAndDefaultOverallGrades(String gradUndergradStatus, OverallGrade overallGradeFromFields, Course managedCourse) {
+	private void updateStudentAndDefaultOverallGrades(String gradUndergradStatus, Course managedCourse) {
 		// For all students in the class, update their OverallGrade schema with the weighting from this frame
 		ArrayList<Student> students = managedCourse.getActiveStudents();
 		OverallGrade studentOverallGrade = new OverallGrade();
+
+		OverallGrade overallGradeFromFields;
+
 		for(int studentIndex = 0; studentIndex < students.size(); studentIndex++) {
 			Student currStudent = students.get(studentIndex);
 
@@ -190,6 +177,7 @@ public class ManageCategoriesFrame extends JDialog {
 				studentOverallGrade = currStudent.getOverallGradeObject();
 
 				ArrayList<CourseCategory> studentCourseCategoryList = studentOverallGrade.getCourseCategoryList();
+				overallGradeFromFields = gradingSchemeGrid.getOverallGradeFromFields();
 				ArrayList<CourseCategory> courseCategoriesFromField = overallGradeFromFields.getCourseCategoryList();
 
 				// If the number of CourseCategory fields are less than a Student's, then that means Categories were deleted.
@@ -205,6 +193,9 @@ public class ManageCategoriesFrame extends JDialog {
 				// By this point, if a Category was deleted, the Student should have matching indices with overallGradeFromFields.
 				// Iterate through all categories and update weights in the Student.
 				for(int courseIndex = 0; courseIndex < overallGradeFromFields.getCourseCategoryList().size(); courseIndex++) {
+					// Necessary to refetch the overallGradeFromFields so that not each Student is assigned a unique copy of OverallGrade object and not all pointing to the same OverallGrade object.
+					overallGradeFromFields = gradingSchemeGrid.getOverallGradeFromFields();
+
 					// If the number of CourseCategory fields are greater than a Student's, then that means Categories were added.
 					if(courseIndex > studentCourseCategoryList.size() - 1) {
 						CourseCategory currCategory = overallGradeFromFields.getCourseCategoryList().get(courseIndex);
@@ -218,6 +209,8 @@ public class ManageCategoriesFrame extends JDialog {
 						// Iterate through all SubCategories and update weights.
 						ArrayList<SubCategory> studentSubCategoryList = currCategory.getSubCategoryList();
 						for(int subCategoryIndex = 0; subCategoryIndex < studentSubCategoryList.size(); subCategoryIndex++) {
+							overallGradeFromFields = gradingSchemeGrid.getOverallGradeFromFields();
+
 							SubCategory currSubCategory = studentSubCategoryList.get(subCategoryIndex);
 
 							SubCategory subCategoryFromFields = overallGradeFromFields.getCourseCategoryList().get(courseIndex).getSubCategoryList().get(subCategoryIndex);
@@ -278,5 +271,9 @@ public class ManageCategoriesFrame extends JDialog {
 			}
 		}
 		return false;
+	}
+
+	public OverallGrade getOverallGradeScheme() {
+		return this.overallGradeScheme;
 	}
 }

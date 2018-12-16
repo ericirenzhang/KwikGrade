@@ -1,67 +1,60 @@
-package views;
+package views.frames;
 
 import helpers.FileManager;
 import helpers.ModelGenerators;
 import models.Course;
-import models.KwikGrade;
 import models.Student;
+import views.dialogs.ManageStudentDialog;
+import views.dialogs.ManageCategoriesDialog;
+import views.dialogs.ViewDroppedStudentsDialog;
+import views.dialogs.AddCurveDialog;
+import views.dialogs.AddGradeDialog;
+import views.dialogs.AddStudentDialog;
 
 import java.awt.*;
 
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 import java.awt.event.ActionEvent;
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 
-import javax.swing.JScrollPane;
-import javax.swing.JComboBox;
-
-public class CourseOverviewFrame extends JDialog {
+public class CourseOverviewFrame extends JFrame {
 	private final JPanel contentPanel = new JPanel();
 	private JTable studentDisplayTable;
 	private Course managedCourse;
 	private DefaultTableModel statsTableModel;
-	private boolean detailedView = false;
-
+	private JFrame frame;
 	private JTable kwikStatsTable;
 
-	public void setManagedCourse(Course managedCourse) {
-		this.managedCourse = managedCourse;
-	}
-
-	public Course getManagedCourse() {
-		return this.managedCourse;
-	}
+	private boolean detailedView = false;
 
 	/**
-	 * Create the dialog.
+	 * Create the dialogs.
 	 */
-	public CourseOverviewFrame(KwikGrade kwikGrade, Course managedCourse) {
+	public CourseOverviewFrame(Course managedCourse) {
 		this.managedCourse = managedCourse;
 		
-		//Sets course title for title bar
+		// Sets course title for title bar
 		String newTitle = managedCourse.getCourseNum()+" "+managedCourse.getCourseTerm()+" "+managedCourse.getCourseTitle();
 		setTitle(newTitle);
 
-		setBounds(100, 100, 746, 700);
-		getContentPane().setLayout(new BorderLayout());
+		frame = new JFrame();
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		frame.setBounds(100, 100, 746, 700);
+		frame.setLayout(new BorderLayout());
+		frame.getContentPane().add(contentPanel, BorderLayout.CENTER);
+		frame.setVisible(true);
+
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 
 		//===================================
-		//Creating Tables for Kwikstats and Student Display
+		// Creating Tables for Kwikstats and Student Display
 		//===================================
 
 		// Add Student Table
@@ -115,7 +108,7 @@ public class CourseOverviewFrame extends JDialog {
 		JButton addStudentButton = new JButton("Add Student");
 		addStudentButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddStudentFrame addStudent = new AddStudentFrame(getManagedCourse());
+				AddStudentDialog addStudent = new AddStudentDialog(getManagedCourse());
 				addStudent.setModal(true);
 				addStudent.setVisible(true);
 
@@ -143,8 +136,8 @@ public class CourseOverviewFrame extends JDialog {
 					ModelGenerators.setTableSizing(studentDisplayTable, detailedView);
 					ModelGenerators.updateStatsModel(managedCourse, statsTableModel);
 					kwikStatsTable.setModel(statsTableModel);
-					FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
-					FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
+					FileManager.saveFile(MainDashboardFrame.getKwikGrade().getActiveCourses(), MainDashboardFrame.getActiveSaveFileName());
+					FileManager.saveFile(MainDashboardFrame.getKwikGrade().getClosedCourses(), MainDashboardFrame.getClosedSaveFileName());
 				}
 			}
 		});
@@ -161,9 +154,9 @@ public class CourseOverviewFrame extends JDialog {
 				}
 				else {
 					Student student = getManagedCourse().getActiveStudents().get(studentDisplayTable.getSelectedRow());
-					ManageStudentFrame manageStudentFrame = new ManageStudentFrame(student, getManagedCourse());
-					manageStudentFrame.setModal(true);
-					manageStudentFrame.setVisible(true);
+					ManageStudentDialog manageStudentDialog = new ManageStudentDialog(student, getManagedCourse());
+					manageStudentDialog.setModal(true);
+					manageStudentDialog.setVisible(true);
 
 					studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(getManagedCourse().getActiveStudents(), detailedView));
 					ModelGenerators.setTableSizing(studentDisplayTable, detailedView);
@@ -179,9 +172,9 @@ public class CourseOverviewFrame extends JDialog {
 		JButton inactiveStudentsButton = new JButton("Inactive Students");
 		inactiveStudentsButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ViewDroppedStudents viewDroppedStudents = new ViewDroppedStudents(getManagedCourse().getInactiveStudents());
-				viewDroppedStudents.setModal(true);
-				viewDroppedStudents.setVisible(true);
+				ViewDroppedStudentsDialog viewDroppedStudentsDialog = new ViewDroppedStudentsDialog(getManagedCourse().getInactiveStudents());
+				viewDroppedStudentsDialog.setModal(true);
+				viewDroppedStudentsDialog.setVisible(true);
 			}
 		});
 		inactiveStudentsButton.setBounds(565, 187, 155, 40);
@@ -202,7 +195,7 @@ public class CourseOverviewFrame extends JDialog {
 		JButton addGradeButton = new JButton("Enter New Grades");
 		addGradeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddGradeFrame addGrade = new AddGradeFrame(getManagedCourse());
+				AddGradeDialog addGrade = new AddGradeDialog(getManagedCourse());
 				addGrade.setModal(true);
 				addGrade.setVisible(true);
 
@@ -219,9 +212,9 @@ public class CourseOverviewFrame extends JDialog {
 		JButton manageCategoryButton = new JButton("Manage Categories");
 		manageCategoryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ManageCategoriesFrame manageCategoriesFrame = new ManageCategoriesFrame(getManagedCourse());
-				manageCategoriesFrame.setModal(true);
-				manageCategoriesFrame.setVisible(true);
+				ManageCategoriesDialog manageCategoriesDialog = new ManageCategoriesDialog(getManagedCourse());
+				manageCategoriesDialog.setModal(true);
+				manageCategoriesDialog.setVisible(true);
 
 				studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(getManagedCourse().getActiveStudents(), detailedView));
 				ModelGenerators.setTableSizing(studentDisplayTable, detailedView);
@@ -234,9 +227,9 @@ public class CourseOverviewFrame extends JDialog {
 		JButton addCurveButton = new JButton("Add Curve");
 		addCurveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddCurveFrame addCurveFrame = new AddCurveFrame(getManagedCourse());
-				addCurveFrame.setModal(true);
-				addCurveFrame.setVisible(true);
+				AddCurveDialog addCurveDialog = new AddCurveDialog(getManagedCourse());
+				addCurveDialog.setModal(true);
+				addCurveDialog.setVisible(true);
 
 				studentDisplayTable.setModel(ModelGenerators.generateStudentTableModel(getManagedCourse().getActiveStudents(), detailedView));
 				ModelGenerators.setTableSizing(studentDisplayTable, detailedView);
@@ -254,14 +247,22 @@ public class CourseOverviewFrame extends JDialog {
 		JButton saveCloseButton = new JButton("Save and Close");
 		saveCloseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
-				FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
+				FileManager.saveFile(MainDashboardFrame.getKwikGrade().getActiveCourses(), MainDashboardFrame.getActiveSaveFileName());
+				FileManager.saveFile(MainDashboardFrame.getKwikGrade().getClosedCourses(), MainDashboardFrame.getClosedSaveFileName());
 				JOptionPane.showMessageDialog(null, "Successfully Saved!");
 				dispose();
 			}
 		});
 		saveCloseButton.setBounds(567, 436, 155, 40);
 		contentPanel.add(saveCloseButton);
-
 	}
+
+	public void setManagedCourse(Course managedCourse) {
+		this.managedCourse = managedCourse;
+	}
+
+	public Course getManagedCourse() {
+		return this.managedCourse;
+	}
+
 }

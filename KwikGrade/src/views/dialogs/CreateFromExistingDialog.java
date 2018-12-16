@@ -1,4 +1,4 @@
-package views;
+package views.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -17,11 +17,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import helpers.KwikGradeUIManager;
 import helpers.ModelGenerators;
 import helpers.StudentTextImport;
 import models.Course;
 import models.OverallGrade;
 import models.Student;
+import views.frames.MainDashboardFrame;
 
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -29,48 +31,34 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JComboBox;
 
-public class CreateFromExistingFrame extends JDialog {
+public class CreateFromExistingDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField courseNumField;
 	private JTextField courseTermField;
 	private JTextField courseTitleField;
 	private JTextField studentFilepathField;
+
 	private String courseNum;
 	private String courseTerm;
 	private String courseTitle;
 	private String filePath;
 	private int cloneCourseIndex;
-	private OverallGrade clonedUGGradingScheme;
-	private OverallGrade clonedGradGradingScheme;
-	private DefaultListModel DLM;
-	private JList cloneCourseList;
-	private ArrayList<Course> courseList;
-	
 	private boolean hasCreatedNewCourse = false;
 
 	private ArrayList<Student> importedStudentList = new ArrayList<>();
-	
-	public OverallGrade getUGGradeScheme(ArrayList<Course> courseList, int selectedCourse) {
-		OverallGrade gradeScheme = courseList.get(selectedCourse).getCourseUnderGradDefaultGradeScheme();
-		return gradeScheme;
-	}
-	
-	public OverallGrade getGradGradeScheme(ArrayList<Course> courseList, int selectedCourse) {
-		OverallGrade gradeScheme = courseList.get(selectedCourse).getCourseGradDefaultGradeScheme();
-		return gradeScheme;
-	}
+	private OverallGrade clonedUGGradingScheme;
+	private OverallGrade clonedGradGradingScheme;
 
 	/**
-	 * Create the dialog.
+	 * Create the dialog to create a course from an existing course.
 	 */
-	public CreateFromExistingFrame() {
-		setBounds(100, 100, 595, 748);
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(null);
-		
+	public CreateFromExistingDialog() {
+		KwikGradeUIManager.setUpUI(this, contentPanel, 595, 748);
+
+		// ============================================
+		// Enter Course Details
+		// ============================================
 		courseNumField = new JTextField();
 		courseNumField.setBounds(222, 29, 343, 36);
 		contentPanel.add(courseNumField);
@@ -85,7 +73,7 @@ public class CreateFromExistingFrame extends JDialog {
 		courseTitleField.setColumns(10);
 		courseTitleField.setBounds(222, 127, 343, 36);
 		contentPanel.add(courseTitleField);
-		
+
 		JLabel courseNumberLabel = new JLabel("Course Number (required)");
 		courseNumberLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		courseNumberLabel.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -104,14 +92,27 @@ public class CreateFromExistingFrame extends JDialog {
 		courseTitleLabel.setBounds(12, 131, 187, 26);
 		contentPanel.add(courseTitleLabel);
 		
-		// Hacky fix to get JLabel to go across multiple lines using HTML.
+		// Get JLabel to display across multiple lines using HTML.
 		JLabel importNowLabel = new JLabel("<html>Add students by importing now.<br/>(Or add them manually later)</html>");
 		importNowLabel.setHorizontalAlignment(SwingConstants.TRAILING);
 		importNowLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		importNowLabel.setBounds(167, 533, 243, 36);
 		contentPanel.add(importNowLabel);
-		
-		// Bottom half of JFrame for File browsing/importing Students.
+
+		studentFilepathField = new JTextField();
+		studentFilepathField.setColumns(10);
+		studentFilepathField.setBounds(79, 617, 405, 36);
+		studentFilepathField.setEditable(false);
+		contentPanel.add(studentFilepathField);
+
+		JLabel courseCloneSelectLabel = new JLabel("Select a Course to Clone");
+		courseCloneSelectLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		courseCloneSelectLabel.setBounds(63, 180, 217, 25);
+		contentPanel.add(courseCloneSelectLabel);
+
+		// ============================================
+		// Importing students by file browser
+		// ============================================
 		contentPanel.add(new JSeparator());
 		JButton browseButton = new JButton("Browse File Path of Student Text File...");
 		browseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -134,18 +135,6 @@ public class CreateFromExistingFrame extends JDialog {
 		});
 		contentPanel.add(browseButton);
 		
-		studentFilepathField = new JTextField();
-		studentFilepathField.setColumns(10);
-		studentFilepathField.setBounds(79, 617, 405, 36);
-		studentFilepathField.setEditable(false);
-		contentPanel.add(studentFilepathField);
-		
-		
-		JLabel courseCloneSelectLabel = new JLabel("Select a Course to Clone");
-		courseCloneSelectLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		courseCloneSelectLabel.setBounds(63, 180, 217, 25);
-		contentPanel.add(courseCloneSelectLabel);
-		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(34, 216, 499, 304);
 		contentPanel.add(scrollPane);
@@ -153,17 +142,17 @@ public class CreateFromExistingFrame extends JDialog {
 		JList cloneCourseList = new JList();
 		scrollPane.setViewportView(cloneCourseList);
 		cloneCourseList.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		cloneCourseList.setModel(ModelGenerators.generateCourseTableModel(MainDashboard.getKwikGrade().getActiveCourses()));
+		cloneCourseList.setModel(ModelGenerators.generateCourseTableModel(MainDashboardFrame.getKwikGrade().getActiveCourses()));
 		JComboBox openClosedCourses = new JComboBox();
 		openClosedCourses.addItem("Active Courses");
 		openClosedCourses.addItem("Closed Courses");
 		openClosedCourses.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (openClosedCourses.getSelectedItem().equals("Active Courses")) {
-					cloneCourseList.setModel(ModelGenerators.generateCourseTableModel(MainDashboard.getKwikGrade().getActiveCourses()));
+					cloneCourseList.setModel(ModelGenerators.generateCourseTableModel(MainDashboardFrame.getKwikGrade().getActiveCourses()));
 				}
 				else {
-					cloneCourseList.setModel(ModelGenerators.generateCourseTableModel(MainDashboard.getKwikGrade().getClosedCourses()));
+					cloneCourseList.setModel(ModelGenerators.generateCourseTableModel(MainDashboardFrame.getKwikGrade().getClosedCourses()));
 				}
 			}
 		});
@@ -171,6 +160,7 @@ public class CreateFromExistingFrame extends JDialog {
 
 		contentPanel.add(openClosedCourses);
 
+		// Set action buttons
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		getContentPane().add(buttonPane, BorderLayout.SOUTH);
@@ -190,12 +180,12 @@ public class CreateFromExistingFrame extends JDialog {
 				}
 
 				if (openClosedCourses.getSelectedItem().equals("Active Courses")) {
-					clonedUGGradingScheme = clonedUGGradingScheme.copyOverallGrade(getUGGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex));
-					clonedGradGradingScheme = clonedGradGradingScheme.copyOverallGrade(getGradGradeScheme(MainDashboard.getKwikGrade().getActiveCourses(), cloneIndex));
+					clonedUGGradingScheme = clonedUGGradingScheme.copyOverallGrade(getUGGradeScheme(MainDashboardFrame.getKwikGrade().getActiveCourses(), cloneIndex));
+					clonedGradGradingScheme = clonedGradGradingScheme.copyOverallGrade(getGradGradeScheme(MainDashboardFrame.getKwikGrade().getActiveCourses(), cloneIndex));
 				}
 				else {
-					clonedUGGradingScheme = clonedUGGradingScheme.copyOverallGrade(getUGGradeScheme(MainDashboard.getKwikGrade().getClosedCourses(), (cloneIndex)));
-					clonedGradGradingScheme = clonedGradGradingScheme.copyOverallGrade(getGradGradeScheme(MainDashboard.getKwikGrade().getClosedCourses(), (cloneIndex)));
+					clonedUGGradingScheme = clonedUGGradingScheme.copyOverallGrade(getUGGradeScheme(MainDashboardFrame.getKwikGrade().getClosedCourses(), (cloneIndex)));
+					clonedGradGradingScheme = clonedGradGradingScheme.copyOverallGrade(getGradGradeScheme(MainDashboardFrame.getKwikGrade().getClosedCourses(), (cloneIndex)));
 				}
 
 				if(courseNum.equals("") || courseTerm.equals("") || courseTitle.equals("")) {
@@ -228,7 +218,15 @@ public class CreateFromExistingFrame extends JDialog {
 	//=============================
 	// Getters
 	//=============================
-	
+	public OverallGrade getUGGradeScheme(ArrayList<Course> courseList, int selectedCourse) {
+		OverallGrade gradeScheme = courseList.get(selectedCourse).getCourseUnderGradDefaultGradeScheme();
+		return gradeScheme;
+	}
+
+	public OverallGrade getGradGradeScheme(ArrayList<Course> courseList, int selectedCourse) {
+		OverallGrade gradeScheme = courseList.get(selectedCourse).getCourseGradDefaultGradeScheme();
+		return gradeScheme;
+	}
 	public String getCourseNum() {
 		return courseNum;
 	}

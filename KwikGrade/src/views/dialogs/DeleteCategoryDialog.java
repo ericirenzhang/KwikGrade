@@ -1,5 +1,6 @@
-package views;
+package views.dialogs;
 
+import helpers.KwikGradeUIManager;
 import models.CourseCategory;
 import models.OverallGrade;
 
@@ -10,19 +11,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class DeleteCategoryFrame extends JDialog {
+public class DeleteCategoryDialog extends JDialog {
     private final JPanel contentPanel = new JPanel();
 
-    public DeleteCategoryFrame(OverallGrade overallGrade) {
-        setBounds(100, 100, 600, 300);
-        setLocationRelativeTo ( null );
-        contentPanel.setLayout(null);
+    /**
+     * Create the dialog to delete categories.
+     * @param overallGrade
+     */
+    public DeleteCategoryDialog(OverallGrade overallGrade) {
+        KwikGradeUIManager.setUpUI(this, contentPanel, 600, 300);
 
-        getContentPane().setLayout(new BorderLayout());
-        contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-        getContentPane().add(contentPanel, BorderLayout.CENTER);
-
-        // Labels
         JLabel titleLabel = new JLabel("Delete a Category");
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         titleLabel.setFont(new Font("Lucida Grande", Font.BOLD, 16));
@@ -34,9 +32,10 @@ public class DeleteCategoryFrame extends JDialog {
         categoryNameLabel.setBounds(164, 102, 100, 14);
         contentPanel.add(categoryNameLabel);
 
-        // Dropdown menu
+        // Select Category to delete
         ArrayList<String> courseCategoryNames = new ArrayList<>();
         ArrayList<CourseCategory> courseCategories = overallGrade.getCourseCategoryList();
+
         // Populate dropdown with available CourseCategories to drop
         for (CourseCategory courseCategory : courseCategories) {
             courseCategoryNames.add(courseCategory.getName());
@@ -50,7 +49,6 @@ public class DeleteCategoryFrame extends JDialog {
         JPanel buttonPane = new JPanel();
         buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
         getContentPane().add(buttonPane, BorderLayout.SOUTH);
-
         JButton saveButton = new JButton("Save and Close");
         saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -59,7 +57,6 @@ public class DeleteCategoryFrame extends JDialog {
                 dispose();
             }
         });
-
         saveButton.setActionCommand("OK");
         buttonPane.add(saveButton);
         getRootPane().setDefaultButton(saveButton);
