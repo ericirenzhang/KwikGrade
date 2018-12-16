@@ -125,11 +125,8 @@ public class ManageCategoriesDialog extends JDialog {
 					return;
 				}
 
-				OverallGrade overallGradeFromFields;
-				overallGradeFromFields = gradingSchemeGrid.getOverallGradeFromFields();
-
 				// Go through all Students in Course to set their weightings based on TextField inputs.
-				updateStudentAndDefaultOverallGrades(gradUndergradStatus, overallGradeFromFields, managedCourse);
+				updateStudentAndDefaultOverallGrades(gradUndergradStatus, managedCourse);
 
 				// Save the changes.
 				FileManager.saveFile(MainDashboardFrame.getKwikGrade().getActiveCourses(), MainDashboardFrame.getActiveSaveFileName());
@@ -163,13 +160,15 @@ public class ManageCategoriesDialog extends JDialog {
 	 * 	- Each student's OverallGrade object with the new weightings from the TextFields.
 	 * 	- Default ugrad and grad OverallGrade schemes based on what the user wanted to update.
 	 * @param gradUndergradStatus
-	 * @param overallGradeFromFields
 	 * @param managedCourse
 	 */
-	private void updateStudentAndDefaultOverallGrades(String gradUndergradStatus, OverallGrade overallGradeFromFields, Course managedCourse) {
+	private void updateStudentAndDefaultOverallGrades(String gradUndergradStatus, Course managedCourse) {
 		// For all students in the class, update their OverallGrade schema with the weighting from this frame
 		ArrayList<Student> students = managedCourse.getActiveStudents();
 		OverallGrade studentOverallGrade = new OverallGrade();
+
+		OverallGrade overallGradeFromFields;
+
 		for(int studentIndex = 0; studentIndex < students.size(); studentIndex++) {
 			Student currStudent = students.get(studentIndex);
 
@@ -178,6 +177,7 @@ public class ManageCategoriesDialog extends JDialog {
 				studentOverallGrade = currStudent.getOverallGradeObject();
 
 				ArrayList<CourseCategory> studentCourseCategoryList = studentOverallGrade.getCourseCategoryList();
+				overallGradeFromFields = gradingSchemeGrid.getOverallGradeFromFields();
 				ArrayList<CourseCategory> courseCategoriesFromField = overallGradeFromFields.getCourseCategoryList();
 
 				// If the number of CourseCategory fields are less than a Student's, then that means Categories were deleted.
@@ -193,6 +193,9 @@ public class ManageCategoriesDialog extends JDialog {
 				// By this point, if a Category was deleted, the Student should have matching indices with overallGradeFromFields.
 				// Iterate through all categories and update weights in the Student.
 				for(int courseIndex = 0; courseIndex < overallGradeFromFields.getCourseCategoryList().size(); courseIndex++) {
+					// Necessary to refetch the overallGradeFromFields so that not each Student is assigned a unique copy of OverallGrade object and not all pointing to the same OverallGrade object.
+					overallGradeFromFields = gradingSchemeGrid.getOverallGradeFromFields();
+
 					// If the number of CourseCategory fields are greater than a Student's, then that means Categories were added.
 					if(courseIndex > studentCourseCategoryList.size() - 1) {
 						CourseCategory currCategory = overallGradeFromFields.getCourseCategoryList().get(courseIndex);
@@ -206,6 +209,8 @@ public class ManageCategoriesDialog extends JDialog {
 						// Iterate through all SubCategories and update weights.
 						ArrayList<SubCategory> studentSubCategoryList = currCategory.getSubCategoryList();
 						for(int subCategoryIndex = 0; subCategoryIndex < studentSubCategoryList.size(); subCategoryIndex++) {
+							overallGradeFromFields = gradingSchemeGrid.getOverallGradeFromFields();
+
 							SubCategory currSubCategory = studentSubCategoryList.get(subCategoryIndex);
 
 							SubCategory subCategoryFromFields = overallGradeFromFields.getCourseCategoryList().get(courseIndex).getSubCategoryList().get(subCategoryIndex);
