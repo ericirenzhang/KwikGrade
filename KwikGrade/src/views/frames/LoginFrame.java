@@ -1,4 +1,6 @@
-package views;
+package views.frames;
+
+import views.dialogs.ChangeCredentialsDialog;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,7 +15,7 @@ import java.util.List;
 import javax.swing.*;
 
 public class LoginFrame {
-	private static final String GRADING_IMAGE_STRING = "grading_login.jpg";
+	private static final String GRADING_IMAGE_STRING = "../assets/grading_login.jpg";
 	private static final String LOGIN_FILE_PATH = "logincredentials.txt";
 	private JFrame frame;
 	private JTextField usernameField;
@@ -51,8 +53,8 @@ public class LoginFrame {
 		if (!credFile.exists()) {
 			JOptionPane.showMessageDialog(null, "Credentials have not been set yet.");
 
-			// Re-using code, uses ChangeCredsFrame frame to get new credentials
-			ChangeCredsFrame newCredsFrame = new ChangeCredsFrame();
+			// Re-using code, uses ChangeCredentialsDialog frame to get new credentials
+			ChangeCredentialsDialog newCredsFrame = new ChangeCredentialsDialog();
 			newCredsFrame.setModal(true);
 			newCredsFrame.setVisible(true);
 		}
@@ -65,7 +67,7 @@ public class LoginFrame {
 	 * @param password
 	 * @return
 	 */
-	public boolean verifiedCredentials(String username, String password) {
+	public boolean areCredentialsValid(String username, String password) {
 		System.getProperty("user.dir");
 		try {
 			rawCreds = new Scanner(new File(LOGIN_FILE_PATH));
@@ -90,15 +92,15 @@ public class LoginFrame {
 	//
 
 	/**
-	 * Method to create a MainDashboard object if username and password match.
+	 * Method to create a MainDashboardFrame object if username and password match.
 	 * @param username
 	 * @param password
 	 */
 	public void verifyAndOpenDashboard(String username, String password) {
-		if(verifiedCredentials(username, password)) {
+		if(areCredentialsValid(username, password)) {
 			frame.dispose();
-			MainDashboard mainDashboard = new MainDashboard();
-			mainDashboard.setVisible(true);
+			MainDashboardFrame mainDashboardFrame = new MainDashboardFrame();
+			mainDashboardFrame.setVisible(true);
 		}
 		else {
 			JOptionPane.showMessageDialog(null, "Incorrect Login!");
@@ -111,10 +113,10 @@ public class LoginFrame {
 	 * @param password
 	 */
 	public void credChange(String username, String password) {
-		if(verifiedCredentials(username, password)) {
-			ChangeCredsFrame changeCredsFrame = new ChangeCredsFrame();
-			changeCredsFrame.setModal(true);
-			changeCredsFrame.setVisible(true);
+		if(areCredentialsValid(username, password)) {
+			ChangeCredentialsDialog changeCredentialsDialog = new ChangeCredentialsDialog();
+			changeCredentialsDialog.setModal(true);
+			changeCredentialsDialog.setVisible(true);
 		}
 		else {
 			JOptionPane.showMessageDialog(null, "Incorrect Login!");

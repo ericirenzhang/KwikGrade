@@ -47,7 +47,7 @@ public class FileManager {
             return savedCoursesList;
         }
         catch(FileNotFoundException fnfe) {
-            JOptionPane.showMessageDialog(null, "Attempted to load file that was not found.");
+            System.out.println("Could not load file, either because it's missing or yet to be created");
         }
         catch(IOException ioe) {
             ioe.printStackTrace();

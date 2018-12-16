@@ -1,4 +1,4 @@
-package views;
+package views.dialogs;
 
 import models.*;
 
@@ -12,14 +12,9 @@ import helpers.StudentTextImport;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Vector;
 
-public class CreateFromNewFrame extends JDialog {
+public class CreateFromNewDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField courseNumField;
@@ -48,9 +43,9 @@ public class CreateFromNewFrame extends JDialog {
 	private OverallGrade gradOverallGrade = new OverallGrade();
 
 	/**
-	 * Create the dialog.
+	 * Create the dialogs.
 	 */
-	public CreateFromNewFrame() {
+	public CreateFromNewDialog() {
 		setBounds(100, 100, 585, 687);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -73,6 +68,13 @@ public class CreateFromNewFrame extends JDialog {
 		courseTitleField.setBounds(250, 127, 300, 36);
 		contentPanel.add(courseTitleField);
 
+		studentFilepathField = new JTextField();
+		studentFilepathField.setColumns(10);
+		studentFilepathField.setBounds(152, 280, 405, 36);
+		studentFilepathField.setEditable(false);
+		contentPanel.add(studentFilepathField);
+
+		// Labels
 		JLabel courseNumberLabel = new JLabel("Course Number (required)");
 		courseNumberLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		courseNumberLabel.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -91,12 +93,26 @@ public class CreateFromNewFrame extends JDialog {
 		courseTitleLabel.setBounds(12, 131, 200, 26);
 		contentPanel.add(courseTitleLabel);
 
-		// Hacky fix to get JLabel to go across multiple lines using HTML.
+		// Display JLabel to across multiple lines using HTML.
 		JLabel importNowLabel = new JLabel("<html>Add students by importing now.<br/>(Or add them manually later)</html>");
 		importNowLabel.setHorizontalAlignment(SwingConstants.TRAILING);
 		importNowLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		importNowLabel.setBounds(0, 200, 500, 36);
 		contentPanel.add(importNowLabel);
+
+		JLabel filePathLabel = new JLabel("Filepath");
+		filePathLabel.setHorizontalAlignment(SwingConstants.TRAILING);
+		filePathLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		filePathLabel.setBounds(12, 280, 89, 36);
+		contentPanel.add(filePathLabel);
+
+		JLabel ugCourseCategoryLabel = new JLabel("Undergraduate Grading Scheme");
+		ugCourseCategoryLabel.setBounds(60, 344, 200, 14);
+		contentPanel.add(ugCourseCategoryLabel);
+
+		JLabel gradCourseCategoryLabel = new JLabel("Graduate Grading Scheme");
+		gradCourseCategoryLabel.setBounds(361, 344, 158, 14);
+		contentPanel.add(gradCourseCategoryLabel);
 
 		// Bottom half of JFrame for File browsing/importing Students.
 		contentPanel.add(new JSeparator());
@@ -120,18 +136,6 @@ public class CreateFromNewFrame extends JDialog {
 			}
 		});
 		contentPanel.add(browseButton);
-
-		studentFilepathField = new JTextField();
-		studentFilepathField.setColumns(10);
-		studentFilepathField.setBounds(152, 280, 405, 36);
-		studentFilepathField.setEditable(false);
-		contentPanel.add(studentFilepathField);
-
-		JLabel filePathLabel = new JLabel("Filepath");
-		filePathLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-		filePathLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		filePathLabel.setBounds(12, 280, 89, 36);
-		contentPanel.add(filePathLabel);
 		
 		JScrollPane underGraduateScrollPane = new JScrollPane();
 		underGraduateScrollPane.setBounds(12, 362, 249, 180);
@@ -160,16 +164,7 @@ public class CreateFromNewFrame extends JDialog {
 		gradTableModel.setColumnIdentifiers(gradeSchemeTableTitle);
 		gradCourseCategoryTable.setModel(gradTableModel);
 		
-		JLabel ugCourseCategoryLabel = new JLabel("Undergraduate Grading Scheme");
-		ugCourseCategoryLabel.setBounds(60, 344, 200, 14);
-		contentPanel.add(ugCourseCategoryLabel);
-		
-		JLabel gradCourseCategoryLabel = new JLabel("Graduate Grading Scheme");
-		gradCourseCategoryLabel.setBounds(361, 344, 158, 14);
-		contentPanel.add(gradCourseCategoryLabel);
-		
-		//Adds a row to the dynamic undergraduate table
-		//TODO: Think of a way so that the values are saved if the table changes
+		// Adds a row to the dynamic undergraduate table
 		JButton ugAddRowButton = new JButton("Add Category");
 		ugAddRowButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -183,9 +178,7 @@ public class CreateFromNewFrame extends JDialog {
 		ugAddRowButton.setBounds(12, 568, 115, 23);
 		contentPanel.add(ugAddRowButton);
 		
-		
-		//Removes a row from the Dynamic UnderGraduate Table
-		//TODO: Think of a way so that the values are saved if the table changes
+		// Removes a row from the Dynamic UnderGraduate Table
 		JButton ugSubRowButton = new JButton("Remove Category");
 		ugSubRowButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -204,8 +197,7 @@ public class CreateFromNewFrame extends JDialog {
 		ugSubRowButton.setBounds(140, 568, 121, 23);
 		contentPanel.add(ugSubRowButton);
 		
-		//Adds a row to the dynamic graduate table
-		//TODO: Think of a way so that the values are saved if the table changes
+		// Adds a row to the dynamic graduate table
 		JButton gradAddRowButton = new JButton("Add Category");
 		gradAddRowButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -220,7 +212,7 @@ public class CreateFromNewFrame extends JDialog {
 		gradAddRowButton.setBounds(304, 568, 115, 23);
 		contentPanel.add(gradAddRowButton);
 		
-		//Removes a row from the Dynamic Graduate Table
+		// Removes a row from the Dynamic Graduate Table
 		JButton gradSubRowButton = new JButton("Remove Category");
 		gradSubRowButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -259,10 +251,6 @@ public class CreateFromNewFrame extends JDialog {
 				}
 				gradTableModelRows = ugTableModelRows;
 				gradCourseCategoryTable.setModel(gradTableModel);
-				//gradTableModel = (DefaultTableModel) gradCourseCategoryTable.getModel();
-				//ugTableModel = (DefaultTableModel) ugCourseCategoryTable.getModel();
-				//ugCourseCategoryTable.setModel(ugTableModel);
-				//ugTableModel = new DefaultTableModel(ugTableModelRows, 2);
 			}
 		});
 		btnUseSameScheme.setBounds(150, 591, 286, 29);
@@ -300,7 +288,6 @@ public class CreateFromNewFrame extends JDialog {
  				}
  
  				//checks to make sure that all the values for a percentage are actual numbers
- 				//parameterized both tables, into one function...only for you Sean ;)
  				if (checkForDouble(ugCourseCategoryTable) == false || checkForDouble(gradCourseCategoryTable) == false) {
  					return;
  				}
@@ -313,8 +300,6 @@ public class CreateFromNewFrame extends JDialog {
 					CourseCategory categoryToAdd = new CourseCategory(ugCategoryName, ugCategoryWeight);
 					ugOverallGrade.addCourseCategory(categoryToAdd);
 					}
-					//tried to implement logic for a blank table...does not work...need to rethink
-					//TODO: Rethink logic for catching blank cells in a table
 					catch (Exception ugOverallGradeCreate) {
 						JOptionPane.showMessageDialog(null, "Make sure all Grading Scheme values are filled properly!");
 						return;
@@ -329,8 +314,6 @@ public class CreateFromNewFrame extends JDialog {
 					CourseCategory categoryToAdd = new CourseCategory(gradCategoryName, gradCategoryWeight);
 					gradOverallGrade.addCourseCategory(categoryToAdd);
 					}
-					//tried to implement logic for a blank table...does not work...need to rethink
-					//TODO: Rethink logic for catching blank cells in a table
 					catch (Exception gradOverallGradeCreate) {
 						JOptionPane.showMessageDialog(null, "Make sure all Grading Scheme values are filled properly!");
 						return;
@@ -393,7 +376,7 @@ public class CreateFromNewFrame extends JDialog {
 	
 	/**
  	 * Checks that all values where the user should have entered doubles are actually doubles
- 	 * @param JTable
+ 	 * @param gradeSchemeTable
  	 * @return boolean
  	 */
  	public boolean checkForDouble(JTable gradeSchemeTable) {
@@ -411,7 +394,7 @@ public class CreateFromNewFrame extends JDialog {
  	
 	/**
  	 * Checks that all grade values add up to 100
- 	 * @param JTable
+ 	 * @param gradeSchemeTable
  	 * @return boolean
  	 */
  	public boolean checkAddToHundred(JTable gradeSchemeTable) {

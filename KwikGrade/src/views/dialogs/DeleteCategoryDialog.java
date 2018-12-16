@@ -1,4 +1,4 @@
-package views;
+package views.dialogs;
 
 import models.CourseCategory;
 import models.OverallGrade;
@@ -10,10 +10,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class DeleteCategoryFrame extends JDialog {
+public class DeleteCategoryDialog extends JDialog {
     private final JPanel contentPanel = new JPanel();
 
-    public DeleteCategoryFrame(OverallGrade overallGrade) {
+    public DeleteCategoryDialog(OverallGrade overallGrade) {
         setBounds(100, 100, 600, 300);
         setLocationRelativeTo ( null );
         contentPanel.setLayout(null);
@@ -59,7 +59,6 @@ public class DeleteCategoryFrame extends JDialog {
                 dispose();
             }
         });
-
         saveButton.setActionCommand("OK");
         buttonPane.add(saveButton);
         getRootPane().setDefaultButton(saveButton);

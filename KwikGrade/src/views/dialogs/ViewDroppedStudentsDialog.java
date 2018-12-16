@@ -1,4 +1,4 @@
-package views;
+package views.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -18,7 +18,7 @@ import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class ViewDroppedStudents extends JDialog {
+public class ViewDroppedStudentsDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTable inactiveStudentTable;
@@ -35,13 +35,14 @@ public class ViewDroppedStudents extends JDialog {
 	}
 
 	/**
-	 * Create the dialog.
+	 * Create the dialogs.
 	 */
-	public ViewDroppedStudents(ArrayList<Student> studentList) {
+	public ViewDroppedStudentsDialog(ArrayList<Student> studentList) {
 		setBounds(100, 100, 451, 482);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
+
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
 		gbl_contentPanel.columnWidths = new int[]{0, 0};
 		gbl_contentPanel.rowHeights = new int[]{0, 0};

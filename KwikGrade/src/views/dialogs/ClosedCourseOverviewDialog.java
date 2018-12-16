@@ -1,33 +1,23 @@
-package views;
+package views.dialogs;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
-import helpers.FileManager;
+import helpers.KwikGradeUIManager;
 import helpers.ModelGenerators;
 import models.Course;
 import models.KwikGrade;
-import models.Student;
 
-public class ClosedCourseOverviewFrame extends JDialog {
+public class ClosedCourseOverviewDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTable studentDisplayTable;
 	private DefaultTableModel studentTableModel = new DefaultTableModel();
@@ -37,31 +27,26 @@ public class ClosedCourseOverviewFrame extends JDialog {
 	private JTable kwikStatsTable;
 
 	/**
-	 * Create the dialog.
+	 * Create the dialogs.
 	 */
-	public ClosedCourseOverviewFrame(KwikGrade kwikGrade, Course managedCourse) {
+	public ClosedCourseOverviewDialog(KwikGrade kwikGrade, Course managedCourse) {
 
 		this.managedCourse = managedCourse;
 		
-		//Sets course title for title bar
+		// Sets course title for title bar
 		String newTitle = managedCourse.getCourseNum()+" "+managedCourse.getCourseTerm()+" "+managedCourse.getCourseTitle();
 		setTitle(newTitle);
 
-		setBounds(100, 100, 746, 586);
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(null);
+		KwikGradeUIManager.setUpUI(this, contentPanel, 746, 586);
 
 		//===================================
-		//Creating Tables for Kwikstats and Student Display
+		// Creating Tables for KwikStats and Student Display
 		//===================================
-		
 		JScrollPane studentDisplayTableScrollPane = new JScrollPane();
 		studentDisplayTableScrollPane.setBounds(10, 38, 545, 498);
 		contentPanel.add(studentDisplayTableScrollPane);
 
-		//Creates the table itself
+		// Creates the table itself
 		studentDisplayTable = new JTable();
 		ModelGenerators.setDefaultAttributes(studentDisplayTable);
 		studentDisplayTableScrollPane.setViewportView(studentDisplayTable);

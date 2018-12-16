@@ -1,8 +1,9 @@
-package views;
+package views.dialogs;
 
 import helpers.FileManager;
 import models.*;
 import views.components.GradingSchemeGrid;
+import views.frames.MainDashboardFrame;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-public class ManageCategoriesFrame extends JDialog {
+public class ManageCategoriesDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JScrollPane gradingSchemeScrollPane;
 
@@ -24,14 +25,12 @@ public class ManageCategoriesFrame extends JDialog {
 	}
 
 	/**
-	 * Create the dialog.
+	 * Create the dialogs.
 	 */
-	public ManageCategoriesFrame(Course managedCourse) {
-		// TODO: add support later for undergraduate vs. graduate scheme on Manage Categories page. Default to Undergrad for now.
+	public ManageCategoriesDialog(Course managedCourse) {
 		overallGradeScheme = managedCourse.getCourseUnderGradDefaultGradeScheme();
 
 		setBounds(100, 100, 1000, 600);
-
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -85,7 +84,7 @@ public class ManageCategoriesFrame extends JDialog {
 		JButton addCategoryButton = new JButton("Add a Category");
 		addCategoryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddCategoryFrame addCategory = new AddCategoryFrame(getOverallGradeScheme());
+				AddCategoryDialog addCategory = new AddCategoryDialog(getOverallGradeScheme());
 				addCategory.setModal(true);
 				addCategory.setVisible(true);
 
@@ -105,7 +104,7 @@ public class ManageCategoriesFrame extends JDialog {
 		JButton btnDeleteCategory = new JButton("Delete a Category");
 		btnDeleteCategory.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				DeleteCategoryFrame deleteCategory = new DeleteCategoryFrame(getOverallGradeScheme());
+				DeleteCategoryDialog deleteCategory = new DeleteCategoryDialog(getOverallGradeScheme());
 				deleteCategory.setModal(true);
 				deleteCategory.setVisible(true);
 
@@ -144,8 +143,8 @@ public class ManageCategoriesFrame extends JDialog {
 				updateStudentAndDefaultOverallGrades(gradUndergradStatus, overallGradeFromFields, managedCourse);
 
 				// Save the changes.
-				FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
-				FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
+				FileManager.saveFile(MainDashboardFrame.getKwikGrade().getActiveCourses(), MainDashboardFrame.getActiveSaveFileName());
+				FileManager.saveFile(MainDashboardFrame.getKwikGrade().getClosedCourses(), MainDashboardFrame.getClosedSaveFileName());
 				dispose();
 			}
 		});

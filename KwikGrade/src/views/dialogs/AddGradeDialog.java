@@ -1,4 +1,4 @@
-package views;
+package views.dialogs;
 
 import java.awt.BorderLayout;
 
@@ -15,6 +15,7 @@ import helpers.FileManager;
 import helpers.ModelGenerators;
 import models.*;
 import models.SubCategory;
+import views.frames.MainDashboardFrame;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -34,7 +35,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 
-public class AddGradeFrame extends JDialog {
+public class AddGradeDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField assignNameText;
@@ -61,87 +62,12 @@ public class AddGradeFrame extends JDialog {
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JTextField assignValueText;
 	
-	/**
-	 * creates a pointer array that tells you, where each undergrad and grad student is located in the course's enrolled students
-	 * @param course
-	 */
-	public void createPointerArray(Course course) {
-		for(int i = 0; i < course.getActiveStudents().size(); i++) {
-			if(course.getActiveStudents().get(i).getStatus().equals("Graduate")) {
-				gradLocationPointer.add(i);
-			}
-			else if (course.getActiveStudents().get(i).getStatus().equals("Undergraduate")) {
-				ugLocationPointer.add(i);
-			}
-		}
-	}
-	
-	/**
-	 * resets the dropdown menu to update the display of categories within a course
-	 * @param course
-	 * @param undergrad
-	 */
-	public DefaultComboBoxModel catNameDropdownUpdater(Course course, boolean undergrad) {
-		catNameDropdownModel = new DefaultComboBoxModel();
-		if(undergrad == true) {
-			for(int i = 0; i < course.getCourseUnderGradDefaultGradeScheme().getCourseCategoryList().size(); i++) {
-				catNameDropdownModel.addElement(course.getCourseUnderGradDefaultGradeScheme().getCourseCategoryList().get(i).getName());
-			}
-			return catNameDropdownModel;
-		}
-		else {
-			for(int i = 0; i < course.getCourseGradDefaultGradeScheme().getCourseCategoryList().size(); i++) {
-				catNameDropdownModel.addElement(course.getCourseGradDefaultGradeScheme().getCourseCategoryList().get(i).getName());
-			}
-			return catNameDropdownModel;
-		}
-	}
-	
-	/**
-	 * determines if both the UG and Grad OverallGrades (Grading Schemes) have common categories
-	 * @param course
-	 */
-	public DefaultComboBoxModel commonCourseCategories(Course course) {
-		catNameDropdownModel = new DefaultComboBoxModel();
-		ArrayList<String> ugOverallGradeNames = new ArrayList<String>();
-		ArrayList<String> gradOverallGradeNames = new ArrayList<String>();
-		for(int i = 0; i < ugOverallGrade.getCourseCategoryList().size(); i++) {
-			ugOverallGradeNames.add(ugOverallGrade.getCourseCategoryList().get(i).getName());
-		}
-		for(int i = 0; i < gradOverallGrade.getCourseCategoryList().size(); i++) {
-			gradOverallGradeNames.add(gradOverallGrade.getCourseCategoryList().get(i).getName());
-		}
-		ugOverallGradeNames.retainAll(gradOverallGradeNames);
-		for(int i = 0; i<ugOverallGradeNames.size(); i++) {
-			catNameDropdownModel.addElement(ugOverallGradeNames.get(i));
-		}
-		return catNameDropdownModel;
-	}
-	
-	/**
-	 * determines whether the records are points gained, or lost
-	 * @param pointsGainedOrLost
-	 * @param totalAssignPoints
-	 * @param pointsGained
-	 * 
-	 */
-	public double togglePoints(double pointsGainedOrLost, double totalAssignPoints, boolean pointsGained) {
-		// if isPointsLost is true, it means user uploads points lost
-		if(pointsGained == false) {
-			double totalPointsEarned = totalAssignPoints - pointsGainedOrLost;
-			return totalPointsEarned;
-		}
-		else {
-			//having it return TotalPointsEarned for consistancy
-			double totalPointsEarned = pointsGainedOrLost;
-			return totalPointsEarned;
-		}
-	}
+
 
 	/**
-	 * Create the dialog.
+	 * Create the dialogs.
 	 */
-	public AddGradeFrame(Course managedCourse) {
+	public AddGradeDialog(Course managedCourse) {
 		createPointerArray(managedCourse);
 		ugOverallGrade = managedCourse.getCourseUnderGradDefaultGradeScheme();
 		gradOverallGrade = managedCourse.getCourseGradDefaultGradeScheme();
@@ -151,23 +77,37 @@ public class AddGradeFrame extends JDialog {
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		
+
+		JScrollPane scrollPane = new JScrollPane();
+
+		// TextFields
 		assignNameText = new JTextField();
 		assignNameText.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		assignNameText.setColumns(10);
-		
+
+		assignValueText = new JTextField();
+		assignValueText.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		assignValueText.setColumns(10);
+
+		// Labels
 		JLabel assignNameLabel = new JLabel("Assignment Name");
 		assignNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		
-		JComboBox catNameDropdown = new JComboBox();
-		
+
 		JLabel lblCategoryName = new JLabel("Category Name");
 		lblCategoryName.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		
-		JScrollPane scrollPane = new JScrollPane();
-		
+
 		JLabel gradeSchemeLabel = new JLabel("Select Grade Scheme");
 		gradeSchemeLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+		JLabel ptsGainedLostLabel = new JLabel("Points Tracking Method");
+		ptsGainedLostLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+		JLabel assignValueLabel = new JLabel("Total Value");
+		assignValueLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+
+
+		// Dropdown
+		JComboBox catNameDropdown = new JComboBox();
 		
 		JComboBox gradeSchemeDropdown = new JComboBox();
 		catNameDropdown.setModel(commonCourseCategories(managedCourse));
@@ -192,7 +132,8 @@ public class AddGradeFrame extends JDialog {
 				}
 			}
 		});
-		
+
+		// Radio buttons
 		JRadioButton ptsEarnedRadio = new JRadioButton("Points Gained");
 		ptsEarnedRadio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -208,17 +149,7 @@ public class AddGradeFrame extends JDialog {
 			}
 		});
 		buttonGroup.add(ptsLostRadio);
-		
-		JLabel ptsGainedLostLabel = new JLabel("Points Tracking Method");
-		ptsGainedLostLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		
-		JLabel assignValueLabel = new JLabel("Total Value");
-		assignValueLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		
-		assignValueText = new JTextField();
-		assignValueText.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		assignValueText.setColumns(10);
-		
+
 		GroupLayout gl_contentPanel = new GroupLayout(contentPanel);
 		gl_contentPanel.setHorizontalGroup(
 			gl_contentPanel.createParallelGroup(Alignment.LEADING)
@@ -358,8 +289,8 @@ public class AddGradeFrame extends JDialog {
 							updateKwikGradeScheme(catNameDropdown, ugOverallGrade, totalAssignValue);
 							updateKwikGradeScheme(catNameDropdown, gradOverallGrade, totalAssignValue);
 						}
-						FileManager.saveFile(MainDashboard.getKwikGrade().getActiveCourses(), MainDashboard.getActiveSaveFileName());
-						FileManager.saveFile(MainDashboard.getKwikGrade().getClosedCourses(), MainDashboard.getClosedSaveFileName());
+						FileManager.saveFile(MainDashboardFrame.getKwikGrade().getActiveCourses(), MainDashboardFrame.getActiveSaveFileName());
+						FileManager.saveFile(MainDashboardFrame.getKwikGrade().getClosedCourses(), MainDashboardFrame.getClosedSaveFileName());
 						
 						dispose();
 					}
@@ -378,6 +309,83 @@ public class AddGradeFrame extends JDialog {
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
+		}
+	}
+
+	/**
+	 * creates a pointer array that tells you, where each undergrad and grad student is located in the course's enrolled students
+	 * @param course
+	 */
+	public void createPointerArray(Course course) {
+		for(int i = 0; i < course.getActiveStudents().size(); i++) {
+			if(course.getActiveStudents().get(i).getStatus().equals("Graduate")) {
+				gradLocationPointer.add(i);
+			}
+			else if (course.getActiveStudents().get(i).getStatus().equals("Undergraduate")) {
+				ugLocationPointer.add(i);
+			}
+		}
+	}
+
+	/**
+	 * resets the dropdown menu to update the display of categories within a course
+	 * @param course
+	 * @param undergrad
+	 */
+	public DefaultComboBoxModel catNameDropdownUpdater(Course course, boolean undergrad) {
+		catNameDropdownModel = new DefaultComboBoxModel();
+		if(undergrad == true) {
+			for(int i = 0; i < course.getCourseUnderGradDefaultGradeScheme().getCourseCategoryList().size(); i++) {
+				catNameDropdownModel.addElement(course.getCourseUnderGradDefaultGradeScheme().getCourseCategoryList().get(i).getName());
+			}
+			return catNameDropdownModel;
+		}
+		else {
+			for(int i = 0; i < course.getCourseGradDefaultGradeScheme().getCourseCategoryList().size(); i++) {
+				catNameDropdownModel.addElement(course.getCourseGradDefaultGradeScheme().getCourseCategoryList().get(i).getName());
+			}
+			return catNameDropdownModel;
+		}
+	}
+
+	/**
+	 * determines if both the UG and Grad OverallGrades (Grading Schemes) have common categories
+	 * @param course
+	 */
+	public DefaultComboBoxModel commonCourseCategories(Course course) {
+		catNameDropdownModel = new DefaultComboBoxModel();
+		ArrayList<String> ugOverallGradeNames = new ArrayList<String>();
+		ArrayList<String> gradOverallGradeNames = new ArrayList<String>();
+		for(int i = 0; i < ugOverallGrade.getCourseCategoryList().size(); i++) {
+			ugOverallGradeNames.add(ugOverallGrade.getCourseCategoryList().get(i).getName());
+		}
+		for(int i = 0; i < gradOverallGrade.getCourseCategoryList().size(); i++) {
+			gradOverallGradeNames.add(gradOverallGrade.getCourseCategoryList().get(i).getName());
+		}
+		ugOverallGradeNames.retainAll(gradOverallGradeNames);
+		for(int i = 0; i<ugOverallGradeNames.size(); i++) {
+			catNameDropdownModel.addElement(ugOverallGradeNames.get(i));
+		}
+		return catNameDropdownModel;
+	}
+
+	/**
+	 * determines whether the records are points gained, or lost
+	 * @param pointsGainedOrLost
+	 * @param totalAssignPoints
+	 * @param pointsGained
+	 *
+	 */
+	public double togglePoints(double pointsGainedOrLost, double totalAssignPoints, boolean pointsGained) {
+		// if isPointsLost is true, it means user uploads points lost
+		if(pointsGained == false) {
+			double totalPointsEarned = totalAssignPoints - pointsGainedOrLost;
+			return totalPointsEarned;
+		}
+		else {
+			//having it return TotalPointsEarned for consistancy
+			double totalPointsEarned = pointsGainedOrLost;
+			return totalPointsEarned;
 		}
 	}
 
