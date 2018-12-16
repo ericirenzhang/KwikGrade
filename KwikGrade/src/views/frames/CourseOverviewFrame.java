@@ -250,7 +250,7 @@ public class CourseOverviewFrame extends JFrame {
 				FileManager.saveFile(MainDashboardFrame.getKwikGrade().getActiveCourses(), MainDashboardFrame.getActiveSaveFileName());
 				FileManager.saveFile(MainDashboardFrame.getKwikGrade().getClosedCourses(), MainDashboardFrame.getClosedSaveFileName());
 				JOptionPane.showMessageDialog(null, "Successfully Saved!");
-				dispose();
+				frame.dispose();
 			}
 		});
 		saveCloseButton.setBounds(567, 436, 155, 40);
