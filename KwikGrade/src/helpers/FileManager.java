@@ -46,6 +46,9 @@ public class FileManager {
 
             return savedCoursesList;
         }
+        catch(FileNotFoundException fnfe) {
+            fnfe.printStackTrace();
+        }
         catch(IOException ioe) {
             ioe.printStackTrace();
         }
