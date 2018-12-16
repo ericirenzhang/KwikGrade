@@ -26,11 +26,14 @@ public class ChangeCredentialsDialog extends JDialog {
 	private JTextField newUsernameField;
 
 	/**
-	 * Create the dialogs.
+	 * Create the dialog to change credentials.
 	 */
 	public ChangeCredentialsDialog() {
 		KwikGradeUIManager.setUpUI(this, contentPanel, 600, 300);
 
+		// ============================================
+		// Change Credentials
+		// ============================================
 		// Change Credentials Labels
 		JLabel newUsernameLabel = new JLabel("New Username");
 		newUsernameLabel.setBounds(67, 74, 95, 14);

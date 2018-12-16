@@ -1,5 +1,6 @@
 package views.dialogs;
 
+import helpers.KwikGradeUIManager;
 import models.*;
 
 import java.awt.*;
@@ -16,43 +17,39 @@ import java.util.ArrayList;
 
 public class CreateFromNewDialog extends JDialog {
 
+	private String courseNum;
+	private String courseTerm;
+	private String courseTitle;
+	private String filePath;
+	private int ugTableModelRows = 1;
+	private int gradTableModelRows = 1;
+	private boolean hasCreatedNewCourse = false;
+
 	private final JPanel contentPanel = new JPanel();
 	private JTextField courseNumField;
 	private JTextField courseTermField;
 	private JTextField courseTitleField;
 	private JTextField studentFilepathField;
-	private String courseNum;
-	private String courseTerm;
-	private String courseTitle;
-	private String filePath;
-
-	private boolean hasCreatedNewCourse = false;
+	private JTable ugCourseCategoryTable;
+	private JTable gradCourseCategoryTable;
+	private DefaultTableModel gradTableModel = new DefaultTableModel(gradTableModelRows, 2);
+	private DefaultTableModel ugTableModel = new DefaultTableModel(ugTableModelRows, 2);
 
 	private ArrayList<Student> importedStudentList = new ArrayList<>();
 
-	//attributes to store the Course Category lists
-	private JTable ugCourseCategoryTable;
-	private int ugTableModelRows = 1;
-	private DefaultTableModel ugTableModel = new DefaultTableModel(ugTableModelRows, 2);
-	private JTable gradCourseCategoryTable;
-	private int gradTableModelRows = 1;
-	private DefaultTableModel gradTableModel = new DefaultTableModel(gradTableModelRows, 2);
-	
 	// initializes the overallgrade objects for undergrads and graduates
 	private OverallGrade ugOverallGrade = new OverallGrade();
 	private OverallGrade gradOverallGrade = new OverallGrade();
 
 	/**
-	 * Create the dialogs.
+	 * Create the dialog to create a new course from scratch.
 	 */
 	public CreateFromNewDialog() {
-		setBounds(100, 100, 585, 687);
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(null);
+		KwikGradeUIManager.setUpUI(this, contentPanel, 585, 687);
 
-		// Top half of JFrame for Course information section.
+		// ============================================
+		// Enter Course Details
+		// ============================================
 		courseNumField = new JTextField();
 		courseNumField.setBounds(250, 29, 300, 36);
 		contentPanel.add(courseNumField);
@@ -114,7 +111,9 @@ public class CreateFromNewDialog extends JDialog {
 		gradCourseCategoryLabel.setBounds(361, 344, 158, 14);
 		contentPanel.add(gradCourseCategoryLabel);
 
-		// Bottom half of JFrame for File browsing/importing Students.
+		// ============================================
+		// Importing students by file browser
+		// ============================================
 		contentPanel.add(new JSeparator());
 		JButton browseButton = new JButton("Browse File Path of Student Text File...");
 		browseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));

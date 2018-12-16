@@ -1,6 +1,5 @@
 package views.dialogs;
 
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -9,30 +8,22 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import helpers.KwikGradeUIManager;
 import helpers.ModelGenerators;
 import models.Course;
-import models.KwikGrade;
 
 public class ClosedCourseOverviewDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTable studentDisplayTable;
-	private DefaultTableModel studentTableModel = new DefaultTableModel();
-	private DefaultTableModel statsTableModel = new DefaultTableModel();
-	private Course managedCourse;
-
+	private DefaultTableModel statsTableModel;
 	private JTable kwikStatsTable;
 
 	/**
-	 * Create the dialogs.
+	 * Create the dialog to view closed courses.
 	 */
-	public ClosedCourseOverviewDialog(KwikGrade kwikGrade, Course managedCourse) {
-
-		this.managedCourse = managedCourse;
-		
+	public ClosedCourseOverviewDialog(Course managedCourse) {
 		// Sets course title for title bar
 		String newTitle = managedCourse.getCourseNum()+" "+managedCourse.getCourseTerm()+" "+managedCourse.getCourseTitle();
 		setTitle(newTitle);

@@ -13,6 +13,10 @@ public class AddCurveDialog extends JDialog {
     private final JPanel contentPanel = new JPanel();
     private JTextField curveAmountTextField;
 
+    /**
+     * Add a curve to all students in the course.
+     * @param managedCourse
+     */
     public AddCurveDialog(Course managedCourse) {
         KwikGradeUIManager.setUpUI(this, contentPanel, 600, 300);
 
@@ -22,7 +26,9 @@ public class AddCurveDialog extends JDialog {
         titleLabel.setBounds(196, 39, 181, 26);
         contentPanel.add(titleLabel);
 
+        // ============================================
         // Select students who will receive a curve
+        // ============================================
         JLabel categoryNameLabel = new JLabel("Select students who will receive a curve:");
         categoryNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
         categoryNameLabel.setBounds(144, 79, 297, 14);
@@ -35,7 +41,9 @@ public class AddCurveDialog extends JDialog {
         curveDropdown.setBounds(225, 98, 128, 27);
         contentPanel.add(curveDropdown);
 
-        // Specify Curve Amount
+        // ============================================
+        // Specify Curve amount
+        // ============================================
         JLabel curveLabel = new JLabel("Curve amount");
         curveLabel.setHorizontalAlignment(SwingConstants.CENTER);
         curveLabel.setBounds(196, 137, 181, 16);

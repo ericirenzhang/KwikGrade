@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
 import helpers.FileManager;
+import helpers.KwikGradeUIManager;
 import helpers.ModelGenerators;
 import models.*;
 import models.SubCategory;
@@ -36,51 +37,47 @@ import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 
 public class AddGradeDialog extends JDialog {
+	private boolean pointsGained;
+	private String assignName;
+
+	//pointer array, shows how a student in the grad/undergrad student list relates to the entire student list
+	private ArrayList<Integer> ugLocationPointer = new ArrayList<Integer>();
+	private ArrayList<Integer> gradLocationPointer = new ArrayList<Integer>();
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField assignNameText;
 	private JTable studentGradeTable;
-	private DefaultTableModel addGradeTableModel;
+	private DefaultComboBoxModel catNameDropdownModel;
+	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private JTextField assignValueText;
+
+	private static Color LIGHT_GREEN_COLOR = new Color(0x97FFBF);
+	private static Color LIGHT_RED_COLOR = new Color(0xFFA3A3);
+
+	//list of all students
+	private ArrayList<Student> studentList;
 
 	private OverallGrade ugOverallGrade;
 	private OverallGrade gradOverallGrade;
-	private boolean pointsGained;
-	
-	private static Color LIGHT_GREEN_COLOR = new Color(0x97FFBF);
-	private static Color LIGHT_RED_COLOR = new Color(0xFFA3A3);
-	
-	private String assignName;
-	
-	//list of all students
-	private ArrayList<Student> studentList;
-		
-	//pointer array, shows how a student in the grad/undergrad student list relates to the entire student list
-	private ArrayList<Integer> ugLocationPointer = new ArrayList<Integer>();
-	private ArrayList<Integer> gradLocationPointer = new ArrayList<Integer>();
-	
-	private DefaultComboBoxModel catNameDropdownModel; 
-	private final ButtonGroup buttonGroup = new ButtonGroup();
-	private JTextField assignValueText;
-	
-
 
 	/**
-	 * Create the dialogs.
+	 * Create the dialog to add a grade to students in a course.
+	 *
+	 * @param managedCourse
 	 */
 	public AddGradeDialog(Course managedCourse) {
 		createPointerArray(managedCourse);
 		ugOverallGrade = managedCourse.getCourseUnderGradDefaultGradeScheme();
 		gradOverallGrade = managedCourse.getCourseGradDefaultGradeScheme();
 		studentList = managedCourse.getActiveStudents();
-		
-		setBounds(100, 100, 664, 503);
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
 
 		JScrollPane scrollPane = new JScrollPane();
 
-		// TextFields
+		KwikGradeUIManager.setUpUI(this, contentPanel, 664, 503);
+
+		// ============================================
+		// Specifying Assignment details logic
+		// ============================================
 		assignNameText = new JTextField();
 		assignNameText.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		assignNameText.setColumns(10);
@@ -89,7 +86,6 @@ public class AddGradeDialog extends JDialog {
 		assignValueText.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		assignValueText.setColumns(10);
 
-		// Labels
 		JLabel assignNameLabel = new JLabel("Assignment Name");
 		assignNameLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
@@ -105,10 +101,8 @@ public class AddGradeDialog extends JDialog {
 		JLabel assignValueLabel = new JLabel("Total Value");
 		assignValueLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-
 		// Dropdown
 		JComboBox catNameDropdown = new JComboBox();
-		
 		JComboBox gradeSchemeDropdown = new JComboBox();
 		catNameDropdown.setModel(commonCourseCategories(managedCourse));
 		gradeSchemeDropdown.addItem("All Students");

@@ -135,7 +135,7 @@ public class MainDashboardFrame extends JFrame {
 					selectedCourse = kwikGrade.getClosedCourses().get(manageIndex);
 					
 					try {
-						ClosedCourseOverviewDialog courseOverview = new ClosedCourseOverviewDialog(kwikGrade, selectedCourse);
+						ClosedCourseOverviewDialog courseOverview = new ClosedCourseOverviewDialog(selectedCourse);
 						courseOverview.setModal(true);
 						courseOverview.setVisible(true);
 					}
@@ -154,8 +154,6 @@ public class MainDashboardFrame extends JFrame {
 		addCourseButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		addCourseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println(kwikGrade.getActiveCourses());
-
 				CreateCourseDialog createCourse = new CreateCourseDialog();
 				createCourse.setModal(true);
 				createCourse.setVisible(true);
@@ -166,7 +164,6 @@ public class MainDashboardFrame extends JFrame {
 
 					//saves file upon course creation
 					FileManager.saveFile(kwikGrade.getActiveCourses(), SERIALIZED_FILE_NAME_ACTIVE);
-					System.out.println(kwikGrade.getActiveCourses());
 					updateCourseDisplayModel();
 				}
 			}

@@ -16,6 +16,10 @@ public class AddCategoryDialog extends JDialog {
     private JTextField categoryNameTextField;
     private JTextField categoryWeightTextField;
 
+    /**
+     * Create the dialog to add a new category
+     * @param overallGrade
+     */
     public AddCategoryDialog(OverallGrade overallGrade) {
         KwikGradeUIManager.setUpUI(this, contentPanel, 600, 300);
 
@@ -25,7 +29,9 @@ public class AddCategoryDialog extends JDialog {
         titleLabel.setBounds(196, 39, 181, 26);
         contentPanel.add(titleLabel);
 
+        // =============================
         // Category Name UI
+        // =============================
         JLabel categoryNameLabel = new JLabel("Category Name:");
         categoryNameLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         categoryNameLabel.setBounds(164, 102, 100, 14);
@@ -36,7 +42,9 @@ public class AddCategoryDialog extends JDialog {
         contentPanel.add(categoryNameTextField);
         categoryNameTextField.setColumns(10);
 
+        // =============================
         // Category Weight UI
+        // =============================
         JLabel categoryWeightLabel = new JLabel("Category Weight (e.g. 50):");
         categoryWeightLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         categoryWeightLabel.setBounds(85, 128, 179, 16);

@@ -1,6 +1,7 @@
 package views.dialogs;
 
 import helpers.FileManager;
+import helpers.KwikGradeUIManager;
 import models.*;
 import views.components.GradingSchemeGrid;
 import views.frames.MainDashboardFrame;
@@ -11,7 +12,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 
 public class ManageCategoriesDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
@@ -20,53 +20,16 @@ public class ManageCategoriesDialog extends JDialog {
 	private GradingSchemeGrid gradingSchemeGrid;
 	private OverallGrade overallGradeScheme;
 
-	public OverallGrade getOverallGradeScheme() {
-		return this.overallGradeScheme;
-	}
-
 	/**
-	 * Create the dialogs.
+	 * Create the dialog to manage categories.
+	 *
+	 * @param managedCourse
 	 */
 	public ManageCategoriesDialog(Course managedCourse) {
+		// The dropdown menu defaults to "Undergrad"
 		overallGradeScheme = managedCourse.getCourseUnderGradDefaultGradeScheme();
 
-		setBounds(100, 100, 1000, 600);
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(null);
-
-		GridBagConstraints frameConstraints = new GridBagConstraints();
-		frameConstraints.gridx = 0;
-		frameConstraints.gridy = 1;
-		frameConstraints.weighty = 1;
-
-		// Dropdown menu
-		JComboBox studentStatusDropdown = new JComboBox();
-		studentStatusDropdown.addItem("Undergraduate");
-		studentStatusDropdown.addItem("Graduate");
-
-		studentStatusDropdown.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (studentStatusDropdown.getSelectedItem().equals("Undergraduate")) {
-					overallGradeScheme = managedCourse.getCourseUnderGradDefaultGradeScheme();
-				}
-				else {
-					overallGradeScheme = managedCourse.getCourseGradDefaultGradeScheme();
-				}
-				// Rerenders a the grading scheme by removing/adding to the content panel.
-				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
-				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
-				contentPanel.remove(gradingSchemeScrollPane);
-				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
-				contentPanel.add(gradingSchemeScrollPane);
-				contentPanel.revalidate();
-				contentPanel.repaint();
-			}
-		});
-
-		studentStatusDropdown.setBounds(52, 103, 148, 26);
-		contentPanel.add(studentStatusDropdown);
+		KwikGradeUIManager.setUpUI(this, contentPanel, 1000, 600);
 
 		// Labels
 		JLabel titleLabel = new JLabel("Manage Categories");
@@ -120,6 +83,32 @@ public class ManageCategoriesDialog extends JDialog {
 		});
 		btnDeleteCategory.setBounds(801, 71, 179, 29);
 		contentPanel.add(btnDeleteCategory);
+
+		// Dropdown menu for type of Student schema to modify
+		JComboBox studentStatusDropdown = new JComboBox();
+		studentStatusDropdown.addItem("Undergraduate");
+		studentStatusDropdown.addItem("Graduate");
+		studentStatusDropdown.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (studentStatusDropdown.getSelectedItem().equals("Undergraduate")) {
+					overallGradeScheme = managedCourse.getCourseUnderGradDefaultGradeScheme();
+				}
+				else {
+					overallGradeScheme = managedCourse.getCourseGradDefaultGradeScheme();
+				}
+				// Rerenders a the grading scheme by removing/adding to the content panel.
+				gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
+				gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.MANAGE_CATEGORIES);
+				contentPanel.remove(gradingSchemeScrollPane);
+				gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();
+				contentPanel.add(gradingSchemeScrollPane);
+				contentPanel.revalidate();
+				contentPanel.repaint();
+			}
+		});
+
+		studentStatusDropdown.setBounds(52, 103, 148, 26);
+		contentPanel.add(studentStatusDropdown);
 
 		// Save and Cancel buttons
 		JPanel buttonPane = new JPanel();
@@ -277,5 +266,9 @@ public class ManageCategoriesDialog extends JDialog {
 			}
 		}
 		return false;
+	}
+
+	public OverallGrade getOverallGradeScheme() {
+		return this.overallGradeScheme;
 	}
 }

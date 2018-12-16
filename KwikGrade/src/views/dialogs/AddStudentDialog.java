@@ -44,24 +44,26 @@ public class AddStudentDialog extends JDialog {
 	private OverallGrade studentOverallGrade;
 	private OverallGrade overallGradeScheme;
 	private GradingSchemeGrid gradingSchemeGrid;
-	//private static final String EMAIL_PATTERN = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\\\.[A-Z]{2,6}$";
-	public static final String VALID_EMAIL_ADDRESS_REGEX = 
+
+	public static final String VALID_EMAIL_ADDRESS_REGEX =
 			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 			        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	Pattern pattern = Pattern.compile(VALID_EMAIL_ADDRESS_REGEX);
 
 	/**
-	 * Create the dialogs.
+	 * Create the dialog to add a student to the course.
+	 *
+	 * @param managedCourse
 	 */
 	public AddStudentDialog(Course managedCourse) {
 		overallGradeScheme = managedCourse.getCourseUnderGradDefaultGradeScheme();
 
 		KwikGradeUIManager.setUpUI(this, contentPanel, 1000, 600);
 
-		// Add all necessary UI Labels.
+		// ============================================
+		// Add Student details
+		// ============================================
 		buildAndAddLabels();
-
-		// Add TextFields and Dropdown menus for user input.
 		buildAndAddTextFields();
 
 		JComboBox studentStatusDropdown = new JComboBox();
@@ -163,7 +165,9 @@ public class AddStudentDialog extends JDialog {
 		cancelButton.setActionCommand("Cancel");
 		buttonPane.add(cancelButton);
 
+		// ============================================
 		// Build Grading Scheme Grid Component
+		// ============================================
 		gradingSchemeGrid = new GradingSchemeGrid(overallGradeScheme);
 		gradingSchemeGrid.configureGradingSchemeGrid(GradingSchemeGrid.GradingSchemeType.ADD_STUDENT);
 		gradingSchemeScrollPane = gradingSchemeGrid.buildGradingSchemeGrid();

@@ -31,11 +31,14 @@ public class CreateCourseDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 
 	/**
-	 * Create the dialogs.
+	 * Create the dialog that allows user to choose how they want to create a course.
 	 */
 	public CreateCourseDialog() {
 		KwikGradeUIManager.setUpUI(this, contentPanel, 450, 300);
 
+		// ============================================
+		// Create From New or Create From Existing Action buttons
+		// ============================================
 		JButton createNewButton = new JButton("Create From New");
 		createNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

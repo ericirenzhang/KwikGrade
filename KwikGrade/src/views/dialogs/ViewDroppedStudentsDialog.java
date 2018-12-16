@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import helpers.KwikGradeUIManager;
 import models.Student;
 import java.awt.GridBagLayout;
 import javax.swing.JTable;
@@ -22,27 +23,16 @@ public class ViewDroppedStudentsDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTable inactiveStudentTable;
-	
-	public DefaultTableModel generateStudentTableModel(ArrayList<Student> Students) {
-		DefaultTableModel studentTableModel;
-		studentTableModel = new DefaultTableModel();
-		Object[] title = {"First Name", "Middle Initial", "Last Name", "Grade"};
-		studentTableModel.setColumnIdentifiers(title);
-		for(int i = 0; i < Students.size(); i++) {
-			studentTableModel.addRow(new Object[] {Students.get(i).getfName(),Students.get(i).getMiddleInitial(), Students.get(i).getlName(), Students.get(i).getOverallGradeObject().getOverallGradeValue()} );
-		}
-		return studentTableModel;
-	}
 
 	/**
-	 * Create the dialogs.
+	 * Create the Dialog to view dropped students.
+	 *
+	 * @param studentList
 	 */
 	public ViewDroppedStudentsDialog(ArrayList<Student> studentList) {
-		setBounds(100, 100, 451, 482);
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		KwikGradeUIManager.setUpUI(this, contentPanel, 451, 482);
 
+		// Set up table to view dropped students
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
 		gbl_contentPanel.columnWidths = new int[]{0, 0};
 		gbl_contentPanel.rowHeights = new int[]{0, 0};
@@ -64,7 +54,8 @@ public class ViewDroppedStudentsDialog extends JDialog {
 		}
 		
 		inactiveStudentTable.setModel(generateStudentTableModel(studentList));
-		
+
+		// Set close button listener
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -83,4 +74,15 @@ public class ViewDroppedStudentsDialog extends JDialog {
 		}
 	}
 
+
+	public DefaultTableModel generateStudentTableModel(ArrayList<Student> Students) {
+		DefaultTableModel studentTableModel;
+		studentTableModel = new DefaultTableModel();
+		Object[] title = {"First Name", "Middle Initial", "Last Name", "Grade"};
+		studentTableModel.setColumnIdentifiers(title);
+		for(int i = 0; i < Students.size(); i++) {
+			studentTableModel.addRow(new Object[] {Students.get(i).getfName(),Students.get(i).getMiddleInitial(), Students.get(i).getlName(), Students.get(i).getOverallGradeObject().getOverallGradeValue()} );
+		}
+		return studentTableModel;
+	}
 }
